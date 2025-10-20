@@ -30,9 +30,19 @@ const ProductCard = ({
   inStock
 }: ProductCardProps) => {
   return (
-    <Card className="group relative overflow-hidden border-border hover:border-primary transition-all duration-300 hover:shadow-hover">
+    <Card className="group relative overflow-hidden border-border hover:border-primary/50 transition-all duration-300 hover:shadow-lg bg-white">
+      {/* Wishlist Button */}
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        className="absolute top-2 right-2 z-10 bg-white/90 hover:bg-white shadow-sm"
+      >
+        <Heart className="h-4 w-4" />
+      </Button>
+
+      {/* Discount Badge */}
       {discount && (
-        <Badge className="absolute top-3 right-3 z-10 bg-accent text-accent-foreground">
+        <Badge className="absolute top-2 left-2 z-10 bg-primary text-primary-foreground font-semibold">
           -{discount}%
         </Badge>
       )}
@@ -40,76 +50,76 @@ const ProductCard = ({
       <CardContent className="p-0">
         {/* Image */}
         <Link to={`/produse/${id}`}>
-          <div className="relative aspect-square bg-muted/30 overflow-hidden">
+          <div className="relative aspect-square bg-white overflow-hidden p-4">
             <img
               src={image}
               alt={name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
             />
-          
-          {/* Hover Actions */}
-          <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
-            <Button size="icon" variant="secondary" className="shadow-lg">
-              <Heart className="h-5 w-5" />
-            </Button>
-          </div>
           </div>
         </Link>
 
         {/* Content */}
-        <div className="p-4">
-          <p className="text-sm text-muted-foreground mb-1">{brand}</p>
+        <div className="p-4 space-y-3">
+          <p className="text-xs text-muted-foreground uppercase tracking-wide">{brand}</p>
+          
           <Link to={`/produse/${id}`}>
-            <h3 className="font-semibold text-foreground mb-2 line-clamp-2 min-h-[3rem] hover:text-primary transition-colors">
+            <h3 className="font-semibold text-sm text-foreground line-clamp-2 min-h-[2.5rem] hover:text-primary transition-colors leading-tight">
               {name}
             </h3>
           </Link>
 
           {/* Rating */}
-          <div className="flex items-center gap-1 mb-3">
+          <div className="flex items-center gap-1">
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
-                className={`h-4 w-4 ${
+                className={`h-3.5 w-3.5 ${
                   i < Math.floor(rating)
                     ? "fill-amber-400 text-amber-400"
-                    : "text-muted"
+                    : "fill-gray-200 text-gray-200"
                 }`}
               />
             ))}
-            <span className="text-sm text-muted-foreground ml-1">
+            <span className="text-xs text-muted-foreground ml-1">
               ({reviews})
             </span>
           </div>
 
           {/* Price */}
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold text-primary">
-              {price} MDL
+              {price.toFixed(2)}
             </span>
-            {originalPrice && (
-              <span className="text-sm text-muted-foreground line-through">
-                {originalPrice} MDL
-              </span>
-            )}
+            <span className="text-sm font-semibold text-primary">MDL</span>
           </div>
-
-          {/* Stock & CTA */}
-          <div className="space-y-2">
+          {originalPrice && (
             <div className="flex items-center gap-2">
-              <div className={`h-2 flex-1 rounded-full ${inStock ? 'bg-primary' : 'bg-destructive'}`}>
-                <div className="h-full w-3/4 bg-primary-light rounded-full" />
-              </div>
-              <span className={`text-xs font-medium ${inStock ? 'text-primary' : 'text-destructive'}`}>
-                {inStock ? 'În stoc' : 'Stoc limitat'}
+              <span className="text-sm text-muted-foreground line-through">
+                {originalPrice.toFixed(2)} MDL
+              </span>
+              <span className="text-xs text-accent font-medium">
+                Economisești {(originalPrice - price).toFixed(2)} MDL
               </span>
             </div>
-            
-            <Button className="w-full bg-primary hover:bg-primary/90" disabled={!inStock}>
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Adaugă în coș
-            </Button>
+          )}
+
+          {/* Stock Status */}
+          <div className="flex items-center gap-2 text-xs">
+            <div className={`w-2 h-2 rounded-full ${inStock ? 'bg-secondary' : 'bg-orange'}`} />
+            <span className={`font-medium ${inStock ? 'text-secondary' : 'text-orange'}`}>
+              {inStock ? '✓ În stoc' : '⚠ Stoc limitat'}
+            </span>
           </div>
+            
+          {/* CTA Button */}
+          <Button 
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm" 
+            disabled={!inStock}
+          >
+            <ShoppingCart className="h-4 w-4 mr-2" />
+            Adaugă în coș
+          </Button>
         </div>
       </CardContent>
     </Card>
