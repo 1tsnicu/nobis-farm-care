@@ -1,9 +1,11 @@
 import { Star, ShoppingCart, Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 interface ProductCardProps {
+  id: number;
   image: string;
   brand: string;
   name: string;
@@ -16,6 +18,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({
+  id,
   image,
   brand,
   name,
@@ -36,12 +39,13 @@ const ProductCard = ({
       
       <CardContent className="p-0">
         {/* Image */}
-        <div className="relative aspect-square bg-muted/30 overflow-hidden">
-          <img
-            src={image}
-            alt={name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
+        <Link to={`/produse/${id}`}>
+          <div className="relative aspect-square bg-muted/30 overflow-hidden">
+            <img
+              src={image}
+              alt={name}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
           
           {/* Hover Actions */}
           <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
@@ -49,14 +53,17 @@ const ProductCard = ({
               <Heart className="h-5 w-5" />
             </Button>
           </div>
-        </div>
+          </div>
+        </Link>
 
         {/* Content */}
         <div className="p-4">
           <p className="text-sm text-muted-foreground mb-1">{brand}</p>
-          <h3 className="font-semibold text-foreground mb-2 line-clamp-2 min-h-[3rem]">
-            {name}
-          </h3>
+          <Link to={`/produse/${id}`}>
+            <h3 className="font-semibold text-foreground mb-2 line-clamp-2 min-h-[3rem] hover:text-primary transition-colors">
+              {name}
+            </h3>
+          </Link>
 
           {/* Rating */}
           <div className="flex items-center gap-1 mb-3">
