@@ -1,37 +1,40 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
+import { useToast } from "@/hooks/use-toast";
 
 const Cart = () => {
-  // Mock cart items
-  const cartItems = [
-    {
-      id: 1,
-      image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop",
-      brand: "Paracetamol",
-      name: "Paracetamol 500mg - 20 tablete",
-      price: 45,
-      quantity: 2,
-      inStock: true
-    },
-    {
-      id: 2,
-      image: "https://images.unsplash.com/photo-1550572017-4725f1f5b8f5?w=200&h=200&fit=crop",
-      brand: "Vitamin C",
-      name: "Vitamin C 1000mg - Complex cu zinc",
-      price: 89,
-      quantity: 1,
-      inStock: true
-    }
-  ];
+  const { items, removeItem, updateQuantity, subtotal } = useCart();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const deliveryCost = subtotal >= 349 ? 0 : 45;
   const total = subtotal + deliveryCost;
+
+  const handleRemoveItem = (id: number, name: string) => {
+    removeItem(id);
+    toast({
+      title: "Produs șters",
+      description: `${name} a fost șters din coș`,
+    });
+  };
+
+  const handleCheckout = () => {
+    if (items.length === 0) {
+      toast({
+        title: "Coș gol",
+        description: "Adaugă produse pentru a continua",
+        variant: "destructive",
+      });
+      return;
+    }
+    navigate("/checkout");
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -50,7 +53,7 @@ const Cart = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
-            {cartItems.length === 0 ? (
+            {items.length === 0 ? (
               <Card>
                 <CardContent className="p-12 text-center">
                   <ShoppingCart className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
@@ -66,7 +69,7 @@ const Cart = () => {
                 </CardContent>
               </Card>
             ) : (
-              cartItems.map((item) => (
+              items.map((item) => (
                 <Card key={item.id}>
                   <CardContent className="p-4">
                     <div className="flex gap-4">
@@ -82,11 +85,22 @@ const Cart = () => {
                         </h3>
                         <div className="flex items-center gap-4">
                           <div className="flex items-center border border-border rounded-lg">
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-8 w-8"
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              disabled={item.quantity <= 1}
+                            >
                               <Minus className="h-4 w-4" />
                             </Button>
                             <span className="px-4 font-medium">{item.quantity}</span>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-8 w-8"
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            >
                               <Plus className="h-4 w-4" />
                             </Button>
                           </div>
@@ -96,7 +110,12 @@ const Cart = () => {
                         </div>
                       </div>
                       <div className="flex flex-col items-end justify-between">
-                        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive/80">
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="text-destructive hover:text-destructive/80"
+                          onClick={() => handleRemoveItem(item.id, item.name)}
+                        >
                           <Trash2 className="h-5 w-5" />
                         </Button>
                         <p className="text-lg font-bold text-foreground">
@@ -152,7 +171,12 @@ const Cart = () => {
                   <span className="text-2xl font-bold text-primary">{total} MDL</span>
                 </div>
 
-                <Button className="w-full mb-3" size="lg">
+                <Button 
+                  className="w-full mb-3" 
+                  size="lg"
+                  onClick={handleCheckout}
+                  disabled={items.length === 0}
+                >
                   Continuă spre plată
                 </Button>
                 
