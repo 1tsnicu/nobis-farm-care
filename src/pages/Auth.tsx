@@ -209,26 +209,24 @@ const Auth = () => {
                       control={loginForm.control}
                       name="password"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="relative">
                           <FormLabel>Parola</FormLabel>
                           <FormControl>
-                            <div className="relative">
-                              <Input 
-                                type={showPassword ? "text" : "password"} 
-                                placeholder="••••••••"
-                                {...field}
-                              />
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                                onClick={() => setShowPassword(!showPassword)}
-                              >
-                                {showPassword ? "Ascunde" : "Arată"}
-                              </Button>
-                            </div>
+                            <Input 
+                              type={showPassword ? "text" : "password"} 
+                              placeholder="••••••••"
+                              {...field}
+                            />
                           </FormControl>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-2 top-8 text-xs"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? "Ascunde" : "Arată"}
+                          </Button>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -300,26 +298,24 @@ const Auth = () => {
                       control={signupForm.control}
                       name="password"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="relative">
                           <FormLabel>Parola</FormLabel>
                           <FormControl>
-                            <div className="relative">
-                              <Input 
-                                type={showPassword ? "text" : "password"} 
-                                placeholder="••••••••"
-                                {...field}
-                              />
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                                onClick={() => setShowPassword(!showPassword)}
-                              >
-                                {showPassword ? "Ascunde" : "Arată"}
-                              </Button>
-                            </div>
+                            <Input 
+                              type={showPassword ? "text" : "password"} 
+                              placeholder="••••••••"
+                              {...field}
+                            />
                           </FormControl>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-2 top-8 text-xs"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? "Ascunde" : "Arată"}
+                          </Button>
                           <FormMessage />
                         </FormItem>
                       )}
