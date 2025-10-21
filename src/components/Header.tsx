@@ -3,14 +3,6 @@ import { Link } from "react-router-dom";
 import { Search, ShoppingCart, Heart, User, Menu, X, Globe, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
 import { categories } from "@/lib/data/categories";
 
 const Header = () => {
@@ -89,45 +81,44 @@ const Header = () => {
         {/* Navigation - Desktop */}
         <nav className="hidden lg:block border-t border-border">
           <div className="flex items-center justify-between py-2">
-            <NavigationMenu>
-              <NavigationMenuList className="gap-1">
-                {categories.map((category) => (
-                  <NavigationMenuItem key={category.id}>
-                    <NavigationMenuTrigger className="text-sm font-medium h-auto py-2">
-                      {category.name}
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <div className="w-[500px] p-4 bg-background">
-                        <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center gap-1">
+              {categories.map((category) => (
+                <div key={category.id} className="relative group">
+                  <button className="text-sm font-medium h-auto py-2 px-4 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-1">
+                    {category.name}
+                    <ChevronDown className="h-3 w-3 transition-transform group-hover:rotate-180" />
+                  </button>
+                  <div className="absolute left-0 top-full mt-1 hidden group-hover:block z-50 min-w-[500px]">
+                    <div className="bg-popover border border-border rounded-md shadow-lg p-4">
+                      <div className="grid grid-cols-2 gap-2">
+                        <Link
+                          to={`/produse?categorie=${category.slug}`}
+                          className="block p-2 hover:bg-muted rounded-md transition-colors"
+                        >
+                          <div className="font-semibold text-sm text-primary">
+                            Toate produsele
+                          </div>
+                          {category.productCount && (
+                            <div className="text-xs text-muted-foreground">
+                              {category.productCount} produse
+                            </div>
+                          )}
+                        </Link>
+                        {category.subcategories.map((sub) => (
                           <Link
-                            to={`/produse?categorie=${category.slug}`}
+                            key={sub.id}
+                            to={`/produse?categorie=${category.slug}&subcategorie=${sub.slug}`}
                             className="block p-2 hover:bg-muted rounded-md transition-colors"
                           >
-                            <div className="font-semibold text-sm text-primary">
-                              Toate produsele
-                            </div>
-                            {category.productCount && (
-                              <div className="text-xs text-muted-foreground">
-                                {category.productCount} produse
-                              </div>
-                            )}
+                            <div className="text-sm text-foreground hover:text-primary">{sub.name}</div>
                           </Link>
-                          {category.subcategories.map((sub) => (
-                            <Link
-                              key={sub.id}
-                              to={`/produse?categorie=${category.slug}&subcategorie=${sub.slug}`}
-                              className="block p-2 hover:bg-muted rounded-md transition-colors"
-                            >
-                              <div className="text-sm text-foreground hover:text-primary">{sub.name}</div>
-                            </Link>
-                          ))}
-                        </div>
+                        ))}
                       </div>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
             <div className="flex items-center gap-6">
               <Link to="/produse?oferte=true" className="text-sm text-accent hover:text-accent/80 transition-colors font-semibold py-2">
                 Oferte
