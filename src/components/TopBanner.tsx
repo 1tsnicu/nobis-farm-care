@@ -1,12 +1,17 @@
 import { Badge } from "@/components/ui/badge";
+import { Sparkles } from "lucide-react";
 
 const TopBanner = () => {
   return (
-    <div className="bg-primary-dark text-primary-foreground py-2 px-4">
-      <div className="container mx-auto flex items-center justify-between text-sm">
-        <span className="hidden sm:inline">Prețuri exclusive online • Livrare gratuită de la 350 MDL</span>
-        <span className="sm:hidden">Livrare gratuită de la 350 MDL</span>
-        <Badge variant="secondary" className="bg-white text-primary font-bold">
+    <div className="bg-gradient-banner text-primary-foreground py-2.5 px-4 overflow-hidden relative">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent)]" />
+      <div className="container mx-auto flex items-center justify-between text-sm relative z-10">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-4 h-4 animate-pulse" />
+          <span className="hidden sm:inline font-medium">Prețuri exclusive online • Livrare gratuită de la 350 MDL</span>
+          <span className="sm:hidden font-medium">Livrare gratuită 350 MDL</span>
+        </div>
+        <Badge variant="secondary" className="bg-white text-primary-dark font-bold shadow-md hover:scale-105 transition-transform">
           350 MDL
         </Badge>
       </div>
