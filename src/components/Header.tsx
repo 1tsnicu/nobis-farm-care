@@ -120,12 +120,20 @@ const Header = () => {
               ))}
             </div>
             <div className="flex items-center gap-6">
+              <Link to="/despre" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
+                Despre Noi
+              </Link>
+              <Link to="/servicii" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
+                Servicii
+              </Link>
+              <Link to="/blog" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
+                Blog
+              </Link>
+              <Link to="/contact" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
+                Contact
+              </Link>
               <Link to="/produse?oferte=true" className="text-sm text-accent hover:text-accent/80 transition-colors font-semibold py-2">
                 Oferte
-              </Link>
-              <Link to="/cont" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2 flex items-center gap-1">
-                <User className="h-4 w-4" />
-                Contul meu
               </Link>
             </div>
           </div>
@@ -176,13 +184,43 @@ const Header = () => {
                 </div>
               </div>
             ))}
-            <Link
-              to="/produse?oferte=true"
-              className="py-2 text-accent hover:text-accent/80 transition-colors font-semibold"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Oferte
-            </Link>
+            <div className="border-t border-border pt-3 space-y-3">
+              <Link
+                to="/despre"
+                className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Despre Noi
+              </Link>
+              <Link
+                to="/servicii"
+                className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Servicii
+              </Link>
+              <Link
+                to="/blog"
+                className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Blog
+              </Link>
+              <Link
+                to="/contact"
+                className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Contact
+              </Link>
+              <Link
+                to="/produse?oferte=true"
+                className="block py-2 text-accent hover:text-accent/80 transition-colors font-semibold"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Oferte
+              </Link>
+            </div>
           </nav>
         </div>
       )}

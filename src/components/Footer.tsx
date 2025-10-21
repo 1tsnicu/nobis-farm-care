@@ -28,18 +28,18 @@ const Footer = () => {
             <h3 className="text-xl font-bold mb-4 text-background">Navigare rapidă</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/produse" className="text-background/80 hover:text-primary transition-colors">
-                  Produse
+                <Link to="/despre" className="text-background/80 hover:text-primary transition-colors">
+                  Despre Noi
                 </Link>
               </li>
               <li>
-                <Link to="/categorii" className="text-background/80 hover:text-primary transition-colors">
-                  Categorii
+                <Link to="/servicii" className="text-background/80 hover:text-primary transition-colors">
+                  Servicii
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="text-background/80 hover:text-primary transition-colors">
-                  FAQ
+                <Link to="/blog" className="text-background/80 hover:text-primary transition-colors">
+                  Blog
                 </Link>
               </li>
               <li>
@@ -47,31 +47,41 @@ const Footer = () => {
                   Contact
                 </Link>
               </li>
+              <li>
+                <Link to="/produse" className="text-background/80 hover:text-primary transition-colors">
+                  Toate Produsele
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Services */}
+          {/* Info */}
           <div>
-            <h3 className="text-xl font-bold mb-4 text-background">Servicii</h3>
+            <h3 className="text-xl font-bold mb-4 text-background">Informații</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/loialitate" className="text-background/80 hover:text-primary transition-colors">
-                  Program de loialitate
+                <Link to="/servicii" className="text-background/80 hover:text-primary transition-colors">
+                  Serviciile Noastre
                 </Link>
               </li>
               <li>
-                <Link to="/retur" className="text-background/80 hover:text-primary transition-colors">
-                  Retur & Schimb
+                <Link to="/produse?oferte=true" className="text-background/80 hover:text-primary transition-colors">
+                  Oferte Speciale
                 </Link>
               </li>
               <li>
                 <Link to="/confidentialitate" className="text-background/80 hover:text-primary transition-colors">
-                  Confidențialitate
+                  Politica de Confidențialitate
                 </Link>
               </li>
               <li>
                 <Link to="/termeni" className="text-background/80 hover:text-primary transition-colors">
-                  Termeni și condiții
+                  Termeni și Condiții
+                </Link>
+              </li>
+              <li>
+                <Link to="/cookies" className="text-background/80 hover:text-primary transition-colors">
+                  Politica Cookies
                 </Link>
               </li>
             </ul>
