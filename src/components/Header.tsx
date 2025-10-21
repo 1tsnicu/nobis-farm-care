@@ -1,8 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Menu, X, Globe } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, Globe, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { categories } from "@/lib/data/categories";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -80,30 +89,46 @@ const Header = () => {
         {/* Navigation - Desktop */}
         <nav className="hidden lg:block border-t border-border">
           <div className="flex items-center justify-between py-2">
+            <NavigationMenu>
+              <NavigationMenuList className="gap-1">
+                {categories.map((category) => (
+                  <NavigationMenuItem key={category.id}>
+                    <NavigationMenuTrigger className="text-sm font-medium h-auto py-2">
+                      {category.name}
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="w-[500px] p-4 bg-background">
+                        <div className="grid grid-cols-2 gap-2">
+                          <Link
+                            to={`/produse?categorie=${category.slug}`}
+                            className="block p-2 hover:bg-muted rounded-md transition-colors"
+                          >
+                            <div className="font-semibold text-sm text-primary">
+                              Toate produsele
+                            </div>
+                            {category.productCount && (
+                              <div className="text-xs text-muted-foreground">
+                                {category.productCount} produse
+                              </div>
+                            )}
+                          </Link>
+                          {category.subcategories.map((sub) => (
+                            <Link
+                              key={sub.id}
+                              to={`/produse?categorie=${category.slug}&subcategorie=${sub.slug}`}
+                              className="block p-2 hover:bg-muted rounded-md transition-colors"
+                            >
+                              <div className="text-sm text-foreground hover:text-primary">{sub.name}</div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
             <div className="flex items-center gap-6">
-              <Link to="/produse?cat=sanatate" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
-                Sănătate
-              </Link>
-              <Link to="/produse?cat=frumusete" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
-                Frumusețe și Igienă
-              </Link>
-              <Link to="/produse?cat=dermato" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
-                Dermatocosmetică
-              </Link>
-              <Link to="/produse?cat=vitamine" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
-                Vitamine și Minerale
-              </Link>
-              <Link to="/produse?cat=mama" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
-                Mama și Copilul
-              </Link>
-              <Link to="/produse?cat=cuplu" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
-                Cuplu și Sex
-              </Link>
-            </div>
-            <div className="flex items-center gap-6">
-              <Link to="/produse?cat=optica" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
-                Optica
-              </Link>
               <Link to="/produse?oferte=true" className="text-sm text-accent hover:text-accent/80 transition-colors font-semibold py-2">
                 Oferte
               </Link>
@@ -118,7 +143,7 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border bg-background">
+        <div className="lg:hidden border-t border-border bg-background max-h-[80vh] overflow-y-auto">
           <nav className="container mx-auto px-4 py-4 flex flex-col gap-3">
             <div className="pb-3">
               <Input
@@ -127,33 +152,45 @@ const Header = () => {
                 className="w-full"
               />
             </div>
+            {categories.map((category) => (
+              <div key={category.id} className="border-b border-border pb-3 last:border-0">
+                <Link
+                  to={`/produse?categorie=${category.slug}`}
+                  className="block py-2 text-foreground hover:text-primary transition-colors font-semibold flex items-center justify-between"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {category.name}
+                  <ChevronDown className="h-4 w-4" />
+                </Link>
+                <div className="pl-4 space-y-1 mt-2">
+                  {category.subcategories.slice(0, 6).map((sub) => (
+                    <Link
+                      key={sub.id}
+                      to={`/produse?categorie=${category.slug}&subcategorie=${sub.slug}`}
+                      className="block py-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {sub.name}
+                    </Link>
+                  ))}
+                  {category.subcategories.length > 6 && (
+                    <Link
+                      to={`/produse?categorie=${category.slug}`}
+                      className="block py-1.5 text-sm text-primary hover:text-primary/80 transition-colors font-medium"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Vezi toate ({category.subcategories.length}) →
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ))}
             <Link
-              to="/produse"
-              className="py-2 text-foreground hover:text-primary transition-colors font-medium"
+              to="/produse?oferte=true"
+              className="py-2 text-accent hover:text-accent/80 transition-colors font-semibold"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Produse
-            </Link>
-            <Link
-              to="/categorii"
-              className="py-2 text-foreground hover:text-primary transition-colors font-medium"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Categorii
-            </Link>
-            <Link
-              to="/despre"
-              className="py-2 text-foreground hover:text-primary transition-colors font-medium"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Despre Noi
-            </Link>
-            <Link
-              to="/contact"
-              className="py-2 text-foreground hover:text-primary transition-colors font-medium"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Contact
+              Oferte
             </Link>
           </nav>
         </div>
