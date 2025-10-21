@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Star, ShoppingCart, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,104 +25,123 @@ const ProductCard = ({
   name,
   price,
   originalPrice,
-  rating,
-  reviews,
+  rating = 0,
+  reviews = 0,
   discount,
-  inStock
+  inStock = true,
 }: ProductCardProps) => {
-  return (
-    <Card className="group relative overflow-hidden border-border hover:border-primary/50 transition-all duration-300 hover:shadow-lg bg-white">
-      {/* Wishlist Button */}
-      <Button 
-        variant="ghost" 
-        size="icon" 
-        className="absolute top-2 right-2 z-10 bg-white/90 hover:bg-white shadow-sm"
-      >
-        <Heart className="h-4 w-4" />
-      </Button>
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
-      {/* Discount Badge */}
-      {discount && (
-        <Badge className="absolute top-2 left-2 z-10 bg-primary text-primary-foreground font-semibold">
-          -{discount}%
-        </Badge>
-      )}
-      
-      <CardContent className="p-0">
-        {/* Image */}
-        <Link to={`/produse/${id}`}>
-          <div className="relative aspect-square bg-white overflow-hidden p-4">
-            <img
-              src={image}
-              alt={name}
-              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
-            />
+  return (
+    <Card className="group relative overflow-hidden border-border hover:border-primary/30 transition-all duration-500 hover:shadow-hover bg-card">
+      {/* Wishlist & Discount Badge */}
+      <div className="absolute top-3 left-3 right-3 z-10 flex justify-between items-start">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={(e) => {
+            e.preventDefault();
+            setIsWishlisted(!isWishlisted);
+          }}
+          className={`rounded-full bg-background/80 backdrop-blur-sm shadow-md hover:scale-110 transition-all ${
+            isWishlisted ? 'text-accent' : 'text-muted-foreground'
+          }`}
+        >
+          <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`} />
+        </Button>
+        
+        {discount && (
+          <Badge variant="destructive" className="rounded-full px-3 py-1 font-bold shadow-md bg-accent">
+            -{discount}%
+          </Badge>
+        )}
+      </div>
+
+      {/* Product Image */}
+      <Link to={`/produs/${id}`}>
+        <div className="aspect-square overflow-hidden bg-muted/30 relative">
+          <img
+            src={image}
+            alt={name}
+            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+          />
+          {!inStock && (
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center">
+              <Badge variant="secondary" className="text-sm px-4 py-2">Stoc epuizat</Badge>
+            </div>
+          )}
+        </div>
+      </Link>
+
+      {/* Product Info */}
+      <div className="p-5">
+        <Link to={`/produs/${id}`}>
+          <div className="mb-3">
+            <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">{brand}</p>
+            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem]">
+              {name}
+            </h3>
           </div>
         </Link>
 
-        {/* Content */}
-        <div className="p-4 space-y-3">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide">{brand}</p>
-          
-          <Link to={`/produse/${id}`}>
-            <h3 className="font-semibold text-sm text-foreground line-clamp-2 min-h-[2.5rem] hover:text-primary transition-colors leading-tight">
-              {name}
-            </h3>
-          </Link>
-
-          {/* Rating */}
-          <div className="flex items-center gap-1">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`h-3.5 w-3.5 ${
-                  i < Math.floor(rating)
-                    ? "fill-amber-400 text-amber-400"
-                    : "fill-gray-200 text-gray-200"
-                }`}
-              />
-            ))}
-            <span className="text-xs text-muted-foreground ml-1">
-              ({reviews})
+        {/* Rating */}
+        {rating > 0 && (
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-4 h-4 ${
+                    i < Math.floor(rating)
+                      ? 'fill-gold text-gold'
+                      : 'fill-muted text-muted'
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-xs text-muted-foreground">
+              ({rating}) {reviews} reviews
             </span>
           </div>
+        )}
 
-          {/* Price */}
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-primary">
-              {price.toFixed(2)}
-            </span>
-            <span className="text-sm font-semibold text-primary">MDL</span>
+        {/* Price */}
+        <div className="mb-4">
+          <div className="flex items-baseline gap-2 mb-1">
+            <span className="text-2xl font-bold text-primary">{price} MDL</span>
+            {originalPrice && (
+              <span className="text-sm text-muted-foreground line-through">
+                {originalPrice} MDL
+              </span>
+            )}
           </div>
           {originalPrice && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground line-through">
-                {originalPrice.toFixed(2)} MDL
-              </span>
-              <span className="text-xs text-accent font-medium">
-                Economisești {(originalPrice - price).toFixed(2)} MDL
-              </span>
-            </div>
+            <p className="text-xs text-accent font-medium">
+              Economisești {originalPrice - price} MDL
+            </p>
           )}
-
-          {/* Stock Status */}
-          <div className="flex items-center gap-2 text-xs">
-            <div className={`w-2 h-2 rounded-full ${inStock ? 'bg-secondary' : 'bg-orange'}`} />
-            <span className={`font-medium ${inStock ? 'text-secondary' : 'text-orange'}`}>
-              {inStock ? '✓ În stoc' : '⚠ Stoc limitat'}
-            </span>
-          </div>
-            
-          {/* CTA Button */}
-          <Button 
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-sm" 
-            disabled={!inStock}
-          >
-            <ShoppingCart className="h-4 w-4 mr-2" />
-            Adaugă în coș
-          </Button>
         </div>
-      </CardContent>
+
+        {/* Stock Status */}
+        <div className="flex items-center gap-2 mb-4">
+          <div className={`w-2 h-2 rounded-full ${inStock ? 'bg-primary animate-pulse' : 'bg-muted'}`} />
+          <span className={`text-xs font-medium ${inStock ? 'text-primary' : 'text-muted-foreground'}`}>
+            {inStock ? 'În stoc' : 'Stoc epuizat'}
+          </span>
+        </div>
+
+        {/* Add to Cart Button */}
+        <Button
+          className="w-full shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+          disabled={!inStock}
+        >
+          <ShoppingCart className="w-4 h-4 mr-2" />
+          {inStock ? 'Adaugă în coș' : 'Indisponibil'}
+        </Button>
+      </div>
+
+      {/* Hover overlay gradient */}
+      <div className="absolute inset-0 bg-gradient-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
     </Card>
   );
 };

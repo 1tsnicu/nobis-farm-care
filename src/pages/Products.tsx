@@ -178,19 +178,36 @@ const Products = () => {
   });
 
   const FilterContent = () => (
-    <div className="space-y-6">
-      {/* Categories */}
+    <div className="space-y-8">
+      {/* Search in filters */}
       <div>
-        <h3 className="font-semibold text-foreground mb-3">Categorii</h3>
-        <div className="space-y-2">
+        <Label className="text-sm font-semibold text-foreground mb-3 block">🔍 Caută în filtre</Label>
+        <input
+          type="text"
+          placeholder="Caută brand, categorie..."
+          className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+      </div>
+
+      {/* Categories */}
+      <div className="pb-6 border-b border-border">
+        <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+          <span className="text-lg">📦</span>
+          Categorii
+        </h3>
+        <div className="space-y-3">
           {categories.map(category => (
-            <div key={category.id} className="flex items-center gap-2">
+            <div key={category.id} className="flex items-center gap-3 group">
               <Checkbox
                 id={category.id}
                 checked={selectedCategories.includes(category.id)}
                 onCheckedChange={() => toggleCategory(category.id)}
+                className="rounded border-2"
               />
-              <Label htmlFor={category.id} className="text-sm cursor-pointer">
+              <Label 
+                htmlFor={category.id} 
+                className="text-sm cursor-pointer group-hover:text-primary transition-colors flex-1"
+              >
                 {category.name}
               </Label>
             </div>
@@ -199,17 +216,24 @@ const Products = () => {
       </div>
 
       {/* Brands */}
-      <div>
-        <h3 className="font-semibold text-foreground mb-3">Brand</h3>
-        <div className="space-y-2 max-h-48 overflow-y-auto">
+      <div className="pb-6 border-b border-border">
+        <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+          <span className="text-lg">🏷️</span>
+          Brand
+        </h3>
+        <div className="space-y-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
           {brands.map(brand => (
-            <div key={brand} className="flex items-center gap-2">
+            <div key={brand} className="flex items-center gap-3 group">
               <Checkbox
                 id={brand}
                 checked={selectedBrands.includes(brand)}
                 onCheckedChange={() => toggleBrand(brand)}
+                className="rounded border-2"
               />
-              <Label htmlFor={brand} className="text-sm cursor-pointer">
+              <Label 
+                htmlFor={brand} 
+                className="text-sm cursor-pointer group-hover:text-primary transition-colors flex-1"
+              >
                 {brand}
               </Label>
             </div>
@@ -218,9 +242,12 @@ const Products = () => {
       </div>
 
       {/* Price Range */}
-      <div>
-        <h3 className="font-semibold text-foreground mb-3">Preț (MDL)</h3>
-        <div className="space-y-4">
+      <div className="pb-6 border-b border-border">
+        <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+          <span className="text-lg">💰</span>
+          Preț
+        </h3>
+        <div className="space-y-6 px-2">
           <Slider
             value={priceRange}
             onValueChange={setPriceRange}
@@ -228,26 +255,43 @@ const Products = () => {
             step={5}
             className="w-full"
           />
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <span>{priceRange[0]} MDL</span>
-            <span>{priceRange[1]} MDL</span>
+          <div className="flex items-center justify-between">
+            <div className="bg-primary/10 rounded-lg px-4 py-2">
+              <span className="text-sm font-bold text-primary">{priceRange[0]} MDL</span>
+            </div>
+            <span className="text-muted-foreground">—</span>
+            <div className="bg-primary/10 rounded-lg px-4 py-2">
+              <span className="text-sm font-bold text-primary">{priceRange[1]} MDL</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Rating */}
-      <div>
-        <h3 className="font-semibold text-foreground mb-3">Rating minim</h3>
-        <div className="space-y-2">
+      <div className="pb-6 border-b border-border">
+        <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+          <span className="text-lg">⭐</span>
+          Rating minim
+        </h3>
+        <div className="space-y-3">
           {[4, 3, 2, 1].map(rating => (
-            <div key={rating} className="flex items-center gap-2">
+            <div key={rating} className="flex items-center gap-3 group">
               <Checkbox
                 id={`rating-${rating}`}
                 checked={minRating === rating}
                 onCheckedChange={(checked) => setMinRating(checked ? rating : 0)}
+                className="rounded border-2"
               />
-              <Label htmlFor={`rating-${rating}`} className="text-sm cursor-pointer flex items-center gap-1">
-                {rating}+ ★
+              <Label 
+                htmlFor={`rating-${rating}`} 
+                className="text-sm cursor-pointer flex items-center gap-2 group-hover:text-primary transition-colors"
+              >
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className={i < rating ? 'text-gold' : 'text-muted'}>★</span>
+                  ))}
+                </div>
+                <span className="text-muted-foreground">& mai mult</span>
               </Label>
             </div>
           ))}
@@ -255,15 +299,23 @@ const Products = () => {
       </div>
 
       {/* Stock */}
-      <div>
-        <h3 className="font-semibold text-foreground mb-3">Disponibilitate</h3>
-        <div className="flex items-center gap-2">
+      <div className="pb-6">
+        <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+          <span className="text-lg">📦</span>
+          Disponibilitate
+        </h3>
+        <div className="flex items-center gap-3 group">
           <Checkbox
             id="in-stock"
             checked={inStockOnly}
             onCheckedChange={(checked) => setInStockOnly(!!checked)}
+            className="rounded border-2"
           />
-          <Label htmlFor="in-stock" className="text-sm cursor-pointer">
+          <Label 
+            htmlFor="in-stock" 
+            className="text-sm cursor-pointer group-hover:text-primary transition-colors flex items-center gap-2"
+          >
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
             Doar în stoc
           </Label>
         </div>
@@ -272,11 +324,11 @@ const Products = () => {
       {/* Clear Filters */}
       <Button
         variant="outline"
-        className="w-full"
+        className="w-full border-2 hover:bg-accent hover:text-white hover:border-accent"
         onClick={clearFilters}
       >
         <X className="h-4 w-4 mr-2" />
-        Șterge filtre
+        Șterge toate filtrele
       </Button>
     </div>
   );
@@ -287,22 +339,30 @@ const Products = () => {
       
       <main className="flex-1 container mx-auto px-4 py-8">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+        <div className="mb-8 text-center lg:text-left">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Toate produsele
           </h1>
-          <p className="text-muted-foreground">
-            {filteredProducts.length} produse găsite
+          <p className="text-lg text-muted-foreground flex items-center justify-center lg:justify-start gap-2">
+            <span className="inline-flex items-center gap-1 bg-primary/10 rounded-full px-3 py-1 text-primary font-semibold">
+              {filteredProducts.length}
+            </span>
+            produse găsite
           </p>
         </div>
 
         <div className="flex gap-8">
           {/* Desktop Sidebar Filters */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-24 bg-card border border-border rounded-lg p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-foreground">Filtre</h2>
-                <SlidersHorizontal className="h-5 w-5 text-muted-foreground" />
+          <aside className="hidden lg:block w-72 flex-shrink-0">
+            <div className="sticky top-24 bg-card border-2 border-border rounded-2xl p-6 shadow-card">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
+                <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+                  <SlidersHorizontal className="h-5 w-5 text-primary" />
+                  Filtre
+                </h2>
+                <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full font-bold">
+                  {(selectedCategories.length + selectedBrands.length + (minRating > 0 ? 1 : 0) + (inStockOnly ? 1 : 0))}
+                </span>
               </div>
               <FilterContent />
             </div>
@@ -311,18 +371,26 @@ const Products = () => {
           {/* Products Grid */}
           <div className="flex-1">
             {/* Sort and Mobile Filter */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-8">
               {/* Mobile Filter Button */}
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" className="lg:hidden">
+                  <Button variant="outline" className="lg:hidden border-2">
                     <SlidersHorizontal className="h-4 w-4 mr-2" />
                     Filtre
+                    {(selectedCategories.length + selectedBrands.length) > 0 && (
+                      <span className="ml-2 bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full font-bold">
+                        {selectedCategories.length + selectedBrands.length}
+                      </span>
+                    )}
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="w-80 overflow-y-auto">
                   <SheetHeader>
-                    <SheetTitle>Filtre produse</SheetTitle>
+                    <SheetTitle className="flex items-center gap-2">
+                      <SlidersHorizontal className="h-5 w-5 text-primary" />
+                      Filtre produse
+                    </SheetTitle>
                   </SheetHeader>
                   <div className="mt-6">
                     <FilterContent />
@@ -331,47 +399,120 @@ const Products = () => {
               </Sheet>
 
               {/* Sort Dropdown */}
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Sortează după" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="relevance">Relevanță</SelectItem>
-                  <SelectItem value="price-asc">Preț crescător</SelectItem>
-                  <SelectItem value="price-desc">Preț descrescător</SelectItem>
-                  <SelectItem value="rating">Rating</SelectItem>
-                  <SelectItem value="reviews">Cele mai populare</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-muted-foreground hidden sm:inline">Sortează:</span>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-full sm:w-[220px] border-2">
+                    <SelectValue placeholder="Sortează după" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="relevance">✨ Relevanță</SelectItem>
+                    <SelectItem value="price-asc">💰 Preț crescător</SelectItem>
+                    <SelectItem value="price-desc">💰 Preț descrescător</SelectItem>
+                    <SelectItem value="rating">⭐ Rating</SelectItem>
+                    <SelectItem value="reviews">🔥 Cele mai populare</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
+
+            {/* Active Filters Pills */}
+            {(selectedCategories.length > 0 || selectedBrands.length > 0 || minRating > 0 || inStockOnly) && (
+              <div className="flex flex-wrap gap-2 mb-6 p-4 bg-muted/30 rounded-xl border border-border">
+                <span className="text-sm font-semibold text-foreground">Filtre active:</span>
+                {selectedCategories.map(cat => (
+                  <Button
+                    key={cat}
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => toggleCategory(cat)}
+                    className="h-7 text-xs"
+                  >
+                    {categories.find(c => c.id === cat)?.name}
+                    <X className="h-3 w-3 ml-1" />
+                  </Button>
+                ))}
+                {selectedBrands.map(brand => (
+                  <Button
+                    key={brand}
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => toggleBrand(brand)}
+                    className="h-7 text-xs"
+                  >
+                    {brand}
+                    <X className="h-3 w-3 ml-1" />
+                  </Button>
+                ))}
+                {minRating > 0 && (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setMinRating(0)}
+                    className="h-7 text-xs"
+                  >
+                    {minRating}+ ⭐
+                    <X className="h-3 w-3 ml-1" />
+                  </Button>
+                )}
+                {inStockOnly && (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setInStockOnly(false)}
+                    className="h-7 text-xs"
+                  >
+                    În stoc
+                    <X className="h-3 w-3 ml-1" />
+                  </Button>
+                )}
+              </div>
+            )}
 
             {/* Products Grid */}
             {filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map(product => (
-                  <ProductCard key={product.id} {...product} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
+                {filteredProducts.map((product, index) => (
+                  <div
+                    key={product.id}
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <ProductCard {...product} />
+                  </div>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16">
-                <p className="text-lg text-muted-foreground mb-4">
-                  Nu am găsit produse care să corespundă filtrelor tale
+              <div className="text-center py-20 bg-muted/20 rounded-3xl border-2 border-dashed border-border">
+                <div className="text-6xl mb-4">😕</div>
+                <h3 className="text-2xl font-bold text-foreground mb-2">
+                  Nu am găsit produse
+                </h3>
+                <p className="text-lg text-muted-foreground mb-6 max-w-md mx-auto">
+                  Nu există produse care să corespundă filtrelor tale. Încearcă să ajustezi criteriile de căutare.
                 </p>
-                <Button onClick={clearFilters}>
+                <Button onClick={clearFilters} size="lg" className="shadow-lg">
+                  <X className="h-4 w-4 mr-2" />
                   Șterge toate filtrele
                 </Button>
               </div>
             )}
 
-            {/* Pagination Placeholder */}
+            {/* Pagination */}
             {filteredProducts.length > 0 && (
               <div className="mt-12 flex justify-center">
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" disabled>Anterior</Button>
-                  <Button variant="default">1</Button>
-                  <Button variant="outline">2</Button>
-                  <Button variant="outline">3</Button>
-                  <Button variant="outline">Următor</Button>
+                <div className="flex items-center gap-2 bg-card border-2 border-border rounded-xl p-2 shadow-sm">
+                  <Button variant="ghost" size="sm" disabled className="rounded-lg">
+                    <ChevronDown className="h-4 w-4 rotate-90" />
+                  </Button>
+                  <Button variant="default" size="sm" className="rounded-lg min-w-[40px]">1</Button>
+                  <Button variant="ghost" size="sm" className="rounded-lg min-w-[40px]">2</Button>
+                  <Button variant="ghost" size="sm" className="rounded-lg min-w-[40px]">3</Button>
+                  <span className="px-2 text-muted-foreground">...</span>
+                  <Button variant="ghost" size="sm" className="rounded-lg min-w-[40px]">10</Button>
+                  <Button variant="ghost" size="sm" className="rounded-lg">
+                    <ChevronDown className="h-4 w-4 -rotate-90" />
+                  </Button>
                 </div>
               </div>
             )}
