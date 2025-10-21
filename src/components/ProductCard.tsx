@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useCart } from "@/hooks/useCart";
+import { toast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   id: number;
@@ -31,6 +33,15 @@ const ProductCard = ({
   inStock = true,
 }: ProductCardProps) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const { addItem } = useCart();
+
+  const handleAddToCart = () => {
+    addItem({ id, image, brand, name, price, inStock });
+    toast({
+      title: "Produs adăugat în coș",
+      description: `${name} a fost adăugat în coșul tău`,
+    });
+  };
 
   return (
     <Card className="group relative overflow-hidden border-border hover:border-primary/30 transition-all duration-500 hover:shadow-hover bg-card">
@@ -134,6 +145,7 @@ const ProductCard = ({
         <Button
           className="w-full shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
           disabled={!inStock}
+          onClick={handleAddToCart}
         >
           <ShoppingCart className="w-4 h-4 mr-2" />
           {inStock ? 'Adaugă în coș' : 'Indisponibil'}
