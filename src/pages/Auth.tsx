@@ -175,7 +175,7 @@ const Auth = () => {
       <Header />
       
       <main className="flex-1 bg-muted/30 py-12">
-        <div className="container mx-auto px-4 max-w-md">
+        <div className="container mx-auto px-4 max-w-md relative z-[60]">
           <Card className="shadow-lg">
             <CardHeader className="space-y-1 text-center">
               <CardTitle className="text-2xl font-bold">
