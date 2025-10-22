@@ -73,7 +73,7 @@ const Contact = () => {
       icon: MapPin,
       title: "Locația Farmaciei",
       info: "Str. Ștefan cel Mare 123",
-      description: "Chișinău, Moldova",
+      description: "Satul Horești, raionul Ialoveni",
       link: "https://maps.google.com",
       color: "from-purple-500 to-purple-600"
     }
@@ -272,9 +272,9 @@ const Contact = () => {
                       <h3 className="text-xl font-bold text-gray-800">Adresa Completă</h3>
                     </div>
                     <div className="space-y-2 text-gray-600">
-                      <p className="text-lg font-semibold text-gray-800">Str. Ștefan cel Mare 123</p>
-                      <p>Sectorul Centru, Chișinău</p>
-                      <p>MD-2001, Republica Moldova</p>
+                      <p className="text-lg font-semibold text-gray-800">Strada Ștefan cel Mare 138</p>
+                      <p>Satul Horești, raionul Ialoveni</p>
+                      <p>Republica Moldova</p>
                       <div className="flex items-center gap-2 mt-3">
                         <Car className="h-4 w-4 text-blue-600" />
                         <span className="text-sm">Parcare disponibilă în zonă</span>

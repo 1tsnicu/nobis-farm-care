@@ -9,25 +9,9 @@ const deliveryOptions = [
     title: "Ridicare din Farmacie",
     time: "Imediat disponibil",
     cost: "GRATUIT",
-    details: "Consiliere farmaceutică inclusă",
+    details: "Strada Ștefan cel Mare 138, satul Horești, raionul Ialoveni",
     color: "from-green-500 to-green-600",
     highlight: true
-  },
-  {
-    icon: Truck,
-    title: "Livrare în Chișinău",
-    time: "2-4 ore",
-    cost: "25 MDL",
-    details: "Gratuită pentru comenzi > 300 MDL",
-    color: "from-blue-500 to-blue-600"
-  },
-  {
-    icon: MapPin,
-    title: "Livrare în țară",
-    time: "24-48 ore",
-    cost: "35 MDL",
-    details: "Gratuită pentru comenzi > 500 MDL",
-    color: "from-purple-500 to-purple-600"
   }
 ];
 

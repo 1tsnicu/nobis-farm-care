@@ -109,7 +109,7 @@ const DeliveryTimeline = () => {
         <div className="grid md:grid-cols-3 gap-6 mt-16 max-w-5xl mx-auto">
           <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-6 border border-primary/20 hover:shadow-lg transition-all">
             <MapPin className="w-8 h-8 text-primary mb-4" />
-            <h4 className="font-bold text-lg text-foreground mb-2">Chișinău</h4>
+            <h4 className="font-bold text-lg text-foreground mb-2">Satul Horești, raionul Ialoveni</h4>
             <p className="text-sm text-muted-foreground mb-3">Livrare în 24 ore</p>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-primary">GRATUIT</span>

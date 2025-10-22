@@ -66,7 +66,7 @@ const FinalCTA = () => {
               <MapPin className="h-8 w-8 text-white mx-auto mb-3" />
               <div className="text-white font-semibold mb-2">Locația</div>
               <div className="text-white/80">Str. Ștefan cel Mare 123</div>
-              <div className="text-white/60 text-sm mt-1">Chișinău, Moldova</div>
+              <div className="text-white/60 text-sm mt-1">Satul Horești, raionul Ialoveni</div>
             </div>
           </div>
 

@@ -122,7 +122,7 @@ const Footer = () => {
                 <MapPin className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                 <div className="text-gray-300">
                   <div>Str. Ștefan cel Mare 123</div>
-                  <div className="text-sm text-gray-400">Chișinău, Moldova MD-2001</div>
+                  <div className="text-sm text-gray-400">Satul Horești, raionul Ialoveni</div>
                 </div>
               </li>
               <li className="flex items-start gap-3">

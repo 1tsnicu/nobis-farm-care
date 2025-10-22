@@ -50,7 +50,7 @@ Farmacia Nobis Farm este o farmacie de încredere cu peste 15 ani de experienț�
 
 ### 🚚 **Opțiuni de Livrare**
 - **Ridicare din Farmacie** - GRATUIT (consiliere inclusă)
-- **Livrare în Chișinău** - 25 MDL (gratuită > 300 MDL)
+- **Livrare locală** - 25 MDL (gratuită > 300 MDL)
 - **Livrare în țară** - 35 MDL (gratuită > 500 MDL)
 
 ### 🎨 **Design și UX**
@@ -144,7 +144,7 @@ src/
 
 - **Telefon**: +373 22 123-456
 - **Email**: contact@nobisfarm.md
-- **Adresa**: Str. Ștefan cel Mare 123, Chișinău, Moldova
+- **Adresa**: Strada Ștefan cel Mare 138, satul Horești, raionul Ialoveni, Moldova
 - **Program**: Luni-Sâmbătă 8:00-20:00, Duminică 10:00-16:00
 
 ## 📄 Licență
