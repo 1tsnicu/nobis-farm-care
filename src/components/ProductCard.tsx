@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/hooks/useCart";
+import { useWishlist } from "@/hooks/useWishlist";
 import { toast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
@@ -32,14 +33,23 @@ const ProductCard = ({
   discount,
   inStock = true,
 }: ProductCardProps) => {
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const { addItem } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const isWishlisted = isInWishlist(id);
 
   const handleAddToCart = () => {
     addItem({ id, image, brand, name, price, inStock });
     toast({
       title: "Produs adăugat în coș",
       description: `${name} a fost adăugat în coșul tău`,
+    });
+  };
+
+  const handleToggleWishlist = () => {
+    toggleWishlist({ id, image, brand, name, price, originalPrice, rating, reviews, discount, inStock });
+    toast({
+      title: isWishlisted ? "Eliminat din favorite" : "Adăugat la favorite",
+      description: name,
     });
   };
 
@@ -52,7 +62,7 @@ const ProductCard = ({
           size="icon"
           onClick={(e) => {
             e.preventDefault();
-            setIsWishlisted(!isWishlisted);
+            handleToggleWishlist();
           }}
           className={`rounded-full bg-background/80 backdrop-blur-sm shadow-md hover:scale-110 transition-all ${
             isWishlisted ? 'text-accent' : 'text-muted-foreground'

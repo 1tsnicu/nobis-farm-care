@@ -1,180 +1,177 @@
-import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Truck, ShieldCheck, Clock, ArrowRight, Star } from "lucide-react";
+import { 
+  Heart, 
+  Shield, 
+  Clock, 
+  ArrowRight, 
+  Star, 
+  Stethoscope,
+  Users,
+  Award,
+  Phone
+} from "lucide-react";
 
 const Hero = () => {
-  const [timeLeft, setTimeLeft] = useState({
-    hours: 23,
-    minutes: 45,
-    seconds: 12,
-  });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 };
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        } else if (prev.hours > 0) {
-          return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        }
-        return prev;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-      {/* Animated Background Elements */}
+    <section className="relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-blue-50">
+      {/* Background Pattern */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-primary/5 to-secondary/5 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-green-100/40 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-100/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-green-50/30 to-blue-50/30 rounded-full blur-3xl" />
       </div>
 
       <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Content */}
-          <div className="text-center lg:text-left space-y-8 animate-fade-in">
-            {/* Top Badge */}
+          <div className="text-center lg:text-left space-y-8">
+            {/* Trust Badge */}
             <div className="flex justify-center lg:justify-start">
-              <Badge className="bg-gradient-tombola text-white px-6 py-2 text-sm font-semibold shadow-lg hover:scale-105 transition-transform">
-                <Sparkles className="w-4 h-4 mr-2 inline" />
-                Oferte exclusive online
+              <Badge className="bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-2 text-sm font-semibold shadow-lg hover:scale-105 transition-transform">
+                <Shield className="w-4 h-4 mr-2 inline" />
+                Farmacie autorizată
               </Badge>
             </div>
 
             {/* Main Heading */}
             <div className="space-y-4">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
-                <span className="bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent animate-gradient">
-                  Sănătatea ta
+                <span className="text-green-700">Nobis Farm:</span>
+                <br />
+                <span className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+                  Sănătate și Bunăstare
                 </span>
                 <br />
-                <span className="text-foreground">începe aici</span>
+                <span className="text-gray-800">la Îndemâna Ta</span>
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
-                Peste <span className="text-primary font-bold">10,000</span> de produse autentice cu livrare rapidă în toată Moldova
+              <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto lg:mx-0">
+                Farmacia ta de încredere cu <span className="text-green-700 font-bold">peste 15 ani</span> de experiență în îngrijirea sănătății familiei tale
               </p>
             </div>
 
-            {/* Features Grid */}
-            <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto lg:mx-0">
-              <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-4 border border-border/50 hover:border-primary/50 transition-colors group">
-                <div className="bg-primary/10 rounded-full w-12 h-12 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                  <Truck className="w-6 h-6 text-primary" />
+            {/* Key Benefits Grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-2xl mx-auto lg:mx-0">
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-green-100 hover:border-green-300 transition-colors group text-center">
+                <div className="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform">
+                  <Stethoscope className="w-6 h-6 text-green-600" />
                 </div>
-                <p className="font-semibold text-sm text-foreground">Livrare Gratuită</p>
-                <p className="text-xs text-muted-foreground">peste 350 MDL</p>
+                <p className="font-semibold text-sm text-gray-800">Consiliere</p>
+                <p className="text-xs text-gray-600">Specializată</p>
               </div>
-              <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-4 border border-border/50 hover:border-secondary/50 transition-colors group">
-                <div className="bg-secondary/10 rounded-full w-12 h-12 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                  <ShieldCheck className="w-6 h-6 text-secondary" />
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-blue-100 hover:border-blue-300 transition-colors group text-center">
+                <div className="bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform">
+                  <Heart className="w-6 h-6 text-blue-600" />
                 </div>
-                <p className="font-semibold text-sm text-foreground">100% Autentice</p>
-                <p className="text-xs text-muted-foreground">Garanție calitate</p>
+                <p className="font-semibold text-sm text-gray-800">Gamă Variată</p>
+                <p className="text-xs text-gray-600">5000+ produse</p>
+              </div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-green-100 hover:border-green-300 transition-colors group text-center">
+                <div className="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform">
+                  <Award className="w-6 h-6 text-green-600" />
+                </div>
+                <p className="font-semibold text-sm text-gray-800">Prețuri</p>
+                <p className="text-xs text-gray-600">Competitive</p>
+              </div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-blue-100 hover:border-blue-300 transition-colors group text-center">
+                <div className="bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform">
+                  <Clock className="w-6 h-6 text-blue-600" />
+                </div>
+                <p className="font-semibold text-sm text-gray-800">Program</p>
+                <p className="text-xs text-gray-600">Extins</p>
               </div>
             </div>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-primary-dark hover:shadow-hover text-white text-lg px-8 py-6 rounded-xl group">
-                Explorează Produsele
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button size="lg" variant="outline" className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground text-lg px-8 py-6 rounded-xl">
-                <Star className="mr-2 w-5 h-5" />
-                Program Loialitate
-              </Button>
+              <Link to="/produse">
+                <Button size="lg" className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white text-lg px-8 py-6 rounded-xl group shadow-lg">
+                  Vezi Produsele Noastre
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+              <Link to="/contact">
+                <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white text-lg px-8 py-6 rounded-xl">
+                  <Phone className="mr-2 w-5 h-5" />
+                  Contactează-ne
+                </Button>
+              </Link>
             </div>
 
-            {/* Stats */}
+            {/* Trust Stats */}
             <div className="flex items-center justify-center lg:justify-start gap-8 pt-4">
               <div className="text-center">
-                <p className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">10K+</p>
-                <p className="text-sm text-muted-foreground">Produse</p>
+                <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">15+</p>
+                <p className="text-sm text-gray-600">Ani experiență</p>
               </div>
-              <div className="w-px h-12 bg-border" />
+              <div className="w-px h-12 bg-gray-300" />
               <div className="text-center">
-                <p className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">15K+</p>
-                <p className="text-sm text-muted-foreground">Clienți</p>
+                <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">25K+</p>
+                <p className="text-sm text-gray-600">Clienți mulțumiți</p>
               </div>
-              <div className="w-px h-12 bg-border" />
+              <div className="w-px h-12 bg-gray-300" />
               <div className="text-center">
-                <p className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">4.9</p>
-                <p className="text-sm text-muted-foreground">Rating</p>
+                <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">5★</p>
+                <p className="text-sm text-gray-600">Rating Google</p>
               </div>
             </div>
           </div>
 
-          {/* Right Side - Promo Card */}
-          <div className="relative animate-scale-in">
-            <div className="relative bg-gradient-to-br from-white to-primary/5 rounded-3xl p-8 shadow-2xl border border-primary/20 backdrop-blur-xl overflow-hidden">
+          {/* Right Side - Hero Image */}
+          <div className="relative">
+            <div className="relative bg-gradient-to-br from-white/90 to-green-50/90 rounded-3xl p-8 shadow-2xl border border-green-100 backdrop-blur-xl overflow-hidden">
               {/* Decorative Elements */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full blur-3xl -translate-y-32 translate-x-32" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-secondary/20 to-primary/20 rounded-full blur-3xl translate-y-32 -translate-x-32" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-green-200/30 to-blue-200/30 rounded-full blur-3xl -translate-y-32 translate-x-32" />
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-blue-200/30 to-green-200/30 rounded-full blur-3xl translate-y-32 -translate-x-32" />
               
               <div className="relative z-10 space-y-6">
-                <div className="text-center">
-                  <Badge className="bg-accent text-accent-foreground mb-4 text-base px-6 py-2">
-                    🎁 Ofertă Specială
-                  </Badge>
-                  <h3 className="text-3xl font-bold text-foreground mb-2">
-                    Tombola Zilnică
-                  </h3>
-                  <p className="text-xl text-primary font-bold mb-6">
-                    Câștigă până la 500 MDL
-                  </p>
-                </div>
-
-                {/* Countdown Timer */}
-                <div className="bg-gradient-to-br from-primary to-primary-dark rounded-2xl p-6 shadow-xl">
-                  <p className="text-white/90 text-sm mb-4 flex items-center justify-center gap-2">
-                    <Clock className="w-4 h-4" />
-                    Oferta expiră în:
-                  </p>
-                  <div className="flex gap-3 justify-center">
-                    <div className="text-center">
-                      <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
-                        <span className="text-3xl font-bold text-white block">
-                          {String(timeLeft.hours).padStart(2, "0")}
-                        </span>
-                      </div>
-                      <span className="text-white/80 text-xs mt-2 block">Ore</span>
-                    </div>
-                    <div className="text-white text-3xl font-bold self-center">:</div>
-                    <div className="text-center">
-                      <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
-                        <span className="text-3xl font-bold text-white block">
-                          {String(timeLeft.minutes).padStart(2, "0")}
-                        </span>
-                      </div>
-                      <span className="text-white/80 text-xs mt-2 block">Min</span>
-                    </div>
-                    <div className="text-white text-3xl font-bold self-center">:</div>
-                    <div className="text-center">
-                      <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
-                        <span className="text-3xl font-bold text-white block">
-                          {String(timeLeft.seconds).padStart(2, "0")}
-                        </span>
-                      </div>
-                      <span className="text-white/80 text-xs mt-2 block">Sec</span>
-                    </div>
+                {/* Hero Image Placeholder */}
+                <div className="aspect-[4/3] bg-gradient-to-br from-green-100 to-blue-100 rounded-2xl flex items-center justify-center overflow-hidden">
+                  <img 
+                    src="/src/assets/hero-pharmacy.jpg" 
+                    alt="Farmacia Nobis Farm - Interior modern și primitor"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Fallback dacă imaginea nu există
+                      const target = e.currentTarget as HTMLImageElement;
+                      target.style.display = 'none';
+                      const nextSibling = target.nextElementSibling as HTMLElement;
+                      if (nextSibling) nextSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div className="w-full h-full flex flex-col items-center justify-center text-center p-8" style={{ display: 'none' }}>
+                    <Users className="w-20 h-20 text-green-600 mb-4" />
+                    <h3 className="text-2xl font-bold text-gray-800 mb-2">Farmacia Nobis Farm</h3>
+                    <p className="text-gray-600">Echipa noastră de farmaciști calificați te așteaptă cu sfaturi profesionale</p>
                   </div>
                 </div>
 
-                <Button className="w-full bg-gradient-tombola hover:shadow-xl text-white text-lg py-6 rounded-xl font-semibold group">
-                  Participă Acum
-                  <Sparkles className="ml-2 w-5 h-5 group-hover:rotate-12 transition-transform" />
-                </Button>
+                {/* Quick Contact Card */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border border-green-200">
+                  <h4 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                    <Star className="w-5 h-5 text-yellow-500" />
+                    Consiliere Farmaceutică Gratuită
+                  </h4>
+                  <p className="text-gray-600 mb-4">
+                    Echipa noastră de farmaciști cu experiență îți oferă consiliere personalizată pentru toate nevoile tale de sănătate.
+                  </p>
+                  <Link to="/servicii">
+                    <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg">
+                      Programează o Consultație
+                    </Button>
+                  </Link>
+                </div>
 
-                <p className="text-center text-xs text-muted-foreground">
-                  * Participă gratuit la tombola zilnică
-                </p>
+                {/* Emergency Contact */}
+                <div className="text-center bg-red-50 rounded-xl p-4 border border-red-200">
+                  <p className="text-sm text-red-800 font-semibold">
+                    🚨 Urgență? Sună-ne acum: 
+                    <a href="tel:+373-22-123456" className="block text-lg font-bold hover:underline">
+                      +373 22 123-456
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
           </div>

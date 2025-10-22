@@ -1,75 +1,107 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Users, Target, Award } from "lucide-react";
+import { Users, Heart, Award, ArrowRight } from "lucide-react";
 
 const AboutPreview = () => {
   return (
-    <section className="py-16 bg-background">
+    <section className="py-16 bg-gradient-to-br from-green-50 to-blue-50">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-              Despre Nobis Farm Care
-            </h2>
-            <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-              Suntem mai mult decât o farmacie – suntem partenerul tău de încredere în călătoria către o viață sănătoasă. 
-              Cu o echipă de farmaciști dedicați și o gamă variată de produse de cea mai înaltă calitate, 
-              ne angajăm să oferim consiliere specializată și servicii personalizate pentru fiecare client.
+            <div className="mb-6">
+              <span className="text-green-600 font-semibold text-sm uppercase tracking-wide">Despre Nobis Farm</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mt-2 mb-4">
+                Povestea Noastră de <span className="text-green-600">15 Ani</span>
+              </h2>
+            </div>
+            
+            <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+              Farmacia Nobis Farm s-a născut din dorința de a oferi comunității noastre 
+              <strong className="text-gray-800"> cea mai bună îngrijire farmaceutică</strong>. 
+              De peste 15 ani, echipa noastră de farmaciști calificați pune pe primul loc 
+              sănătatea și bunăstarea fiecărui client.
+            </p>
+
+            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+              <strong className="text-gray-800">Misiunea noastră</strong> este să fim mai mult decât o farmacie – 
+              să fim partenerul tău de încredere în călătoria către o viață sănătoasă, oferind 
+              consiliere specializată și produse de cea mai înaltă calitate.
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-              <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-3">
-                  <Users className="h-8 w-8 text-primary" />
+              <div className="text-center p-4 bg-white/80 rounded-lg shadow-sm border border-green-100">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-3">
+                  <Users className="h-8 w-8 text-green-600" />
                 </div>
-                <div className="text-2xl font-bold text-foreground">15+</div>
-                <div className="text-sm text-muted-foreground">Ani de experiență</div>
+                <div className="text-2xl font-bold text-gray-800">15+</div>
+                <div className="text-sm text-gray-600">Ani de experiență</div>
               </div>
               
-              <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-3">
-                  <Award className="h-8 w-8 text-primary" />
+              <div className="text-center p-4 bg-white/80 rounded-lg shadow-sm border border-blue-100">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-3">
+                  <Heart className="h-8 w-8 text-blue-600" />
                 </div>
-                <div className="text-2xl font-bold text-foreground">5000+</div>
-                <div className="text-sm text-muted-foreground">Produse certificate</div>
+                <div className="text-2xl font-bold text-gray-800">5000+</div>
+                <div className="text-sm text-gray-600">Produse certificate</div>
               </div>
               
-              <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-3">
-                  <Target className="h-8 w-8 text-primary" />
+              <div className="text-center p-4 bg-white/80 rounded-lg shadow-sm border border-green-100">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-3">
+                  <Award className="h-8 w-8 text-green-600" />
                 </div>
-                <div className="text-2xl font-bold text-foreground">50K+</div>
-                <div className="text-sm text-muted-foreground">Clienți mulțumiți</div>
+                <div className="text-2xl font-bold text-gray-800">25K+</div>
+                <div className="text-sm text-gray-600">Clienți mulțumiți</div>
               </div>
             </div>
 
             <Link to="/despre">
-              <Button size="lg" className="shadow-lg">
+              <Button size="lg" className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg group">
                 Află Mai Multe Despre Noi
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
           </div>
 
           {/* Right Image */}
           <div className="relative">
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-green-100 to-blue-100">
               <img
-                src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=800"
-                alt="Echipa Nobis Farm Care"
+                src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80"
+                alt="Farmacia Nobis Farm - Interior modern și profesional"
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  // Fallback pentru imagine
+                  const target = e.currentTarget as HTMLImageElement;
+                  target.style.display = 'none';
+                  const nextSibling = target.nextElementSibling as HTMLElement;
+                  if (nextSibling) nextSibling.style.display = 'flex';
+                }}
               />
+              <div className="w-full h-full flex flex-col items-center justify-center text-center p-8" style={{ display: 'none' }}>
+                <Users className="w-24 h-24 text-green-600 mb-4" />
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">Echipa Nobis Farm</h3>
+                <p className="text-gray-600">Farmaciști dedicați îngrijirii tale</p>
+              </div>
             </div>
-            {/* Floating Card */}
-            <div className="absolute -bottom-6 -left-6 bg-card p-6 rounded-xl shadow-xl border border-border max-w-[280px]">
+            
+            {/* Floating Cards */}
+            <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-xl shadow-xl border border-green-200 max-w-[280px]">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-hero flex items-center justify-center">
-                  <Award className="h-6 w-6 text-primary-foreground" />
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-600 to-green-700 flex items-center justify-center">
+                  <Award className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <div className="font-bold text-foreground">Certificat de Calitate</div>
-                  <div className="text-sm text-muted-foreground">ISO 9001:2015</div>
+                  <div className="font-bold text-gray-800">Farmacii Autorizate</div>
+                  <div className="text-sm text-gray-600">Ministerul Sănătății</div>
                 </div>
+              </div>
+            </div>
+
+            <div className="absolute -top-6 -right-6 bg-white p-4 rounded-xl shadow-xl border border-blue-200 max-w-[200px]">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600 mb-1">4.9★</div>
+                <div className="text-sm text-gray-600">Rating Google Reviews</div>
               </div>
             </div>
           </div>

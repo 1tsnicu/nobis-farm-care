@@ -15,14 +15,14 @@ const Header = () => {
         <div className="flex items-center justify-between py-4 gap-4">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 flex-shrink-0">
-            <div className="w-12 h-12 rounded-full bg-gradient-hero flex items-center justify-center shadow-md">
-              <span className="text-2xl font-bold text-primary-foreground">NF</span>
+            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-600 to-green-700 flex items-center justify-center shadow-md">
+              <span className="text-2xl font-bold text-white">+</span>
             </div>
             <div className="hidden sm:block">
-              <span className="text-2xl font-bold text-primary block leading-tight">
+              <span className="text-2xl font-bold text-green-700 block leading-tight">
                 NOBIS FARM
               </span>
-              <span className="text-xs text-muted-foreground">Sănătatea familiei tale</span>
+              <span className="text-xs text-gray-600">Sănătatea familiei tale</span>
             </div>
           </Link>
 
@@ -31,13 +31,13 @@ const Header = () => {
             <div className="relative w-full">
               <Input
                 type="search"
-                placeholder="Caută produse, categorii sau articole"
-                className="w-full h-11 pr-24 border-primary/30"
+                placeholder="Caută medicamente, suplimente sau produse de îngrijire..."
+                className="w-full h-11 pr-24 border-green-300 focus:border-green-500"
               />
               <Button 
                 size="sm" 
                 variant="outline" 
-                className="absolute right-1 top-1 h-9 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                className="absolute right-1 top-1 h-9 border-green-600 text-green-600 hover:bg-green-600 hover:text-white"
               >
                 <Search className="h-4 w-4 mr-1" />
                 Caută
