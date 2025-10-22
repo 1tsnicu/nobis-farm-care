@@ -12,6 +12,7 @@ import {
   Award,
   Phone
 } from "lucide-react";
+import heroPharmacy from "@/assets/hero-pharmacy.jpg";
 
 const Hero = () => {
   return (
@@ -126,25 +127,13 @@ const Hero = () => {
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-blue-200/30 to-green-200/30 rounded-full blur-3xl translate-y-32 -translate-x-32" />
               
               <div className="relative z-10 space-y-6">
-                {/* Hero Image Placeholder */}
+                {/* Hero Image */}
                 <div className="aspect-[4/3] bg-gradient-to-br from-green-100 to-blue-100 rounded-2xl flex items-center justify-center overflow-hidden">
                   <img 
-                    src="/src/assets/hero-pharmacy.jpg" 
+                    src={heroPharmacy} 
                     alt="Farmacia Nobis Farm - Interior modern și primitor"
                     className="w-full h-full object-cover"
-                    onError={(e) => {
-                      // Fallback dacă imaginea nu există
-                      const target = e.currentTarget as HTMLImageElement;
-                      target.style.display = 'none';
-                      const nextSibling = target.nextElementSibling as HTMLElement;
-                      if (nextSibling) nextSibling.style.display = 'flex';
-                    }}
                   />
-                  <div className="w-full h-full flex flex-col items-center justify-center text-center p-8" style={{ display: 'none' }}>
-                    <Users className="w-20 h-20 text-green-600 mb-4" />
-                    <h3 className="text-2xl font-bold text-gray-800 mb-2">Farmacia Nobis Farm</h3>
-                    <p className="text-gray-600">Echipa noastră de farmaciști calificați te așteaptă cu sfaturi profesionale</p>
-                  </div>
                 </div>
 
                 {/* Quick Contact Card */}

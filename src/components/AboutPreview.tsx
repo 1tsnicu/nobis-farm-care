@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Users, Heart, Award, ArrowRight } from "lucide-react";
+import pharmacyTeam from "@/assets/pharmacy-team.jpg";
 
 const AboutPreview = () => {
   return (
@@ -67,22 +68,10 @@ const AboutPreview = () => {
           <div className="relative">
             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-green-100 to-blue-100">
               <img
-                src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80"
-                alt="Farmacia Nobis Farm - Interior modern și profesional"
+                src={pharmacyTeam}
+                alt="Farmacia Nobis Farm - Echipa de farmaciști profesioniști"
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  // Fallback pentru imagine
-                  const target = e.currentTarget as HTMLImageElement;
-                  target.style.display = 'none';
-                  const nextSibling = target.nextElementSibling as HTMLElement;
-                  if (nextSibling) nextSibling.style.display = 'flex';
-                }}
               />
-              <div className="w-full h-full flex flex-col items-center justify-center text-center p-8" style={{ display: 'none' }}>
-                <Users className="w-24 h-24 text-green-600 mb-4" />
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">Echipa Nobis Farm</h3>
-                <p className="text-gray-600">Farmaciști dedicați îngrijirii tale</p>
-              </div>
             </div>
             
             {/* Floating Cards */}
