@@ -1,5 +1,11 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles } from "lucide-react";
+import categoryOTC from "@/assets/category-otc-medicine.jpg";
+import categorySupplements from "@/assets/category-supplements.jpg";
+import categoryDermato from "@/assets/category-dermatocosmetics.jpg";
+import categoryMotherBaby from "@/assets/category-mother-baby.jpg";
+import categoryMedicalEquip from "@/assets/category-medical-equipment.jpg";
+import categoryNatural from "@/assets/category-natural-products.jpg";
 
 const categories = [
   {
@@ -7,7 +13,7 @@ const categories = [
     title: "Medicamente OTC",
     subtitle: "Fără prescripție medicală",
     count: "2,500+",
-    image: "https://images.unsplash.com/photo-1585435557343-3b092031d886?w=1200&auto=format&fit=crop",
+    image: categoryOTC,
     slug: "medicamente-otc",
     gradient: "from-green-600/90 to-green-700/90"
   },
@@ -16,7 +22,7 @@ const categories = [
     title: "Suplimente",
     subtitle: "Vitamine & Minerale",
     count: "1,200+",
-    image: "https://images.unsplash.com/photo-1550572017-4fade1c9b01b?w=800&auto=format&fit=crop",
+    image: categorySupplements,
     slug: "suplimente",
     gradient: "from-orange-500/90 to-orange-600/90"
   },
@@ -25,7 +31,7 @@ const categories = [
     title: "Dermato-Cosmetice",
     subtitle: "Îngrijire specializată",
     count: "800+",
-    image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=800&auto=format&fit=crop",
+    image: categoryDermato,
     slug: "dermato-cosmetice",
     gradient: "from-blue-500/90 to-blue-600/90"
   },
@@ -34,7 +40,7 @@ const categories = [
     title: "Mama & Copilul",
     subtitle: "Îngrijire pentru familie",
     count: "600+",
-    image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=800&auto=format&fit=crop",
+    image: categoryMotherBaby,
     slug: "mama-copil",
     gradient: "from-pink-500/90 to-pink-600/90"
   },
@@ -43,7 +49,7 @@ const categories = [
     title: "Echipamente Medicale",
     subtitle: "Dispozitive & Ortopedice",
     count: "400+",
-    image: "https://images.unsplash.com/photo-1584362917165-526a968579e8?w=800&auto=format&fit=crop",
+    image: categoryMedicalEquip,
     slug: "echipamente-medicale",
     gradient: "from-indigo-500/90 to-indigo-600/90"
   },
@@ -52,7 +58,7 @@ const categories = [
     title: "Produse Naturiste",
     subtitle: "Remedii naturale",
     count: "300+",
-    image: "https://images.unsplash.com/photo-1622540743802-4056c8e14173?w=800&auto=format&fit=crop",
+    image: categoryNatural,
     slug: "produse-naturiste",
     gradient: "from-green-500/90 to-emerald-600/90"
   }
