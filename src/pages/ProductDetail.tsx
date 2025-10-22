@@ -10,6 +10,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
+import { useCart } from "@/hooks/useCart";
+import { useWishlist } from "@/hooks/useWishlist";
 
 // Mock data - în producție va veni din API/database
 const productData = {
@@ -112,9 +114,19 @@ const ProductDetail = () => {
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { addItem } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const isFavorite = isInWishlist(parseInt(id || '1'));
 
   const handleAddToCart = () => {
+    addItem({
+      id: productData.id,
+      image: productData.images[0],
+      brand: productData.brand,
+      name: productData.name,
+      price: productData.price,
+      inStock: productData.inStock
+    });
     toast({
       title: "Produs adăugat în coș",
       description: `${quantity} x ${productData.name}`,
@@ -122,7 +134,18 @@ const ProductDetail = () => {
   };
 
   const handleToggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+    toggleWishlist({
+      id: productData.id,
+      image: productData.images[0],
+      brand: productData.brand,
+      name: productData.name,
+      price: productData.price,
+      originalPrice: productData.originalPrice,
+      rating: productData.rating,
+      reviews: productData.reviews,
+      discount: productData.discount,
+      inStock: productData.inStock
+    });
     toast({
       title: isFavorite ? "Eliminat din favorite" : "Adăugat la favorite",
       description: productData.name,

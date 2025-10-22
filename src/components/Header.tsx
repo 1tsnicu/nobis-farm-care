@@ -4,9 +4,13 @@ import { Search, ShoppingCart, Heart, User, Menu, X, Globe, ChevronDown } from "
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { categories } from "@/lib/data/categories";
+import { useCart } from "@/hooks/useCart";
+import { useWishlist } from "@/hooks/useWishlist";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { totalItems: cartItems } = useCart();
+  const { totalItems: wishlistItems } = useWishlist();
 
   return (
     <header className="sticky top-0 z-50 bg-background shadow-sm">
@@ -51,15 +55,24 @@ const Header = () => {
               <Globe className="h-4 w-4" />
               Română
             </Button>
-            <Button variant="ghost" size="icon" className="hidden md:flex">
-              <Heart className="h-5 w-5" />
-            </Button>
+            <Link to="/favorite">
+              <Button variant="ghost" size="icon" className="hidden md:flex relative">
+                <Heart className="h-5 w-5" />
+                {wishlistItems > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
+                    {wishlistItems}
+                  </span>
+                )}
+              </Button>
+            </Link>
             <Link to="/cos">
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
-                  0
-                </span>
+                {cartItems > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
+                    {cartItems}
+                  </span>
+                )}
               </Button>
             </Link>
             <Link to="/auth">
@@ -212,6 +225,22 @@ const Header = () => {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Contact
+              </Link>
+              <Link
+                to="/favorite"
+                className="block py-2 text-foreground hover:text-primary transition-colors font-medium flex items-center gap-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Heart className="h-4 w-4" />
+                Favorite {wishlistItems > 0 && `(${wishlistItems})`}
+              </Link>
+              <Link
+                to="/cos"
+                className="block py-2 text-foreground hover:text-primary transition-colors font-medium flex items-center gap-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <ShoppingCart className="h-4 w-4" />
+                Coș {cartItems > 0 && `(${cartItems})`}
               </Link>
               <Link
                 to="/produse?oferte=true"

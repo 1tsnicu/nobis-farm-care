@@ -1,8 +1,10 @@
-import { useState } from "react";
 import { Heart, ShoppingCart, Star, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
+import { useWishlist } from "@/hooks/useWishlist";
+import { useCart } from "@/hooks/useCart";
+import { toast } from "@/hooks/use-toast";
 
 const offers = [
   {
@@ -82,14 +84,41 @@ const offers = [
 ];
 
 const HotOffers = () => {
-  const [wishlist, setWishlist] = useState<number[]>([]);
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const { addItem } = useCart();
 
-  const toggleWishlist = (productId: number) => {
-    setWishlist(prev => 
-      prev.includes(productId) 
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    );
+  const handleAddToCart = (product: any) => {
+    addItem({
+      id: product.id,
+      image: product.image,
+      brand: product.brand,
+      name: product.name,
+      price: product.price,
+      inStock: product.inStock
+    });
+    toast({
+      title: "Produs adăugat în coș",
+      description: `${product.name} a fost adăugat în coșul tău`,
+    });
+  };
+
+  const handleToggleWishlist = (product: any) => {
+    toggleWishlist({
+      id: product.id,
+      image: product.image,
+      brand: product.brand,
+      name: product.name,
+      price: product.price,
+      originalPrice: product.oldPrice,
+      rating: product.rating,
+      reviews: product.reviews,
+      discount: product.discount,
+      inStock: product.inStock
+    });
+    toast({
+      title: isInWishlist(product.id) ? "Eliminat din favorite" : "Adăugat la favorite",
+      description: product.name,
+    });
   };
 
   return (
@@ -128,12 +157,12 @@ const HotOffers = () => {
                   </Badge>
                 )}
                 <button
-                  onClick={() => toggleWishlist(product.id)}
+                  onClick={() => handleToggleWishlist(product)}
                   className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors shadow-md"
                 >
                   <Heart 
                     className={`w-4 h-4 transition-colors ${
-                      wishlist.includes(product.id) 
+                      isInWishlist(product.id) 
                         ? 'fill-accent text-accent' 
                         : 'text-muted-foreground'
                     }`}
@@ -177,6 +206,7 @@ const HotOffers = () => {
                 <Button 
                   className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground"
                   size="sm"
+                  onClick={() => handleAddToCart(product)}
                 >
                   <ShoppingCart className="w-4 h-4 mr-2" />
                   Adaugă în coș
