@@ -48,10 +48,9 @@ Farmacia Nobis Farm este o farmacie de încredere cu peste 15 ani de experienț�
 - Linie de urgență farmaceutică 24/7
 - Linkuri către rețelele sociale
 
-### 🚚 **Opțiuni de Livrare**
+### 🏪 **Ridicare din farmacie**
 - **Ridicare din Farmacie** - GRATUIT (consiliere inclusă)
-- **Livrare locală** - 25 MDL (gratuită > 300 MDL)
-- **Livrare în țară** - 35 MDL (gratuită > 500 MDL)
+- **Adresă**: Satul Horești, raionul Ialoveni, strada Ștefan cel Mare 138
 
 ### 🎨 **Design și UX**
 - **Design responsiv** pentru toate dispozitivele
@@ -142,10 +141,10 @@ src/
 
 ## 📱 Contact Nobis Farm
 
-- **Telefon**: +373 22 123-456
-- **Email**: contact@nobisfarm.md
+- **Telefon**: 026 858 762
+- **Email**: nobisfarmsrl@gmail.com
 - **Adresa**: Strada Ștefan cel Mare 138, satul Horești, raionul Ialoveni, Moldova
-- **Program**: Luni-Sâmbătă 8:00-20:00, Duminică 10:00-16:00
+- **Program**: Luni-Vineri 8:00-18:00, Weekend 9:00-13:00
 
 ## 📄 Licență
 

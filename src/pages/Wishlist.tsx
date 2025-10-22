@@ -106,7 +106,7 @@ const Wishlist = () => {
                 Gata să cumperi?
               </h3>
               <p className="text-muted-foreground mb-4">
-                Transformă-ți favoritele în cumpărături și bucură-te de livrare rapidă
+                Transformă-ți favoritele în cumpărături și ridică-le rapid din farmacie
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link to="/cos">

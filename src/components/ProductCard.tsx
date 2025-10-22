@@ -11,7 +11,7 @@ import { toast } from "@/hooks/use-toast";
 interface ProductCardProps {
   id: number;
   image: string;
-  brand: string;
+  brand?: string;
   name: string;
   price: number;
   originalPrice?: number;
@@ -38,7 +38,7 @@ const ProductCard = ({
   const isWishlisted = isInWishlist(id);
 
   const handleAddToCart = () => {
-    addItem({ id, image, brand, name, price, inStock });
+    addItem({ id, image, brand: brand || '', name, price, inStock });
     toast({
       title: "Produs adăugat în coș",
       description: `${name} a fost adăugat în coșul tău`,
@@ -46,7 +46,7 @@ const ProductCard = ({
   };
 
   const handleToggleWishlist = () => {
-    toggleWishlist({ id, image, brand, name, price, originalPrice, rating, reviews, discount, inStock });
+    toggleWishlist({ id, image, brand: brand || '', name, price, originalPrice, rating, reviews, discount, inStock });
     toast({
       title: isWishlisted ? "Eliminat din favorite" : "Adăugat la favorite",
       description: name,
@@ -98,7 +98,9 @@ const ProductCard = ({
       <div className="p-5">
         <Link to={`/produs/${id}`}>
           <div className="mb-3">
-            <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">{brand}</p>
+            {brand && (
+              <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wide">{brand}</p>
+            )}
             <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem]">
               {name}
             </h3>

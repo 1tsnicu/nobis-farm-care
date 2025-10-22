@@ -214,7 +214,7 @@ export const PaymentMethod = ({ total, onPaymentComplete, disabled = false }: Pa
                   <Label htmlFor="phone">Număr de telefon (opțional)</Label>
                   <Input
                     id="phone"
-                    placeholder="+373 6xx xxx xxx"
+                    placeholder="026 85x xxx"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     disabled={disabled}

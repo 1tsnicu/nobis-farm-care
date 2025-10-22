@@ -89,7 +89,7 @@ const services = [
       "Medicamente rare și specializate din import",
       "Echipamente medicale personalizate",
       "Produse dermato-cosmetice premium",
-      "Livrare garantată în maxim 72 ore lucrătoare"
+      "Ridicare garantată în maxim 24 ore lucrătoare"
     ],
     image: pharmacyInterior,
     color: "from-indigo-500 to-indigo-600",
@@ -120,7 +120,7 @@ const additionalServices = [
   {
     icon: Clock,
     title: "Program Extins",
-    description: "Deschis zilnic: Luni-Sâmbătă 8:00-20:00, Duminică 9:00-18:00"
+    description: "Deschis zilnic: Luni-Vineri 8:00-18:00, Weekend 9:00-13:00"
   },
   {
     icon: Shield,
@@ -221,7 +221,7 @@ const Services = () => {
                           Programează-te Acum
                         </Button>
                       </Link>
-                      <a href="tel:+373-22-123456">
+                      <a href="tel:026858762">
                         <Button size="lg" variant="outline" className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white">
                           <Phone className="h-5 w-5 mr-2" />
                           Sună pentru Info
@@ -292,12 +292,12 @@ const Services = () => {
                     Pentru urgențe farmaceutice sau întrebări critice despre medicamente, suntem disponibili la:
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4">
-                    <a href="tel:+373-22-123456" className="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors">
+                    <a href="tel:026858762" className="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors">
                       <Phone className="h-5 w-5" />
-                      <span className="font-semibold">+373 22 123-456</span>
+                      <span className="font-semibold">026 858 762</span>
                     </a>
                     <span className="text-red-600 font-medium self-center">
-                      Disponibil: Luni-Sâmbătă 8:00-20:00
+                      Disponibil: Luni-Vineri 8:00-18:00
                     </span>
                   </div>
                 </div>
@@ -328,10 +328,10 @@ const Services = () => {
                       Vizitează Farmacia
                     </Button>
                   </Link>
-                  <a href="tel:+373-22-123456">
+                  <a href="tel:026858762">
                     <Button size="lg" variant="outline" className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white">
                       <Phone className="h-5 w-5 mr-2" />
-                      +373 22 123-456
+                      026 858 762
                     </Button>
                   </a>
                 </div>

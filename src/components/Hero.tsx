@@ -156,8 +156,8 @@ const Hero = () => {
                 <div className="text-center bg-red-50 rounded-xl p-4 border border-red-200">
                   <p className="text-sm text-red-800 font-semibold">
                     🚨 Urgență? Sună-ne acum: 
-                    <a href="tel:+373-22-123456" className="block text-lg font-bold hover:underline">
-                      +373 22 123-456
+                    <a href="tel:026858762" className="block text-lg font-bold hover:underline">
+                      026 858 762
                     </a>
                   </p>
                 </div>

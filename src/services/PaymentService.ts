@@ -245,7 +245,7 @@ export class PaymentService {
     return masked.replace(/(.{4})/g, '$1 ').trim();
   }
 
-  // Generare număr de referință pentru plata la livrare
+  // Generare număr de referință pentru plata în farmacie
   static generateCashPaymentReference(): string {
     return `CASH_${Date.now()}_${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
   }

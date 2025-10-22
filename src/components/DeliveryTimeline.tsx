@@ -15,16 +15,10 @@ const DeliveryTimeline = () => {
       description: "Verificăm și pregătim produsele"
     },
     {
-      icon: Truck,
-      title: "În Livrare",
-      time: "3-4 ore",
-      description: "Coletul este pe drum către tine"
-    },
-    {
       icon: CheckCircle,
-      title: "Livrat",
-      time: "24 ore",
-      description: "Primești comanda la ușă"
+      title: "Gata pentru ridicare",
+      time: "2-3 ore",
+      description: "Te așteptăm la farmacie"
     }
   ];
 
@@ -33,10 +27,10 @@ const DeliveryTimeline = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            Livrare rapidă în toată Moldova
+            Ridicare rapidă din farmacie
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            De la comandă la livrare în doar 24 de ore
+            De la comandă la ridicare în doar câteva ore
           </p>
         </div>
 
@@ -45,7 +39,7 @@ const DeliveryTimeline = () => {
           {/* Connection Line */}
           <div className="absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary rounded-full" />
           
-          <div className="grid grid-cols-4 gap-8 relative z-10">
+          <div className="grid grid-cols-3 gap-8 relative z-10">
             {steps.map((step, index) => (
               <div key={index} className="flex flex-col items-center text-center group">
                 {/* Icon Circle */}
@@ -105,35 +99,16 @@ const DeliveryTimeline = () => {
           ))}
         </div>
 
-        {/* Delivery Options Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mt-16 max-w-5xl mx-auto">
-          <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-6 border border-primary/20 hover:shadow-lg transition-all">
-            <MapPin className="w-8 h-8 text-primary mb-4" />
-            <h4 className="font-bold text-lg text-foreground mb-2">Satul Horești, raionul Ialoveni</h4>
-            <p className="text-sm text-muted-foreground mb-3">Livrare în 24 ore</p>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-primary">GRATUIT</span>
-              <span className="text-sm text-muted-foreground">peste 350 MDL</span>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-secondary/5 to-secondary/10 rounded-2xl p-6 border border-secondary/20 hover:shadow-lg transition-all">
-            <Truck className="w-8 h-8 text-secondary mb-4" />
-            <h4 className="font-bold text-lg text-foreground mb-2">Moldova</h4>
-            <p className="text-sm text-muted-foreground mb-3">Livrare în 48 ore</p>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-secondary">GRATUIT</span>
-              <span className="text-sm text-muted-foreground">peste 650 MDL</span>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-accent/5 to-accent/10 rounded-2xl p-6 border border-accent/20 hover:shadow-lg transition-all">
-            <Package className="w-8 h-8 text-accent mb-4" />
-            <h4 className="font-bold text-lg text-foreground mb-2">Farmacie</h4>
-            <p className="text-sm text-muted-foreground mb-3">Ridicare personală</p>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-accent">GRATUIT</span>
-              <span className="text-sm text-muted-foreground">oricând</span>
+        {/* Ridicare din farmacie */}
+        <div className="grid md:grid-cols-1 gap-6 mt-16 max-w-2xl mx-auto">
+          <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-8 border border-primary/20 hover:shadow-lg transition-all text-center">
+            <MapPin className="w-12 h-12 text-primary mx-auto mb-4" />
+            <h4 className="font-bold text-xl text-foreground mb-2">Ridicare din farmacie</h4>
+            <h5 className="font-semibold text-lg text-foreground mb-2">Satul Horești, raionul Ialoveni</h5>
+            <p className="text-sm text-muted-foreground mb-4">Strada Ștefan cel Mare 138</p>
+            <div className="flex items-baseline justify-center gap-2">
+              <span className="text-3xl font-bold text-primary">GRATUIT</span>
+              <span className="text-sm text-muted-foreground">întotdeauna</span>
             </div>
           </div>
         </div>

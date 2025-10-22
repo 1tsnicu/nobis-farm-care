@@ -124,7 +124,7 @@ export const usePayment = () => {
     const result: PaymentResult = {
       success: true,
       transactionId: reference,
-      message: 'Comanda va fi plătită la livrare'
+      message: 'Comanda va fi plătită în farmacie'
     };
 
     setPaymentState({

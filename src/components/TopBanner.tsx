@@ -8,11 +8,11 @@ const TopBanner = () => {
       <div className="container mx-auto flex items-center justify-between text-sm relative z-10">
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 animate-pulse" />
-          <span className="hidden sm:inline font-medium">Prețuri exclusive online • Livrare gratuită de la 350 MDL</span>
-          <span className="sm:hidden font-medium">Livrare gratuită 350 MDL</span>
+          <span className="hidden sm:inline font-medium">Prețuri exclusive online • Ridicare gratuită din farmacie</span>
+          <span className="sm:hidden font-medium">Ridicare gratuită farmacie</span>
         </div>
         <Badge variant="secondary" className="bg-white text-primary-dark font-bold shadow-md hover:scale-105 transition-transform">
-          350 MDL
+          GRATUIT
         </Badge>
       </div>
     </div>

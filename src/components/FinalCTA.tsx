@@ -34,10 +34,10 @@ const FinalCTA = () => {
                 Contactează-ne pentru Consiliere
               </Button>
             </Link>
-            <a href="tel:+373-22-123456">
-              <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white hover:text-green-600 shadow-xl backdrop-blur-sm font-semibold">
-                <Phone className="h-5 w-5 mr-2" />
-                Sună pentru Urgențe
+                        <a href="tel:026858762">
+              <Button size="lg" className="bg-white hover:bg-gray-100 text-green-600 font-semibold flex items-center gap-3 shadow-lg">
+                <Phone className="h-5 w-5" />
+                <span>Sună Acum</span>
               </Button>
             </a>
           </div>
@@ -47,8 +47,8 @@ const FinalCTA = () => {
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-colors">
               <Phone className="h-8 w-8 text-white mx-auto mb-3" />
               <div className="text-white font-semibold mb-2">Telefon Farmacia</div>
-              <a href="tel:+373-22-123456" className="text-white/80 hover:text-white transition-colors text-lg font-medium">
-                +373 22 123-456
+              <a href="tel:026858762" className="text-white/80 hover:text-white transition-colors text-lg font-medium">
+                026 858 762
               </a>
               <div className="text-white/60 text-sm mt-1">Luni - Sâmbătă: 8:00 - 20:00</div>
             </div>
@@ -56,8 +56,8 @@ const FinalCTA = () => {
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-colors">
               <Mail className="h-8 w-8 text-white mx-auto mb-3" />
               <div className="text-white font-semibold mb-2">Email</div>
-              <a href="mailto:contact@nobisfarm.md" className="text-white/80 hover:text-white transition-colors">
-                contact@nobisfarm.md
+              <a href="mailto:nobisfarmsrl@gmail.com" className="text-white/80 hover:text-white transition-colors">
+                nobisfarmsrl@gmail.com
               </a>
               <div className="text-white/60 text-sm mt-1">Răspuns în 24h</div>
             </div>

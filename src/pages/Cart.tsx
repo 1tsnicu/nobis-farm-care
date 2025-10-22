@@ -13,8 +13,8 @@ const Cart = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const deliveryCost = subtotal >= 349 ? 0 : 45;
-  const total = subtotal + deliveryCost;
+  // Doar subtotalul, fără costuri de livrare
+  const total = subtotal;
 
   const handleRemoveItem = (id: number, name: string) => {
     removeItem(id);
@@ -143,26 +143,10 @@ const Cart = () => {
                     <span className="font-medium">{subtotal} MDL</span>
                   </div>
                   <div className="flex justify-between text-foreground">
-                    <span>Livrare:</span>
-                    <span className="font-medium">
-                      {deliveryCost === 0 ? 'Gratuit' : `${deliveryCost} MDL`}
-                    </span>
+                    <span>Ridicare farmacie:</span>
+                    <span className="font-medium text-green-600">Gratuit</span>
                   </div>
                 </div>
-
-                {subtotal < 349 && (
-                  <div className="bg-accent/10 border border-accent/20 rounded-lg p-3 mb-4">
-                    <p className="text-sm text-foreground">
-                      Adaugă încă <strong>{349 - subtotal} MDL</strong> pentru livrare gratuită!
-                    </p>
-                    <div className="w-full bg-muted rounded-full h-2 mt-2">
-                      <div
-                        className="bg-accent h-2 rounded-full transition-all"
-                        style={{ width: `${(subtotal / 349) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
 
                 <Separator className="my-4" />
 
@@ -173,7 +157,7 @@ const Cart = () => {
 
                 <Button 
                   className="w-full mb-3" 
-                  size="lg"
+                  size="default"
                   onClick={handleCheckout}
                   disabled={items.length === 0}
                 >
@@ -181,7 +165,7 @@ const Cart = () => {
                 </Button>
                 
                 <Link to="/">
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" className="w-full" size="default">
                     Continuă cumpărăturile
                   </Button>
                 </Link>

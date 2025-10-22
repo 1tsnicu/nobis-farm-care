@@ -47,35 +47,35 @@ const Contact = () => {
   const contactMethods = [
     {
       icon: Phone,
-      title: "Telefon Farmacia",
-      info: "+373 22 123-456",
-      description: "Luni-Sâmbătă: 8:00-20:00",
-      link: "tel:+373-22-123456",
+      title: "Farmacia Horești",
+      info: "026 858 762",
+      description: "Farmacia principală",
+      link: "tel:026858762",
       color: "from-green-500 to-green-600"
+    },
+    {
+      icon: Phone,
+      title: "Filiala Zîmbreni",
+      info: "026 856 283",
+      description: "Farmacia filială",
+      link: "tel:026856283",
+      color: "from-blue-500 to-blue-600"
     },
     {
       icon: Mail,
       title: "Email Contact",
-      info: "contact@nobisfarm.md",
+      info: "nobisfarmsrl@gmail.com",
       description: "Răspundem în 24h",
-      link: "mailto:contact@nobisfarm.md",
-      color: "from-blue-500 to-blue-600"
-    },
-    {
-      icon: MessageCircle,
-      title: "WhatsApp",
-      info: "+373 60 123-456",
-      description: "Mesaje rapide",
-      link: "https://wa.me/37360123456",
-      color: "from-green-500 to-green-600"
+      link: "mailto:nobisfarmsrl@gmail.com",
+      color: "from-purple-500 to-purple-600"
     },
     {
       icon: MapPin,
-      title: "Locația Farmaciei",
-      info: "Str. Ștefan cel Mare 123",
+      title: "Locația Principală",
+      info: "Str. Ștefan cel Mare 138",
       description: "Satul Horești, raionul Ialoveni",
       link: "https://maps.google.com",
-      color: "from-purple-500 to-purple-600"
+      color: "from-orange-500 to-orange-600"
     }
   ];
 
@@ -178,7 +178,7 @@ const Contact = () => {
                         id="phone"
                         type="tel"
                         required
-                        placeholder="+373 60 123 456"
+                        placeholder="026 858 762"
                         value={formData.phone}
                         onChange={handleChange}
                         className="mt-2 border-gray-300 focus:border-green-500"
@@ -275,6 +275,11 @@ const Contact = () => {
                       <p className="text-lg font-semibold text-gray-800">Strada Ștefan cel Mare 138</p>
                       <p>Satul Horești, raionul Ialoveni</p>
                       <p>Republica Moldova</p>
+                      <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="font-semibold text-blue-800 mb-2">Filiala Zîmbreni:</div>
+                        <p className="text-blue-700">Satul Zîmbreni, raionul Ialoveni</p>
+                        <p className="text-blue-700">Tel: 026 856 283</p>
+                      </div>
                       <div className="flex items-center gap-2 mt-3">
                         <Car className="h-4 w-4 text-blue-600" />
                         <span className="text-sm">Parcare disponibilă în zonă</span>
@@ -293,20 +298,20 @@ const Contact = () => {
                     <div className="space-y-3">
                       <div className="flex justify-between items-center">
                         <span className="text-gray-600">Luni - Vineri:</span>
-                        <span className="font-semibold text-gray-800 bg-green-100 px-3 py-1 rounded-full text-sm">8:00 - 20:00</span>
+                        <span className="font-semibold text-gray-800 bg-green-100 px-3 py-1 rounded-full text-sm">8:00 - 18:00</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-600">Sâmbătă:</span>
-                        <span className="font-semibold text-gray-800 bg-blue-100 px-3 py-1 rounded-full text-sm">9:00 - 18:00</span>
+                        <span className="font-semibold text-gray-800 bg-blue-100 px-3 py-1 rounded-full text-sm">9:00 - 13:00</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-600">Duminică:</span>
-                        <span className="font-semibold text-gray-800 bg-purple-100 px-3 py-1 rounded-full text-sm">10:00 - 16:00</span>
+                        <span className="font-semibold text-gray-800 bg-purple-100 px-3 py-1 rounded-full text-sm">9:00 - 13:00</span>
                       </div>
                     </div>
                     <div className="mt-4 p-3 bg-red-50 rounded-lg border border-red-200">
                       <p className="text-red-700 text-sm">
-                        <strong>Urgențe:</strong> Pentru urgențe farmaceutice în afara programului, sunați la +373 22 123-456
+                        <strong>Urgențe:</strong> Pentru urgențe farmaceutice în timpul programului, sunați la 026 858 762
                       </p>
                     </div>
                   </CardContent>
@@ -337,7 +342,7 @@ const Contact = () => {
                       </div>
                       <div className="flex gap-3">
                         <a
-                          href="https://facebook.com/nobisfarm"
+                          href="https://www.facebook.com/nobisfarmhoresti/"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center hover:bg-blue-700 transition-colors"
@@ -345,9 +350,7 @@ const Contact = () => {
                           <Facebook className="h-6 w-6 text-white" />
                         </a>
                         <a
-                          href="https://instagram.com/nobisfarm"
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          href="#"
                           className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center hover:from-purple-600 hover:to-pink-600 transition-colors"
                         >
                           <Instagram className="h-6 w-6 text-white" />
@@ -375,12 +378,12 @@ const Contact = () => {
                 Pentru urgențe farmaceutice, întrebări critice despre medicamente sau efecte adverse severe
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="tel:+373-22-123456" className="inline-flex items-center gap-3 bg-red-600 text-white px-8 py-4 rounded-xl hover:bg-red-700 transition-colors font-semibold text-lg">
+                <a href="tel:026858762" className="inline-flex items-center gap-3 bg-red-600 text-white px-8 py-4 rounded-xl hover:bg-red-700 transition-colors font-semibold text-lg">
                   <Phone className="h-6 w-6" />
-                  <span>+373 22 123-456</span>
+                  <span>026 858 762</span>
                 </a>
                 <div className="text-red-600 font-medium self-center">
-                  Disponibil 24/7 pentru urgențe
+                  Disponibil în programul farmaciei
                 </div>
               </div>
             </div>

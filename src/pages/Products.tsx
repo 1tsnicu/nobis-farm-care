@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { ChevronDown, SlidersHorizontal, X, Search } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
@@ -9,6 +10,9 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { useSearch } from "@/hooks/useSearch";
+import { SearchBar } from "@/components/SearchBar";
 
 // Mock data - va veni din API
 const allProducts = [
@@ -23,7 +27,9 @@ const allProducts = [
     reviews: 128,
     discount: 25,
     inStock: true,
-    category: "medicamente"
+    category: "medicamente",
+    description: "Analgezic și antipiretic pentru dureri și febră",
+    tags: ["durere", "febra", "analgezic"]
   },
   {
     id: 2,
@@ -36,7 +42,9 @@ const allProducts = [
     reviews: 245,
     discount: 26,
     inStock: true,
-    category: "vitamine"
+    category: "vitamine",
+    description: "Supliment nutritiv pentru întărirea imunității",
+    tags: ["imunitate", "vitamine", "zinc", "antioxidant"]
   },
   {
     id: 3,
@@ -47,7 +55,9 @@ const allProducts = [
     rating: 4.8,
     reviews: 89,
     inStock: true,
-    category: "vitamine"
+    category: "vitamine",
+    description: "Acizi grași esențiali pentru sănătatea inimii și creierului",
+    tags: ["omega3", "inima", "creier", "acizi grași"]
   },
   {
     id: 4,
@@ -60,7 +70,9 @@ const allProducts = [
     reviews: 156,
     discount: 20,
     inStock: true,
-    category: "vitamine"
+    category: "vitamine",
+    description: "Probiotice pentru sănătatea digestivă",
+    tags: ["probiotice", "digestie", "flora intestinală"]
   },
   {
     id: 5,
@@ -71,7 +83,9 @@ const allProducts = [
     rating: 4.3,
     reviews: 94,
     inStock: false,
-    category: "medicamente"
+    category: "medicamente",
+    description: "Antiinflamator nesteroidian pentru dureri și inflamații",
+    tags: ["durere", "inflamație", "antiinflamator"]
   },
   {
     id: 6,
@@ -84,7 +98,9 @@ const allProducts = [
     reviews: 67,
     discount: 21,
     inStock: true,
-    category: "cosmetice"
+    category: "cosmetice",
+    description: "Cremă hidratantă naturală pentru toate tipurile de piele",
+    tags: ["hidratanta", "aloe vera", "piele", "naturala"]
   },
   {
     id: 7,
@@ -95,7 +111,9 @@ const allProducts = [
     rating: 4.9,
     reviews: 203,
     inStock: true,
-    category: "vitamine"
+    category: "vitamine",
+    description: "Supliment de magneziu cu vitamina B6 pentru sistemul nervos",
+    tags: ["magneziu", "b6", "sistemul nervos", "oboseala"]
   },
   {
     id: 8,
@@ -106,7 +124,9 @@ const allProducts = [
     rating: 4.2,
     reviews: 112,
     inStock: true,
-    category: "medicamente"
+    category: "medicamente",
+    description: "Analgezic și antiagregant plachetar",
+    tags: ["aspirina", "durere", "inima", "preventie"]
   }
 ];
 
@@ -120,12 +140,61 @@ const categories = [
 const brands = ["Paracetamol", "Vitamin C", "Omega-3", "Probiotice", "Ibuprofen", "Cremă", "Magneziu", "Aspirina"];
 
 const Products = () => {
+  const [searchParams] = useSearchParams();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState([0, 200]);
   const [minRating, setMinRating] = useState(0);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState("relevance");
+  const [filterSearchTerm, setFilterSearchTerm] = useState("");
+  
+  // Inițializăm hook-ul de search
+  const {
+    searchTerm,
+    setSearchTerm,
+    searchResults,
+    performSearch,
+    quickSearch,
+    clearSearch,
+    searchHistory,
+    removeFromHistory,
+    getSearchSuggestions,
+    isSearching,
+    searchStats
+  } = useSearch({ 
+    products: allProducts,
+    onResultsChange: (results) => {
+      console.log(`Search found ${results.length} products`);
+    }
+  });
+
+  // Efectul pentru preluarea parametrilor de search din URL
+  useEffect(() => {
+    const searchFromUrl = searchParams.get('search');
+    const categoryFromUrl = searchParams.get('categorie');
+    const subcategoryFromUrl = searchParams.get('subcategorie');
+    
+    if (searchFromUrl) {
+      quickSearch(searchFromUrl);
+    }
+    
+    if (categoryFromUrl) {
+      setSelectedCategories([categoryFromUrl]);
+    }
+  }, [searchParams, quickSearch]);
+
+  // Generăm sugestii pentru search în filtre
+  const filterSuggestions = filterSearchTerm.length > 1 ? getSearchSuggestions(filterSearchTerm, 3) : [];
+
+  // Filtrăm categoriile și brand-urile pe baza search-ului din filtre
+  const filteredCategories = categories.filter(category =>
+    category.name.toLowerCase().includes(filterSearchTerm.toLowerCase())
+  );
+
+  const filteredBrands = brands.filter(brand =>
+    brand.toLowerCase().includes(filterSearchTerm.toLowerCase())
+  );
 
   const toggleCategory = (categoryId: string) => {
     setSelectedCategories(prev =>
@@ -149,12 +218,17 @@ const Products = () => {
     setPriceRange([0, 200]);
     setMinRating(0);
     setInStockOnly(false);
+    setFilterSearchTerm("");
+    clearSearch();
   };
 
-  // Filter and sort products
-  let filteredProducts = allProducts.filter(product => {
+  // Combinăm rezultatele search-ului cu filtrele
+  let filteredProducts = searchTerm ? searchResults : allProducts;
+  
+  // Aplicăm filtrele tradiționale
+  filteredProducts = filteredProducts.filter(product => {
     if (selectedCategories.length > 0 && !selectedCategories.includes(product.category)) return false;
-    if (selectedBrands.length > 0 && !selectedBrands.includes(product.brand)) return false;
+    if (selectedBrands.length > 0 && !selectedBrands.includes(product.brand || '')) return false;
     if (product.price < priceRange[0] || product.price > priceRange[1]) return false;
     if (product.rating < minRating) return false;
     if (inStockOnly && !product.inStock) return false;
@@ -182,11 +256,29 @@ const Products = () => {
       {/* Search in filters */}
       <div>
         <Label className="text-sm font-semibold text-foreground mb-3 block">🔍 Caută în filtre</Label>
-        <input
-          type="text"
-          placeholder="Caută brand, categorie..."
-          className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-        />
+        <div className="relative">
+          <Input
+            type="text"
+            value={filterSearchTerm}
+            onChange={(e) => setFilterSearchTerm(e.target.value)}
+            placeholder="Caută brand, categorie..."
+            className="w-full pr-10"
+          />
+          <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+        </div>
+        {filterSuggestions.length > 0 && filterSearchTerm && (
+          <div className="mt-2 bg-white border border-gray-200 rounded-lg shadow-sm max-h-32 overflow-y-auto">
+            {filterSuggestions.map((suggestion, index) => (
+              <button
+                key={index}
+                onClick={() => setFilterSearchTerm(suggestion)}
+                className="w-full text-left px-3 py-2 hover:bg-gray-50 text-sm first:rounded-t-lg last:rounded-b-lg"
+              >
+                {suggestion}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Categories */}
@@ -196,7 +288,7 @@ const Products = () => {
           Categorii
         </h3>
         <div className="space-y-3">
-          {categories.map(category => (
+          {filteredCategories.map(category => (
             <div key={category.id} className="flex items-center gap-3 group">
               <Checkbox
                 id={category.id}
@@ -212,6 +304,9 @@ const Products = () => {
               </Label>
             </div>
           ))}
+          {filteredCategories.length === 0 && filterSearchTerm && (
+            <p className="text-sm text-gray-500 italic">Nu s-au găsit categorii</p>
+          )}
         </div>
       </div>
 
@@ -222,7 +317,7 @@ const Products = () => {
           Brand
         </h3>
         <div className="space-y-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
-          {brands.map(brand => (
+          {filteredBrands.map(brand => (
             <div key={brand} className="flex items-center gap-3 group">
               <Checkbox
                 id={brand}
@@ -238,6 +333,9 @@ const Products = () => {
               </Label>
             </div>
           ))}
+          {filteredBrands.length === 0 && filterSearchTerm && (
+            <p className="text-sm text-gray-500 italic">Nu s-au găsit brand-uri</p>
+          )}
         </div>
       </div>
 
@@ -340,15 +438,62 @@ const Products = () => {
       <main className="flex-1 container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="mb-8 text-center lg:text-left">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Toate produsele
-          </h1>
-          <p className="text-lg text-muted-foreground flex items-center justify-center lg:justify-start gap-2">
-            <span className="inline-flex items-center gap-1 bg-primary/10 rounded-full px-3 py-1 text-primary font-semibold">
-              {filteredProducts.length}
-            </span>
-            produse găsite
-          </p>
+          {searchTerm ? (
+            <>
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                Rezultate pentru "{searchTerm}"
+              </h1>
+              <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-start gap-4">
+                <p className="text-lg text-muted-foreground flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1 bg-primary/10 rounded-full px-3 py-1 text-primary font-semibold">
+                    {filteredProducts.length}
+                  </span>
+                  {filteredProducts.length === 1 ? 'produs găsit' : 'produse găsite'}
+                </p>
+                {searchStats.inStockResults < filteredProducts.length && (
+                  <p className="text-sm text-amber-600 flex items-center gap-1">
+                    <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
+                    {searchStats.inStockResults} în stoc
+                  </p>
+                )}
+                <button
+                  onClick={clearSearch}
+                  className="text-sm text-gray-500 hover:text-gray-700 underline"
+                >
+                  Șterge căutarea
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                Toate produsele
+              </h1>
+              <p className="text-lg text-muted-foreground flex items-center justify-center lg:justify-start gap-2">
+                <span className="inline-flex items-center gap-1 bg-primary/10 rounded-full px-3 py-1 text-primary font-semibold">
+                  {filteredProducts.length}
+                </span>
+                produse disponibile
+              </p>
+            </>
+          )}
+        </div>
+
+        {/* Search Bar for Mobile/Desktop */}
+        <div className="mb-8 lg:hidden">
+          <SearchBar
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            onSearch={performSearch}
+            onClear={clearSearch}
+            suggestions={getSearchSuggestions(searchTerm, 5)}
+            searchHistory={searchHistory}
+            onRemoveFromHistory={removeFromHistory}
+            placeholder="Caută în produse..."
+            isLoading={isSearching}
+            showSuggestions={true}
+            className="w-full"
+          />
         </div>
 
         <div className="flex gap-8">
@@ -361,7 +506,7 @@ const Products = () => {
                   Filtre
                 </h2>
                 <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full font-bold">
-                  {(selectedCategories.length + selectedBrands.length + (minRating > 0 ? 1 : 0) + (inStockOnly ? 1 : 0))}
+                  {(selectedCategories.length + selectedBrands.length + (minRating > 0 ? 1 : 0) + (inStockOnly ? 1 : 0) + (searchTerm ? 1 : 0) + (filterSearchTerm ? 1 : 0))}
                 </span>
               </div>
               <FilterContent />

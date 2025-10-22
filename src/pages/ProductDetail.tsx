@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Star, ShoppingCart, Heart, Minus, Plus, ChevronLeft, Shield, Truck, RefreshCw } from "lucide-react";
+import { Star, ShoppingCart, Heart, Minus, Plus, ChevronLeft, Shield, Truck, RefreshCw, Package } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
@@ -62,7 +62,7 @@ const reviewsData = [
     author: "Ion V.",
     rating: 5,
     date: "10 Martie 2024",
-    comment: "Calitate superioară, livrare rapidă. Exact ce căutam pentru sezonul rece.",
+    comment: "Calitate superioară, ridicare rapidă. Exact ce căutam pentru sezonul rece.",
     verified: true
   },
   {
@@ -324,9 +324,9 @@ const ProductDetail = () => {
                     <Shield className="h-6 w-6 mx-auto mb-2 text-primary" />
                     <p className="text-xs text-muted-foreground">Calitate<br />garantată</p>
                   </div>
-                  <div className="text-center">
-                    <Truck className="h-6 w-6 mx-auto mb-2 text-primary" />
-                    <p className="text-xs text-muted-foreground">Livrare<br />gratuită</p>
+                                    <div className="text-center">
+                    <Package className="h-6 w-6 text-green-600 mx-auto mb-1" />
+                    <p className="text-xs text-muted-foreground">Ridicare<br />gratuită</p>
                   </div>
                   <div className="text-center">
                     <RefreshCw className="h-6 w-6 mx-auto mb-2 text-primary" />

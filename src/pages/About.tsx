@@ -344,7 +344,7 @@ const About = () => {
                     Vezi Locația Noastră
                   </Button>
                 </Link>
-                <a href="tel:+373-22-123456">
+                <a href="tel:026858762">
                   <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-green-600">
                     <Phone className="mr-2 w-5 h-5" />
                     Sună pentru Informații
