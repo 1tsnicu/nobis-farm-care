@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useCart } from "@/hooks/useCart";
 import { toast } from "@/hooks/use-toast";
+import nestleNanConfort2 from "@/assets/nestle-nan-confort-2.jpg";
 
 const products = [
   {
@@ -35,7 +36,7 @@ const products = [
     name: "Nestle Nan Confort 2",
     weight: "800g",
     price: 487.78,
-    image: "https://images.unsplash.com/photo-1610648199748-bbef250d3d6e?w=400&auto=format&fit=crop",
+    image: nestleNanConfort2,
     rating: 4.7,
     reviews: 156,
     inStock: true

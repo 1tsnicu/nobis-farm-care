@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useCart } from "@/hooks/useCart";
 import { toast } from "@/hooks/use-toast";
+import vichyCapitalSoleil from "@/assets/vichy-capital-soleil.jpg";
 
 const offers = [
   {
@@ -50,7 +51,7 @@ const offers = [
     name: "Vichy Capital Soleil Lapte-Gel hidratant",
     volume: "300ml",
     price: 645.00,
-    image: "https://images.unsplash.com/photo-1556228994-230e1b7f0e8b?w=400&auto=format&fit=crop",
+    image: vichyCapitalSoleil,
     rating: 4.6,
     reviews: 92,
     discount: 0,
