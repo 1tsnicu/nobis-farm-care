@@ -4,6 +4,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, Target, Heart, Award, CheckCircle, MapPin, Phone, Mail, Clock, Shield, Stethoscope } from "lucide-react";
 import { Link } from "react-router-dom";
+import pharmacyTeam from "@/assets/pharmacy-team.jpg";
+import pharmacyInterior from "@/assets/pharmacy-interior-1.jpg";
+import pharmacyShelves from "@/assets/pharmacy-shelves.jpg";
+import consultationRoom from "@/assets/consultation-room.jpg";
 
 const teamMembers = [
   {
@@ -147,7 +151,7 @@ const About = () => {
               <div className="relative">
                 <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
                   <img
-                    src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80"
+                    src={pharmacyTeam}
                     alt="Interior farmacie Nobis Farm - modern și primitor"
                     className="w-full h-full object-cover"
                   />
@@ -304,12 +308,12 @@ const About = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {[
-                { src: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=600", alt: "Interior farmacie modern și organizat" },
-                { src: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600", alt: "Consiliere farmaceutică personalizată" },
-                { src: "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=600", alt: "Gamă variată de produse certificate" },
-                { src: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=600", alt: "Echipa de farmaciști la lucru" },
-                { src: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=600", alt: "Zona de consultații private" },
-                { src: "https://images.unsplash.com/photo-1584362917165-526a968579e8?w=600", alt: "Produse organizate pe categorii" }
+                { src: pharmacyInterior, alt: "Interior farmacie modern și organizat" },
+                { src: consultationRoom, alt: "Consiliere farmaceutică personalizată" },
+                { src: pharmacyShelves, alt: "Gamă variată de produse certificate" },
+                { src: pharmacyTeam, alt: "Echipa de farmaciști la lucru" },
+                { src: consultationRoom, alt: "Zona de consultații private" },
+                { src: pharmacyShelves, alt: "Produse organizate pe categorii" }
               ].map((image, index) => (
                 <div key={index} className="aspect-video rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow group">
                   <img

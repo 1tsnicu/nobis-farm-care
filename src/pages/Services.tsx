@@ -19,6 +19,10 @@ import {
   Thermometer,
   CheckCircle
 } from "lucide-react";
+import consultation from "@/assets/consultation.jpg";
+import vitalSigns from "@/assets/vital-signs.jpg";
+import pharmacyShelves from "@/assets/pharmacy-shelves.jpg";
+import pharmacyInterior from "@/assets/pharmacy-interior-1.jpg";
 
 const services = [
   {
@@ -31,7 +35,7 @@ const services = [
       "Explicații detaliate despre administrare și efecte",
       "Monitorizarea efectelor adverse și aderența la tratament"
     ],
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600",
+    image: consultation,
     color: "from-green-500 to-green-600",
     price: "GRATUIT"
   },
@@ -45,7 +49,7 @@ const services = [
       "Măsurarea temperaturii (termometru infraroșu)",
       "Evaluarea saturației de oxigen (pulsoximetru)"
     ],
-    image: "https://images.unsplash.com/photo-1584362917165-526a968579e8?w=600",
+    image: vitalSigns,
     color: "from-blue-500 to-blue-600",
     price: "GRATUIT"
   },
@@ -59,7 +63,7 @@ const services = [
       "Test nivelul colesterolului total și HDL/LDL",
       "Test nivel vitamina D și B12"
     ],
-    image: "https://images.unsplash.com/photo-1579154204845-f49e236aea53?w=600",
+    image: pharmacyShelves,
     color: "from-purple-500 to-purple-600",
     price: "de la 50 MDL"
   },
@@ -73,7 +77,7 @@ const services = [
       "Suport pentru rețete cronice și repetitive",
       "Consultație farmaceutică inclusă la fiecare eliberare"
     ],
-    image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=600",
+    image: pharmacyShelves,
     color: "from-orange-500 to-orange-600",
     price: "conform rețetei"
   },
@@ -87,7 +91,7 @@ const services = [
       "Produse dermato-cosmetice premium",
       "Livrare garantată în maxim 72 ore lucrătoare"
     ],
-    image: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=600",
+    image: pharmacyInterior,
     color: "from-indigo-500 to-indigo-600",
     price: "preț la comandă"
   },
@@ -101,7 +105,7 @@ const services = [
       "Monitorizare aderență la tratament",
       "Rapoarte detaliate pentru medicul curant"
     ],
-    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600",
+    image: consultation,
     color: "from-teal-500 to-teal-600",
     price: "GRATUIT"
   }

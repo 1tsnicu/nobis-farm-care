@@ -3,13 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, ArrowRight } from "lucide-react";
+import healthBlog from "@/assets/health-blog-1.jpg";
+import skincareBlog from "@/assets/skincare-blog.jpg";
+import promoVitamins from "@/assets/promo-vitamins.jpg";
+
 
 const newsItems = [
   {
     id: 1,
     title: "Cum să-ți crești imunitatea în sezonul rece",
     excerpt: "Descoperă metodele naturale și suplimentele esențiale pentru a-ți întări sistemul imunitar în această perioadă.",
-    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600",
+    image: healthBlog,
     category: "Sănătate",
     date: "15 Dec 2024",
     isPromo: false
@@ -18,7 +22,7 @@ const newsItems = [
     id: 2,
     title: "OFERTĂ SPECIALĂ: -30% la toate vitaminele",
     excerpt: "Profită de reducerea noastră specială la întreaga gamă de vitamine și suplimente până pe 31 decembrie!",
-    image: "https://images.unsplash.com/photo-1550572017-4a1f501c2bc6?w=600",
+    image: promoVitamins,
     category: "Promoție",
     date: "10 Dec 2024",
     isPromo: true
@@ -27,7 +31,7 @@ const newsItems = [
     id: 3,
     title: "Ghid complet pentru o piele sănătoasă iarna",
     excerpt: "Sfaturi de la dermatologi și recomandări de produse pentru îngrijirea pielii în sezonul rece.",
-    image: "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=600",
+    image: skincareBlog,
     category: "Îngrijire",
     date: "5 Dec 2024",
     isPromo: false
