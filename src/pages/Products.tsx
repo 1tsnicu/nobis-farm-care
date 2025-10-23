@@ -127,6 +127,19 @@ const allProducts = [
     category: "medicamente",
     description: "Analgezic și antiagregant plachetar",
     tags: ["aspirina", "durere", "inima", "preventie"]
+  },
+  {
+    id: 9,
+    image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500&h=500&fit=crop",
+    brand: "Efect",
+    name: "Balsam Спасатель 30g",
+    price: 158.48,
+    rating: 4.7,
+    reviews: 45,
+    inStock: true,
+    category: "dermato-cosmetice",
+    description: "Balsam universal pentru regenerarea și protecția pielii, produs în Rusia de compania Efect",
+    tags: ["balsam", "regenerare", "protectie", "piele", "universal", "rusia"]
   }
 ];
 
@@ -134,10 +147,11 @@ const categories = [
   { id: "medicamente", name: "Medicamente OTC" },
   { id: "vitamine", name: "Vitamine & Suplimente" },
   { id: "cosmetice", name: "Produse cosmetice" },
+  { id: "dermato-cosmetice", name: "Dermato-Cosmetice" },
   { id: "ingrijire", name: "Îngrijire personală" }
 ];
 
-const brands = ["Paracetamol", "Vitamin C", "Omega-3", "Probiotice", "Ibuprofen", "Cremă", "Magneziu", "Aspirina"];
+const brands = ["Paracetamol", "Vitamin C", "Omega-3", "Probiotice", "Ibuprofen", "Cremă", "Magneziu", "Aspirina", "Efect"];
 
 const Products = () => {
   const [searchParams] = useSearchParams();

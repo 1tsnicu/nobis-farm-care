@@ -15,7 +15,8 @@ const mockProducts = [
   { id: 2, name: "Vitamina C 1000mg", category: "Vitamine", brand: "Solgar", price: 45, image: "", inStock: true, description: "Supliment vitamina C", tags: ["imunitate", "antioxidant"], rating: 4.8, reviews: 189 },
   { id: 3, name: "Aspenter 100mg", category: "Medicamente", brand: "Zentiva", price: 22, image: "", inStock: true, description: "Antiagregant plachetar", tags: ["inima", "preventie"], rating: 4.2, reviews: 156 },
   { id: 4, name: "Omega 3", category: "Suplimente", brand: "Nordic Naturals", price: 89, image: "", inStock: false, description: "Acizi grași omega 3", tags: ["inima", "creier"], rating: 4.7, reviews: 298 },
-  { id: 5, name: "Magneziu B6", category: "Vitamine", brand: "Magne B6", price: 35, image: "", inStock: true, description: "Supliment magneziu cu vitamina B6", tags: ["stres", "oboseala"], rating: 4.3, reviews: 127 }
+  { id: 5, name: "Magneziu B6", category: "Vitamine", brand: "Magne B6", price: 35, image: "", inStock: true, description: "Supliment magneziu cu vitamina B6", tags: ["stres", "oboseala"], rating: 4.3, reviews: 127 },
+  { id: 6, name: "Balsam Спасатель 30g", category: "Dermato-Cosmetice", brand: "Efect", price: 158.48, image: "", inStock: true, description: "Balsam universal pentru regenerarea pielii", tags: ["balsam", "regenerare", "piele"], rating: 4.7, reviews: 45 }
 ];
 
 const Header = () => {
