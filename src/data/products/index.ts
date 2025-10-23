@@ -50,7 +50,7 @@ export const filterProducts = (
     category?: string;
     countries?: string[];
     manufacturers?: string[];
-    priceRange?: { min: number; max: number };
+    priceRange?: [number, number];
     searchQuery?: string;
   }
 ): Product[] => {
@@ -69,8 +69,9 @@ export const filterProducts = (
   }
 
   if (filters.priceRange) {
+    const [min, max] = filters.priceRange;
     filtered = filtered.filter(p => 
-      p.price >= filters.priceRange!.min && p.price <= filters.priceRange!.max
+      p.price >= min && p.price <= max
     );
   }
 

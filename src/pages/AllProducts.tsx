@@ -21,14 +21,14 @@ const AllProducts = () => {
   const [selectedManufacturers, setSelectedManufacturers] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<string>("rating-desc");
   
-  const priceRange = getPriceRange();
-  const [selectedPriceRange, setSelectedPriceRange] = useState<[number, number]>([
-    priceRange.min,
-    priceRange.max,
-  ]);
-
   const countries = useMemo(() => getUniqueCountries(), []);
   const manufacturers = useMemo(() => getUniqueManufacturers(), []);
+  const priceRange = useMemo(() => getPriceRange(), []);
+  
+  const [selectedPriceRange, setSelectedPriceRange] = useState<[number, number]>(() => {
+    const range = getPriceRange();
+    return [range.min, range.max];
+  });
 
   const filteredAndSortedProducts = useMemo(() => {
     const filtered = filterProducts(allProducts, {

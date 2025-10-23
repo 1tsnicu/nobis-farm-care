@@ -8,6 +8,7 @@ import { WishlistProvider } from "@/hooks/useWishlist";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
 import Products from "./pages/Products";
+import AllProducts from "./pages/AllProducts";
 import ProductDetail from "./pages/ProductDetail";
 import Auth from "./pages/Auth";
 import { Checkout } from "./pages/Checkout";
@@ -28,7 +29,8 @@ const App = () => (
           <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/produse" element={<Products />} />
+            <Route path="/produse" element={<AllProducts />} />
+            <Route path="/categorie/:slug" element={<Products />} />
             <Route path="/produs/:id" element={<ProductDetail />} />
             <Route path="/cos" element={<Cart />} />
             <Route path="/favorite" element={<Wishlist />} />
