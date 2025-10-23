@@ -1,11 +1,12 @@
 import { Product } from "../types";
+import { dermatoCosmetica } from "./dermato-cosmetica";
 
-// Products will be imported from category files as they are added
+// Products imported from category files
 // Structure: src/data/products/{category-slug}.ts
 
 // All products combined from category files
 export const allProducts: Product[] = [
-  // Products will be added here as category files are created
+  ...dermatoCosmetica,
 ];
 
 // Helper functions for product queries
