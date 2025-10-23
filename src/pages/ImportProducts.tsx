@@ -5,71 +5,60 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Database, Upload, CheckCircle2, AlertCircle } from "lucide-react";
+import { Database, Upload, CheckCircle2, AlertCircle, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+
+// Sample of products data - în producție, aceasta ar veni din fișierul Excel complet
+const SAMPLE_PRODUCTS = [
+  { cat: 'Mamă și Copil', name: 'Scaunel prima pappa balloon beige+diner savana azzur', mfg: '', country: 'Italia', price: 75.01 },
+  { cat: 'Sănătate - Medicamente OTC', name: 'Aciclovir caps. 200 mg N10x3 (Balkan)', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 61.04 },
+  { cat: 'Sănătate - Medicamente OTC', name: 'Algodex sol. inj./conc./sol.perf. 25mg/ml 2ml N10 Balkan', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 114.27 },
+  { cat: 'Sănătate - Medicamente OTC', name: 'Ambroxol comp.30mg N20 (Balkan)', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 24.14 },
+  { cat: 'Sănătate - Medicamente OTC', name: 'Analgina-BP comp. 500mg N10 (Balkan)', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 10.42 },
+  { cat: 'Vitamine și Minerale', name: 'Berberine 500mg + Chromium 40µg caps. N60 Balkan', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 539.75 },
+  { cat: 'Sănătate - Medicamente OTC', name: 'Carbactiv caps. 200mg N100 Balkan', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 61.6 },
+  { cat: 'Vitamine și Minerale', name: 'Immuno Veda comp. N30', mfg: 'Konark Ayurveda', country: 'India', price: 140 },
+  { cat: 'Vitamine și Minerale', name: 'Join Support Ultra pulbere 14g N30 Balkan', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 1050 },
+  { cat: 'Sănătate - Medicamente OTC', name: 'Citramon-BP comp. N10 (Balkan)', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 5.1 },
+];
 
 const ImportProducts = () => {
   const [importing, setImporting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [productCount, setProductCount] = useState<number | null>(null);
   const [result, setResult] = useState<{ success: boolean; imported?: number; error?: string } | null>(null);
 
-  const handleImportFromFile = async () => {
-    setImporting(true);
-    setProgress(0);
-    setResult(null);
+  const checkProductCount = async () => {
+    const { count, error } = await supabase
+      .from('products')
+      .select('*', { count: 'exact', head: true });
+    
+    if (!error) {
+      setProductCount(count || 0);
+    }
+  };
 
+  const handleDeleteAll = async () => {
+    if (!confirm('Sigur vrei să ștergi TOATE produsele din baza de date? Această acțiune este ireversibilă!')) {
+      return;
+    }
+
+    setDeleting(true);
     try {
-      // Read the parsed Excel file
-      const response = await fetch('/tool-results://document--parse_document/20251223-123921-926378');
-      const text = await response.text();
-      
-      // Parse table data
-      const lines = text.split('\n').filter(line => line.startsWith('|'));
-      const products = lines.slice(1).map(line => {
-        const parts = line.split('|').filter(p => p.trim());
-        return {
-          'Nr.': parseInt(parts[0]) || 0,
-          'Categorie': parts[1]?.trim() || '',
-          'Produs': parts[2]?.trim() || '',
-          'Producător': parts[3]?.trim() || '',
-          'Țară': parts[4]?.trim() || '',
-          'Preț (MDL)': parseFloat(parts[5]) || 0
-        };
-      }).filter(p => p['Nr.'] > 0 && p.Categorie && p.Produs);
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all
 
-      console.log(`Importing ${products.length} products...`);
-      toast.info(`Pregătire import: ${products.length} produse`);
+      if (error) throw error;
 
-      // Import in batches
-      const batchSize = 100;
-      let imported = 0;
-
-      for (let i = 0; i < products.length; i += batchSize) {
-        const batch = products.slice(i, i + batchSize);
-        
-        const { data, error } = await supabase.functions.invoke('import-products', {
-          body: { products: batch }
-        });
-
-        if (error) {
-          console.error('Import error:', error);
-          throw error;
-        }
-
-        imported += data?.imported || 0;
-        setProgress((imported / products.length) * 100);
-        toast.info(`Importat: ${imported}/${products.length} produse`);
-      }
-
-      setResult({ success: true, imported });
-      toast.success(`Import finalizat! ${imported} produse adăugate în baza de date.`);
-
+      toast.success('Toate produsele au fost șterse!');
+      setProductCount(0);
     } catch (error: any) {
-      console.error('Import failed:', error);
-      setResult({ success: false, error: error.message });
-      toast.error(`Eroare la import: ${error.message}`);
+      toast.error(`Eroare: ${error.message}`);
     } finally {
-      setImporting(false);
+      setDeleting(false);
     }
   };
 
@@ -88,28 +77,16 @@ const ImportProducts = () => {
 
       const categoryMap = new Map(categories.map(c => [c.name, c.id]));
 
-      // Sample products data - first 10 for testing
-      const testProducts = [
-        { cat: 'Mamă și Copil', name: 'Scaunel prima pappa balloon beige+diner savana azzur', mfg: '', country: 'Italia', price: 75.01 },
-        { cat: 'Sănătate - Medicamente OTC', name: 'Aciclovir caps. 200 mg N10x3 (Balkan)', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 61.04 },
-        { cat: 'Sănătate - Medicamente OTC', name: 'Algodex sol. inj./conc./sol.perf. 25mg/ml 2ml N10 Balkan', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 114.27 },
-        { cat: 'Sănătate - Medicamente OTC', name: 'Ambroxol comp.30mg N20 (Balkan)', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 24.14 },
-        { cat: 'Sănătate - Medicamente OTC', name: 'Analgina-BP comp. 500mg N10 (Balkan)', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 10.42 },
-        { cat: 'Sănătate - Medicamente OTC', name: 'Analgina-BP sol. inj. 500 mg/ml 2ml N10 (Balkan)', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 27.09 },
-        { cat: 'Vitamine și Minerale', name: 'Berberine 500mg + Chromium 40µg caps. N60 Balkan', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 539.75 },
-        { cat: 'Sănătate - Medicamente OTC', name: 'Carbactiv caps. 200mg N100 Balkan', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 61.6 },
-        { cat: 'Sănătate - Medicamente OTC', name: 'Carbodetox comp. 250mg N10 Balkan', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 3.27 },
-        { cat: 'Sănătate - Medicamente OTC', name: 'Citramon-BP comp. N10 (Balkan)', mfg: 'Balkan Pharmaceuticals SRL, SC', country: 'Republica Moldova', price: 5.1 },
-      ];
-
-      const productsToInsert = testProducts.map((p, idx) => ({
+      // Prepare products with unique SKUs
+      const existingCount = productCount || 0;
+      const productsToInsert = SAMPLE_PRODUCTS.map((p, idx) => ({
         category_id: categoryMap.get(p.cat),
         name: p.name,
         manufacturer: p.mfg,
         country: p.country,
         price: p.price,
         stock_quantity: Math.floor(Math.random() * 100),
-        sku: `PRD-${String(idx + 1).padStart(6, '0')}`,
+        sku: `PRD-${String(existingCount + idx + 1).padStart(6, '0')}`,
         is_available: true
       })).filter(p => p.category_id);
 
@@ -121,7 +98,8 @@ const ImportProducts = () => {
 
       setResult({ success: true, imported: productsToInsert.length });
       setProgress(100);
-      toast.success(`${productsToInsert.length} produse de test importate!`);
+      toast.success(`${productsToInsert.length} produse importate!`);
+      checkProductCount();
 
     } catch (error: any) {
       console.error('Import error:', error);
@@ -131,6 +109,10 @@ const ImportProducts = () => {
       setImporting(false);
     }
   };
+
+  useState(() => {
+    checkProductCount();
+  });
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -142,15 +124,22 @@ const ImportProducts = () => {
             <Database className="w-16 h-16 mx-auto mb-4 text-primary" />
             <h1 className="text-4xl font-bold mb-2">Import Produse</h1>
             <p className="text-muted-foreground">
-              Importă cele 2,942 produse din fișierul Excel în baza de date
+              Importă produse din fișierul Excel în baza de date
             </p>
+            {productCount !== null && (
+              <div className="mt-4 inline-block bg-primary/10 px-6 py-2 rounded-full">
+                <span className="text-lg font-semibold text-primary">
+                  {productCount} produse în baza de date
+                </span>
+              </div>
+            )}
           </div>
 
           <Card className="mb-6">
             <CardHeader>
               <CardTitle>Status Import</CardTitle>
               <CardDescription>
-                12 categorii • 105+ producători • 2,942 produse
+                12 categorii • Import câte 10 produse odată pentru test
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -191,43 +180,53 @@ const ImportProducts = () => {
               <div className="grid gap-3">
                 <Button
                   onClick={handleDirectImport}
-                  disabled={importing}
+                  disabled={importing || deleting}
                   className="w-full"
                   size="lg"
                 >
                   <Upload className="w-4 h-4 mr-2" />
-                  {importing ? 'Import în curs...' : 'Import Produse Test (10)'}
+                  {importing ? 'Import în curs...' : 'Importă 10 Produse Sample'}
                 </Button>
 
                 <Button
-                  onClick={handleImportFromFile}
-                  disabled={importing}
-                  variant="outline"
+                  onClick={handleDeleteAll}
+                  disabled={importing || deleting || productCount === 0}
+                  variant="destructive"
                   className="w-full"
                   size="lg"
                 >
-                  <Database className="w-4 h-4 mr-2" />
-                  {importing ? 'Import în curs...' : 'Import Complet (2,942 produse)'}
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  {deleting ? 'Ștergere în curs...' : 'Șterge Toate Produsele'}
                 </Button>
               </div>
             </CardContent>
           </Card>
 
           <div className="bg-muted/50 rounded-lg p-6 space-y-3">
-            <h3 className="font-semibold">Categorii disponibile:</h3>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div>💊 Medicamente OTC (1,296)</div>
-              <div>🌟 Vitamine și Minerale (835)</div>
-              <div>⚕️ Parafarmaceutice (393)</div>
-              <div>👶 Mamă și Copil (190)</div>
-              <div>🩺 Echipamente Medicale (63)</div>
-              <div>🌿 Plante Medicinale (46)</div>
-              <div>✨ Îngrijire Corp/Față (33)</div>
-              <div>🧴 Igienă Personală (31)</div>
-              <div>☀️ Protecție Solară (26)</div>
-              <div>💇 Îngrijire Păr (17)</div>
-              <div>💄 Dermato-Cosmetică (11)</div>
-              <div>💅 Cosmetică Decorativă (1)</div>
+            <h3 className="font-semibold">📝 Instrucțiuni:</h3>
+            <ol className="text-sm space-y-2 list-decimal list-inside">
+              <li>Apasă butonul "Importă 10 Produse Sample" pentru a adăuga produse de test</li>
+              <li>Poți apăsa butonul de mai multe ori pentru a adăuga mai multe loturi</li>
+              <li>Vizualizează produsele la /admin/produse</li>
+              <li>Folosește "Șterge Toate" pentru a reseta baza de date</li>
+            </ol>
+            
+            <div className="mt-6 pt-6 border-t">
+              <h3 className="font-semibold mb-3">Categorii disponibile:</h3>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div>💊 Medicamente OTC</div>
+                <div>🌟 Vitamine și Minerale</div>
+                <div>⚕️ Parafarmaceutice</div>
+                <div>👶 Mamă și Copil</div>
+                <div>🩺 Echipamente Medicale</div>
+                <div>🌿 Plante Medicinale</div>
+                <div>✨ Îngrijire Corp/Față</div>
+                <div>🧴 Igienă Personală</div>
+                <div>☀️ Protecție Solară</div>
+                <div>💇 Îngrijire Păr</div>
+                <div>💄 Dermato-Cosmetică</div>
+                <div>💅 Cosmetică Decorativă</div>
+              </div>
             </div>
           </div>
         </div>
