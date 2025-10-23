@@ -1,10 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button             <Link to="/contact">
-              <Button size="lg" className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg group">
-                Contactează-ne
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link> "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Users, Heart, Award, ArrowRight } from "lucide-react";
 
 const AboutPreview = () => {
@@ -60,9 +55,9 @@ const AboutPreview = () => {
               </div>
             </div>
 
-            <Link to="/despre">
+            <Link to="/contact">
               <Button size="lg" className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg group">
-                Află Mai Multe Despre Noi
+                Contactează-ne
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
