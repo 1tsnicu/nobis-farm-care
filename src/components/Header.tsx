@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Menu, X, Globe, ChevronDown } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { categories } from "@/lib/data/categories";
@@ -131,38 +131,15 @@ const Header = () => {
             <div className="flex items-center gap-1">
               {categories.map((category) => (
                 <div key={category.id} className="relative group">
-                  <button className="text-sm font-medium h-auto py-2 px-4 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-1">
+                  <Link 
+                    to={`/produse?categorie=${category.slug}`}
+                    className="text-sm font-medium h-auto py-2 px-4 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-1"
+                  >
                     {category.name}
-                    <ChevronDown className="h-3 w-3 transition-transform group-hover:rotate-180" />
-                  </button>
-                  <div className="absolute left-0 top-full mt-1 hidden group-hover:block z-50 min-w-[500px]">
-                    <div className="bg-popover border border-border rounded-md shadow-lg p-4">
-                      <div className="grid grid-cols-2 gap-2">
-                        <Link
-                          to={`/produse?categorie=${category.slug}`}
-                          className="block p-2 hover:bg-muted rounded-md transition-colors"
-                        >
-                          <div className="font-semibold text-sm text-primary">
-                            Toate produsele
-                          </div>
-                          {category.productCount && (
-                            <div className="text-xs text-muted-foreground">
-                              {category.productCount} produse
-                            </div>
-                          )}
-                        </Link>
-                        {category.subcategories.map((sub) => (
-                          <Link
-                            key={sub.id}
-                            to={`/produse?categorie=${category.slug}&subcategorie=${sub.slug}`}
-                            className="block p-2 hover:bg-muted rounded-md transition-colors"
-                          >
-                            <div className="text-sm text-foreground hover:text-primary">{sub.name}</div>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                    {category.productCount && (
+                      <span className="text-xs text-muted-foreground ml-1">({category.productCount})</span>
+                    )}
+                  </Link>
                 </div>
               ))}
             </div>
@@ -211,29 +188,10 @@ const Header = () => {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {category.name}
-                  <ChevronDown className="h-4 w-4" />
-                </Link>
-                <div className="pl-4 space-y-1 mt-2">
-                  {category.subcategories.slice(0, 6).map((sub) => (
-                    <Link
-                      key={sub.id}
-                      to={`/produse?categorie=${category.slug}&subcategorie=${sub.slug}`}
-                      className="block py-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      {sub.name}
-                    </Link>
-                  ))}
-                  {category.subcategories.length > 6 && (
-                    <Link
-                      to={`/produse?categorie=${category.slug}`}
-                      className="block py-1.5 text-sm text-primary hover:text-primary/80 transition-colors font-medium"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Vezi toate ({category.subcategories.length}) →
-                    </Link>
+                  {category.productCount && (
+                    <span className="text-xs text-muted-foreground">({category.productCount})</span>
                   )}
-                </div>
+                </Link>
               </div>
             ))}
             <div className="border-t border-border pt-3 space-y-3">
