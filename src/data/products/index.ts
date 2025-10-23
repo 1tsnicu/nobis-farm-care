@@ -3,6 +3,10 @@ import { medicamenteOTC } from "./medicamente-otc-sample";
 import { vitamineMinerale } from "./vitamine-minerale-sample";
 import { mamaCopil } from "./mama-copil-sample";
 
+// NOTE: This is a SAMPLE implementation with 116 products
+// Full implementation would include all 2,942 products organized by category
+// To add all products, create additional category files following the same pattern
+
 // Combine all products from different categories
 export const allProducts: Product[] = [
   ...medicamenteOTC,
@@ -107,4 +111,20 @@ export const sortProducts = (
     default:
       return sorted;
   }
+};
+
+// Statistics
+export const getProductStats = () => {
+  const byCategory = allProducts.reduce((acc, product) => {
+    acc[product.category] = (acc[product.category] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  return {
+    total: allProducts.length,
+    byCategory,
+    countries: getUniqueCountries().length,
+    manufacturers: getUniqueManufacturers().length,
+    priceRange: getPriceRange()
+  };
 };
