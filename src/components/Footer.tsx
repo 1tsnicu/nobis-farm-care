@@ -46,6 +46,16 @@ const Footer = () => {
             <h3 className="text-xl font-bold mb-4 text-nobis-white">Navigare Rapidă</h3>
             <ul className="space-y-3">
               <li>
+                <Link to="/despre" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors flex items-center gap-2">
+                  <span>Despre Nobis Farm</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/servicii" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors flex items-center gap-2">
+                  <span>Servicii Farmaceutice</span>
+                </Link>
+              </li>
+              <li>
                 <Link to="/produse" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors flex items-center gap-2">
                   <span>Toate Produsele</span>
                 </Link>

@@ -16,7 +16,7 @@ const Cart = () => {
   // Doar subtotalul, fără costuri de livrare
   const total = subtotal;
 
-  const handleRemoveItem = (id: string | number, name: string) => {
+  const handleRemoveItem = (id: number, name: string) => {
     removeItem(id);
     toast({
       title: "Produs șters",

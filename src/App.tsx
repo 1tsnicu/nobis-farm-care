@@ -8,15 +8,15 @@ import { WishlistProvider } from "@/hooks/useWishlist";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
 import Products from "./pages/Products";
-import AllProducts from "./pages/AllProducts";
 import ProductDetail from "./pages/ProductDetail";
 import Auth from "./pages/Auth";
 import { Checkout } from "./pages/Checkout";
+import About from "./pages/About";
+import Services from "./pages/Services";
 import Blog from "./pages/Blog";
 import Contact from "./pages/Contact";
 import Wishlist from "./pages/Wishlist";
 import NotFound from "./pages/NotFound";
-import Categories from "./pages/Categories";
 
 const queryClient = new QueryClient();
 
@@ -30,14 +30,14 @@ const App = () => (
           <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/categorii" element={<Categories />} />
-            <Route path="/produse" element={<AllProducts />} />
-            <Route path="/categorie/:slug" element={<Products />} />
+            <Route path="/produse" element={<Products />} />
             <Route path="/produs/:id" element={<ProductDetail />} />
             <Route path="/cos" element={<Cart />} />
             <Route path="/favorite" element={<Wishlist />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/despre" element={<About />} />
+            <Route path="/servicii" element={<Services />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />

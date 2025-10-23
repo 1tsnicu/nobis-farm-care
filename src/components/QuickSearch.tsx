@@ -13,8 +13,7 @@ const mockProducts = [
   { id: 2, name: "Vitamina C 1000mg", category: "Vitamine", brand: "Solgar", price: 45, originalPrice: 60, rating: 5, reviews: 245, discount: 25, image: "https://images.unsplash.com/photo-1550572017-4725f1f5b8f5?w=500&h=500&fit=crop", inStock: true, description: "Supliment vitamina C", tags: ["imunitate", "antioxidant"] },
   { id: 3, name: "Aspenter 100mg", category: "Medicamente", brand: "Zentiva", price: 22, rating: 4.3, reviews: 94, image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&h=500&fit=crop", inStock: true, description: "Antiagregant plachetar", tags: ["inima", "preventie"] },
   { id: 4, name: "Omega 3", category: "Suplimente", brand: "Nordic Naturals", price: 89, originalPrice: 120, rating: 4.8, reviews: 89, discount: 26, image: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=500&h=500&fit=crop", inStock: false, description: "Acizi grași omega 3", tags: ["inima", "creier"] },
-  { id: 5, name: "Magneziu B6", category: "Vitamine", brand: "Magne B6", price: 35, rating: 4.9, reviews: 203, image: "https://images.unsplash.com/photo-1616671276746-6ff1a6a55b6e?w=500&h=500&fit=crop", inStock: true, description: "Supliment magneziu cu vitamina B6", tags: ["stres", "oboseala"] },
-  { id: 6, name: "Balsam Спасатель 30g", category: "Dermato-Cosmetice", brand: "Efect", price: 158.48, rating: 4.7, reviews: 45, image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500&h=500&fit=crop", inStock: true, description: "Balsam universal pentru regenerarea pielii", tags: ["balsam", "regenerare", "piele"] }
+  { id: 5, name: "Magneziu B6", category: "Vitamine", brand: "Magne B6", price: 35, rating: 4.9, reviews: 203, image: "https://images.unsplash.com/photo-1616671276746-6ff1a6a55b6e?w=500&h=500&fit=crop", inStock: true, description: "Supliment magneziu cu vitamina B6", tags: ["stres", "oboseala"] }
 ];
 
 // Căutări populare

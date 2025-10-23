@@ -13,10 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { useSearch } from "@/hooks/useSearch";
 import { SearchBar } from "@/components/SearchBar";
-import { products as allProducts } from "@/lib/data/products";
 
-const uniqueBrands = Array.from(new Set(allProducts.map(p => p.brand))).sort();
-const allProductsLegacy = [
+// Mock data - va veni din API
+const allProducts = [
   {
     id: 1,
     image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&h=500&fit=crop",
@@ -128,31 +127,17 @@ const allProductsLegacy = [
     category: "medicamente",
     description: "Analgezic și antiagregant plachetar",
     tags: ["aspirina", "durere", "inima", "preventie"]
-  },
-  {
-    id: 9,
-    image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500&h=500&fit=crop",
-    brand: "Efect",
-    name: "Balsam Спасатель 30g",
-    price: 158.48,
-    rating: 4.7,
-    reviews: 45,
-    inStock: true,
-    category: "dermato-cosmetice",
-    description: "Balsam universal pentru regenerarea și protecția pielii, produs în Rusia de compania Efect",
-    tags: ["balsam", "regenerare", "protectie", "piele", "universal", "rusia"]
   }
 ];
 
 const categories = [
-  { id: "sanatate", name: "Sănătate" },
-  { id: "vitamine-minerale", name: "Vitamine & Minerale" },
-  { id: "dermatocosmetica", name: "Dermato-Cosmetică" },
-  { id: "mama-copil", name: "Mamă și Copil" },
-  { id: "frumusete-igiena", name: "Frumusețe și Igienă" }
+  { id: "medicamente", name: "Medicamente OTC" },
+  { id: "vitamine", name: "Vitamine & Suplimente" },
+  { id: "cosmetice", name: "Produse cosmetice" },
+  { id: "ingrijire", name: "Îngrijire personală" }
 ];
 
-const brands = uniqueBrands;
+const brands = ["Paracetamol", "Vitamin C", "Omega-3", "Probiotice", "Ibuprofen", "Cremă", "Magneziu", "Aspirina"];
 
 const Products = () => {
   const [searchParams] = useSearchParams();
@@ -164,9 +149,7 @@ const Products = () => {
   const [sortBy, setSortBy] = useState("relevance");
   const [filterSearchTerm, setFilterSearchTerm] = useState("");
   
-  // Inițializăm hook-ul de search cu toate produsele (vechi + noi)
-  const allProductsCombined = [...allProductsLegacy, ...allProducts];
-  
+  // Inițializăm hook-ul de search
   const {
     searchTerm,
     setSearchTerm,
@@ -180,7 +163,7 @@ const Products = () => {
     isSearching,
     searchStats
   } = useSearch({ 
-    products: allProductsCombined,
+    products: allProducts,
     onResultsChange: (results) => {
       console.log(`Search found ${results.length} products`);
     }
@@ -240,7 +223,7 @@ const Products = () => {
   };
 
   // Combinăm rezultatele search-ului cu filtrele
-  let filteredProducts = searchTerm ? searchResults : allProductsCombined;
+  let filteredProducts = searchTerm ? searchResults : allProducts;
   
   // Aplicăm filtrele tradiționale
   filteredProducts = filteredProducts.filter(product => {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Menu, X, Globe } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, Globe, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { categories } from "@/lib/data/categories";
@@ -15,8 +15,7 @@ const mockProducts = [
   { id: 2, name: "Vitamina C 1000mg", category: "Vitamine", brand: "Solgar", price: 45, image: "", inStock: true, description: "Supliment vitamina C", tags: ["imunitate", "antioxidant"], rating: 4.8, reviews: 189 },
   { id: 3, name: "Aspenter 100mg", category: "Medicamente", brand: "Zentiva", price: 22, image: "", inStock: true, description: "Antiagregant plachetar", tags: ["inima", "preventie"], rating: 4.2, reviews: 156 },
   { id: 4, name: "Omega 3", category: "Suplimente", brand: "Nordic Naturals", price: 89, image: "", inStock: false, description: "Acizi grași omega 3", tags: ["inima", "creier"], rating: 4.7, reviews: 298 },
-  { id: 5, name: "Magneziu B6", category: "Vitamine", brand: "Magne B6", price: 35, image: "", inStock: true, description: "Supliment magneziu cu vitamina B6", tags: ["stres", "oboseala"], rating: 4.3, reviews: 127 },
-  { id: 6, name: "Balsam Спасатель 30g", category: "Dermato-Cosmetice", brand: "Efect", price: 158.48, image: "", inStock: true, description: "Balsam universal pentru regenerarea pielii", tags: ["balsam", "regenerare", "piele"], rating: 4.7, reviews: 45 }
+  { id: 5, name: "Magneziu B6", category: "Vitamine", brand: "Magne B6", price: 35, image: "", inStock: true, description: "Supliment magneziu cu vitamina B6", tags: ["stres", "oboseala"], rating: 4.3, reviews: 127 }
 ];
 
 const Header = () => {
@@ -129,27 +128,50 @@ const Header = () => {
         <nav className="hidden lg:block border-t border-border">
           <div className="flex items-center justify-between py-2">
             <div className="flex items-center gap-1">
-              <Link 
-                to="/categorii"
-                className="text-sm font-bold h-auto py-2 px-4 rounded-md bg-primary/10 text-primary hover:bg-primary hover:text-white transition-colors flex items-center gap-1"
-              >
-                📦 Toate Categoriile
-              </Link>
-              {categories.slice(0, 5).map((category) => (
+              {categories.map((category) => (
                 <div key={category.id} className="relative group">
-                  <Link 
-                    to={`/categorie/${category.slug}`}
-                    className="text-sm font-medium h-auto py-2 px-4 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-1"
-                  >
+                  <button className="text-sm font-medium h-auto py-2 px-4 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-1">
                     {category.name}
-                    {category.productCount && (
-                      <span className="text-xs text-muted-foreground ml-1">({category.productCount})</span>
-                    )}
-                  </Link>
+                    <ChevronDown className="h-3 w-3 transition-transform group-hover:rotate-180" />
+                  </button>
+                  <div className="absolute left-0 top-full mt-1 hidden group-hover:block z-50 min-w-[500px]">
+                    <div className="bg-popover border border-border rounded-md shadow-lg p-4">
+                      <div className="grid grid-cols-2 gap-2">
+                        <Link
+                          to={`/produse?categorie=${category.slug}`}
+                          className="block p-2 hover:bg-muted rounded-md transition-colors"
+                        >
+                          <div className="font-semibold text-sm text-primary">
+                            Toate produsele
+                          </div>
+                          {category.productCount && (
+                            <div className="text-xs text-muted-foreground">
+                              {category.productCount} produse
+                            </div>
+                          )}
+                        </Link>
+                        {category.subcategories.map((sub) => (
+                          <Link
+                            key={sub.id}
+                            to={`/produse?categorie=${category.slug}&subcategorie=${sub.slug}`}
+                            className="block p-2 hover:bg-muted rounded-md transition-colors"
+                          >
+                            <div className="text-sm text-foreground hover:text-primary">{sub.name}</div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
             <div className="flex items-center gap-6">
+              <Link to="/despre" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
+                Despre Noi
+              </Link>
+              <Link to="/servicii" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
+                Servicii
+              </Link>
               <Link to="/blog" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
                 Blog
               </Link>
@@ -194,13 +216,46 @@ const Header = () => {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {category.name}
-                  {category.productCount && (
-                    <span className="text-xs text-muted-foreground">({category.productCount})</span>
-                  )}
+                  <ChevronDown className="h-4 w-4" />
                 </Link>
+                <div className="pl-4 space-y-1 mt-2">
+                  {category.subcategories.slice(0, 6).map((sub) => (
+                    <Link
+                      key={sub.id}
+                      to={`/produse?categorie=${category.slug}&subcategorie=${sub.slug}`}
+                      className="block py-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {sub.name}
+                    </Link>
+                  ))}
+                  {category.subcategories.length > 6 && (
+                    <Link
+                      to={`/produse?categorie=${category.slug}`}
+                      className="block py-1.5 text-sm text-primary hover:text-primary/80 transition-colors font-medium"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Vezi toate ({category.subcategories.length}) →
+                    </Link>
+                  )}
+                </div>
               </div>
             ))}
             <div className="border-t border-border pt-3 space-y-3">
+              <Link
+                to="/despre"
+                className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Despre Noi
+              </Link>
+              <Link
+                to="/servicii"
+                className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Servicii
+              </Link>
               <Link
                 to="/blog"
                 className="block py-2 text-foreground hover:text-primary transition-colors font-medium"

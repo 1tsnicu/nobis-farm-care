@@ -55,9 +55,9 @@ const AboutPreview = () => {
               </div>
             </div>
 
-            <Link to="/contact">
+            <Link to="/despre">
               <Button size="lg" className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-lg group">
-                Contactează-ne
+                Află Mai Multe Despre Noi
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
