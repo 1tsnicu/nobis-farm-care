@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ShoppingCart, Heart, User, Menu, ChevronDown } from "lucide-react";
+import { ShoppingCart, Heart, User, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
@@ -17,10 +17,10 @@ interface Category {
 
 const Header = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [showCategories, setShowCategories] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { totalItems: cartItems } = useCart();
   const { totalItems: wishlistItems } = useWishlist();
+  const location = useLocation();
 
   useEffect(() => {
     fetchCategories();
@@ -37,7 +37,28 @@ const Header = () => {
     }
   };
 
-  const topCategories = categories.slice(0, 6);
+  const isActiveCategory = (slug: string) => {
+    return location.pathname === `/categorie/${slug}`;
+  };
+
+  const getCategoryShortName = (name: string) => {
+    // Scurtează numele pentru header
+    const shortNames: { [key: string]: string } = {
+      'Sănătate - Medicamente OTC': 'Medicamente OTC',
+      'Vitamine și Minerale': 'Vitamine',
+      'Sănătate - Parafarmaceutice': 'Parafarmaceutice',
+      'Mamă și Copil': 'Mamă & Copil',
+      'Sănătate - Echipamente Medicale': 'Echipamente',
+      'Sănătate - Plante Medicinale': 'Plante',
+      'Frumusețe și Igienă - Îngrijire Corp/Față': 'Corp/Față',
+      'Frumusețe și Igienă - Igienă Personală': 'Igienă',
+      'Frumusețe și Igienă - Protecție Solară': 'Protecție Solară',
+      'Frumusețe și Igienă - Îngrijire Păr': 'Păr',
+      'Dermato-Cosmetică': 'Dermatocosmetică',
+      'Frumusețe și Igienă - Cosmetică Decorativă': 'Cosmetică'
+    };
+    return shortNames[name] || name;
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -45,61 +66,40 @@ const Header = () => {
         {/* Main Header */}
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
             <img src="/logo.jpeg" alt="Nobis Farm" className="h-10 w-10 rounded-full" />
-            <span className="text-xl font-bold">Nobis Farm</span>
+            <span className="text-xl font-bold hidden sm:inline">Nobis Farm</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <div 
-              className="relative"
-              onMouseEnter={() => setShowCategories(true)}
-              onMouseLeave={() => setShowCategories(false)}
-            >
-              <Button variant="ghost" className="flex items-center gap-1">
-                Categorii
-                <ChevronDown className={`h-4 w-4 transition-transform ${showCategories ? 'rotate-180' : ''}`} />
-              </Button>
-
-              {showCategories && (
-                <div className="absolute top-full left-0 mt-1 w-72 bg-background border rounded-lg shadow-lg py-2 z-50">
-                  {topCategories.map((cat) => (
-                    <Link
-                      key={cat.id}
-                      to={`/categorie/${cat.slug}`}
-                      className="block px-4 py-2.5 hover:bg-muted transition-colors"
-                      onClick={() => setShowCategories(false)}
-                    >
-                      <span className="mr-2 text-lg">{cat.icon}</span>
-                      <span className="text-sm">{cat.name}</span>
-                    </Link>
-                  ))}
-                  <div className="border-t my-2"></div>
-                  <Link
-                    to="/produse"
-                    className="block px-4 py-2.5 hover:bg-muted transition-colors text-primary font-semibold text-sm"
-                    onClick={() => setShowCategories(false)}
-                  >
-                    Vezi toate produsele →
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            <Link to="/produse" className="hover:text-primary transition-colors">
-              Toate Produsele
-            </Link>
-            <Link to="/despre" className="hover:text-primary transition-colors">
-              Despre
-            </Link>
-            <Link to="/contact" className="hover:text-primary transition-colors">
-              Contact
-            </Link>
+          {/* Desktop Navigation - Categories */}
+          <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center overflow-x-auto px-4">
+            {categories.map((cat) => (
+              <Link
+                key={cat.id}
+                to={`/categorie/${cat.slug}`}
+                className={`px-3 py-2 text-sm whitespace-nowrap transition-colors hover:text-primary hover:bg-muted rounded-md ${
+                  isActiveCategory(cat.slug) 
+                    ? 'font-bold text-primary border-b-2 border-primary' 
+                    : 'text-muted-foreground'
+                }`}
+              >
+                {getCategoryShortName(cat.name)}
+              </Link>
+            ))}
           </nav>
 
+          {/* Desktop Links */}
+          <div className="hidden md:flex items-center gap-4 flex-shrink-0">
+            <Link to="/despre" className="text-sm hover:text-primary transition-colors">
+              Despre
+            </Link>
+            <Link to="/contact" className="text-sm hover:text-primary transition-colors">
+              Contact
+            </Link>
+          </div>
+
           {/* Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Link to="/favorite">
               <Button variant="ghost" size="icon" className="relative">
                 <Heart className="h-5 w-5" />
@@ -128,34 +128,45 @@ const Header = () => {
 
             {/* Mobile Menu */}
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger asChild className="md:hidden">
+              <SheetTrigger asChild className="lg:hidden">
                 <Button variant="ghost" size="icon">
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-80">
+              <SheetContent side="left" className="w-80 overflow-y-auto">
                 <div className="flex flex-col space-y-4 mt-8">
-                  <Link 
-                    to="/produse" 
-                    className="text-lg font-semibold hover:text-primary"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Toate Produsele
-                  </Link>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-bold">Meniu</h2>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <X className="h-5 w-5" />
+                    </Button>
+                  </div>
 
                   <div className="border-t pt-4">
-                    <p className="text-sm font-semibold text-muted-foreground mb-3">Categorii</p>
-                    {categories.map((cat) => (
-                      <Link
-                        key={cat.id}
-                        to={`/categorie/${cat.slug}`}
-                        className="block py-2 hover:text-primary transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        <span className="mr-2">{cat.icon}</span>
-                        {cat.name}
-                      </Link>
-                    ))}
+                    <p className="text-sm font-semibold text-muted-foreground mb-3">
+                      📦 Categorii ({categories.length})
+                    </p>
+                    <div className="space-y-1">
+                      {categories.map((cat) => (
+                        <Link
+                          key={cat.id}
+                          to={`/categorie/${cat.slug}`}
+                          className={`block py-2.5 px-3 rounded-md transition-colors ${
+                            isActiveCategory(cat.slug)
+                              ? 'bg-primary text-primary-foreground font-semibold'
+                              : 'hover:bg-muted'
+                          }`}
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <span className="mr-2">{cat.icon}</span>
+                          {cat.name}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="border-t pt-4">
@@ -164,7 +175,7 @@ const Header = () => {
                       className="block py-2 hover:text-primary"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Despre
+                      Despre Noi
                     </Link>
                     <Link 
                       to="/contact" 
