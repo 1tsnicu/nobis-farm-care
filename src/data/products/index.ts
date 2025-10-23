@@ -1,17 +1,11 @@
 import { Product } from "../types";
-import { medicamenteOTC } from "./medicamente-otc-sample";
-import { vitamineMinerale } from "./vitamine-minerale-sample";
-import { mamaCopil } from "./mama-copil-sample";
 
-// NOTE: This is a SAMPLE implementation with 116 products
-// Full implementation would include all 2,942 products organized by category
-// To add all products, create additional category files following the same pattern
+// Products will be imported from category files as they are added
+// Structure: src/data/products/{category-slug}.ts
 
-// Combine all products from different categories
+// All products combined from category files
 export const allProducts: Product[] = [
-  ...medicamenteOTC,
-  ...vitamineMinerale,
-  ...mamaCopil,
+  // Products will be added here as category files are created
 ];
 
 // Helper functions for product queries
