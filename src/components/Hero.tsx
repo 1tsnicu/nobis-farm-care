@@ -144,9 +144,9 @@ const Hero = () => {
                   <p className="text-gray-600 mb-4">
                     Echipa noastră de farmaciști cu experiență îți oferă consiliere personalizată pentru toate nevoile tale de sănătate.
                   </p>
-                  <Link to="/servicii">
+                  <Link to="/contact">
                     <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg">
-                      Programează o Consultație
+                      Contactează-ne pentru Consiliere
                     </Button>
                   </Link>
                 </div>

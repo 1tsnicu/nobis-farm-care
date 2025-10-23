@@ -11,8 +11,6 @@ import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import Auth from "./pages/Auth";
 import { Checkout } from "./pages/Checkout";
-import About from "./pages/About";
-import Services from "./pages/Services";
 import Blog from "./pages/Blog";
 import Contact from "./pages/Contact";
 import Wishlist from "./pages/Wishlist";
@@ -36,8 +34,6 @@ const App = () => (
             <Route path="/favorite" element={<Wishlist />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/despre" element={<About />} />
-            <Route path="/servicii" element={<Services />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />

@@ -166,12 +166,6 @@ const Header = () => {
               ))}
             </div>
             <div className="flex items-center gap-6">
-              <Link to="/despre" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
-                Despre Noi
-              </Link>
-              <Link to="/servicii" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
-                Servicii
-              </Link>
               <Link to="/blog" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
                 Blog
               </Link>
@@ -242,20 +236,6 @@ const Header = () => {
               </div>
             ))}
             <div className="border-t border-border pt-3 space-y-3">
-              <Link
-                to="/despre"
-                className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Despre Noi
-              </Link>
-              <Link
-                to="/servicii"
-                className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Servicii
-              </Link>
               <Link
                 to="/blog"
                 className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
