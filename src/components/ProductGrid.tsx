@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Search, SlidersHorizontal, X, Package, MapPin, DollarSign } from "lucide-react";
 
 interface Product {
@@ -149,107 +150,58 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
   }
 
   return (
-    <div className="flex gap-6">
-      {/* Sidebar Filters */}
+    <div className="flex flex-col lg:flex-row gap-6">
+      {/* Mobile Filter Button */}
       {showFilters && (
-        <aside className="w-80 flex-shrink-0 space-y-6">
-          <div className="border rounded-lg p-4 bg-card sticky top-20">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold text-lg">Filtre</h3>
-              </div>
-              {hasActiveFilters && (
-                <Badge variant="default" className="rounded-full">
-                  {[selectedManufacturer !== "all", selectedCountry !== "all", (priceRange[0] > 0 || priceRange[1] < maxPrice)].filter(Boolean).length}
-                </Badge>
-              )}
-            </div>
-
-            {/* Search in Filters */}
-            <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Caută brand, categorie..."
-                className="pl-10"
+        <div className="lg:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" className="w-full">
+                <SlidersHorizontal className="w-4 h-4 mr-2" />
+                Filtre
+                {hasActiveFilters && (
+                  <Badge variant="default" className="ml-2 rounded-full">
+                    {[selectedManufacturer !== "all", selectedCountry !== "all", (priceRange[0] > 0 || priceRange[1] < maxPrice)].filter(Boolean).length}
+                  </Badge>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-80 overflow-y-auto">
+              <FiltersContent
+                selectedManufacturer={selectedManufacturer}
+                setSelectedManufacturer={setSelectedManufacturer}
+                selectedCountry={selectedCountry}
+                setSelectedCountry={setSelectedCountry}
+                priceRange={priceRange}
+                setPriceRange={setPriceRange}
+                maxPrice={maxPrice}
+                manufacturers={manufacturers}
+                countries={countries}
+                hasActiveFilters={hasActiveFilters}
+                resetFilters={resetFilters}
               />
-            </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      )}
 
-            {/* Manufacturer Filter */}
-            <div className="mb-4">
-              <h4 className="font-semibold mb-3 flex items-center gap-2">
-                <Package className="w-4 h-4" />
-                Brand
-              </h4>
-              <Select value={selectedManufacturer} onValueChange={setSelectedManufacturer}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selectează producător" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Toate brandurile</SelectItem>
-                  {manufacturers.map((m) => (
-                    <SelectItem key={m.id} value={m.id}>
-                      {m.name} ({m.products_count})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Country Filter */}
-            <div className="mb-4">
-              <h4 className="font-semibold mb-3 flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                Țară
-              </h4>
-              <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selectează țara" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Toate țările</SelectItem>
-                  {countries.map((country) => (
-                    <SelectItem key={country} value={country}>
-                      {country}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Price Range */}
-            <div className="mb-4">
-              <h4 className="font-semibold mb-3 flex items-center gap-2">
-                <DollarSign className="w-4 h-4" />
-                Interval Preț
-              </h4>
-              <div className="space-y-4">
-                <Slider
-                  min={0}
-                  max={maxPrice}
-                  step={10}
-                  value={priceRange}
-                  onValueChange={setPriceRange}
-                  className="w-full"
-                />
-                <div className="flex items-center justify-between text-sm text-muted-foreground">
-                  <span>{priceRange[0]} MDL</span>
-                  <span>{priceRange[1]} MDL</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Reset Button */}
-            <Button 
-              variant="outline" 
-              onClick={resetFilters}
-              disabled={!hasActiveFilters}
-              className="w-full"
-            >
-              <X className="w-4 h-4 mr-2" />
-              Reset Filtre
-            </Button>
+      {/* Desktop Sidebar Filters */}
+      {showFilters && (
+        <aside className="hidden lg:block w-80 flex-shrink-0">
+          <div className="border rounded-lg p-4 bg-card sticky top-20">
+            <FiltersContent
+              selectedManufacturer={selectedManufacturer}
+              setSelectedManufacturer={setSelectedManufacturer}
+              selectedCountry={selectedCountry}
+              setSelectedCountry={setSelectedCountry}
+              priceRange={priceRange}
+              setPriceRange={setPriceRange}
+              maxPrice={maxPrice}
+              manufacturers={manufacturers}
+              countries={countries}
+              hasActiveFilters={hasActiveFilters}
+              resetFilters={resetFilters}
+            />
           </div>
         </aside>
       )}
@@ -283,7 +235,7 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
         {/* Products Grid */}
         {paginatedProducts.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
               {paginatedProducts.map(product => {
                 const stockBadge = getStockBadge(product.stock_quantity);
                 return (
@@ -347,6 +299,136 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
           </div>
         )}
       </div>
+    </div>
+  );
+};
+
+// Filters Content Component (reused for mobile and desktop)
+interface FiltersContentProps {
+  selectedManufacturer: string;
+  setSelectedManufacturer: (value: string) => void;
+  selectedCountry: string;
+  setSelectedCountry: (value: string) => void;
+  priceRange: number[];
+  setPriceRange: (value: number[]) => void;
+  maxPrice: number;
+  manufacturers: Manufacturer[];
+  countries: string[];
+  hasActiveFilters: boolean;
+  resetFilters: () => void;
+}
+
+const FiltersContent = ({
+  selectedManufacturer,
+  setSelectedManufacturer,
+  selectedCountry,
+  setSelectedCountry,
+  priceRange,
+  setPriceRange,
+  maxPrice,
+  manufacturers,
+  countries,
+  hasActiveFilters,
+  resetFilters
+}: FiltersContentProps) => {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <SlidersHorizontal className="w-5 h-5 text-primary" />
+          <h3 className="font-semibold text-lg">Filtre</h3>
+        </div>
+        {hasActiveFilters && (
+          <Badge variant="default" className="rounded-full">
+            {[selectedManufacturer !== "all", selectedCountry !== "all", (priceRange[0] > 0 || priceRange[1] < maxPrice)].filter(Boolean).length}
+          </Badge>
+        )}
+      </div>
+
+      {/* Search in Filters */}
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="text"
+          placeholder="Caută brand, categorie..."
+          className="pl-10"
+        />
+      </div>
+
+      {/* Manufacturer Filter */}
+      <div className="mb-4">
+        <h4 className="font-semibold mb-3 flex items-center gap-2">
+          <Package className="w-4 h-4" />
+          Brand
+        </h4>
+        <Select value={selectedManufacturer} onValueChange={setSelectedManufacturer}>
+          <SelectTrigger>
+            <SelectValue placeholder="Selectează producător" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Toate brandurile</SelectItem>
+            {manufacturers.map((m) => (
+              <SelectItem key={m.id} value={m.id}>
+                {m.name} ({m.products_count})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Country Filter */}
+      <div className="mb-4">
+        <h4 className="font-semibold mb-3 flex items-center gap-2">
+          <MapPin className="w-4 h-4" />
+          Țară
+        </h4>
+        <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+          <SelectTrigger>
+            <SelectValue placeholder="Selectează țara" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Toate țările</SelectItem>
+            {countries.map((country) => (
+              <SelectItem key={country} value={country}>
+                {country}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Price Range */}
+      <div className="mb-4">
+        <h4 className="font-semibold mb-3 flex items-center gap-2">
+          <DollarSign className="w-4 h-4" />
+          Interval Preț
+        </h4>
+        <div className="space-y-4">
+          <Slider
+            min={0}
+            max={maxPrice}
+            step={10}
+            value={priceRange}
+            onValueChange={setPriceRange}
+            className="w-full"
+          />
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <span>{priceRange[0]} MDL</span>
+            <span>{priceRange[1]} MDL</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Reset Button */}
+      <Button 
+        variant="outline" 
+        onClick={resetFilters}
+        disabled={!hasActiveFilters}
+        className="w-full"
+      >
+        <X className="w-4 h-4 mr-2" />
+        Reset Filtre
+      </Button>
     </div>
   );
 };
