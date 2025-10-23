@@ -13,9 +13,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { useSearch } from "@/hooks/useSearch";
 import { SearchBar } from "@/components/SearchBar";
+import { products as allProducts } from "@/lib/data/products";
 
-// Mock data - va veni din API
-const allProducts = [
+const uniqueBrands = Array.from(new Set(allProducts.map(p => p.brand))).sort();
+const allProductsLegacy = [
   {
     id: 1,
     image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&h=500&fit=crop",
@@ -144,14 +145,14 @@ const allProducts = [
 ];
 
 const categories = [
-  { id: "medicamente", name: "Medicamente OTC" },
-  { id: "vitamine", name: "Vitamine & Suplimente" },
-  { id: "cosmetice", name: "Produse cosmetice" },
-  { id: "dermato-cosmetice", name: "Dermato-Cosmetice" },
-  { id: "ingrijire", name: "Îngrijire personală" }
+  { id: "sanatate", name: "Sănătate" },
+  { id: "vitamine-minerale", name: "Vitamine & Minerale" },
+  { id: "dermatocosmetica", name: "Dermato-Cosmetică" },
+  { id: "mama-copil", name: "Mamă și Copil" },
+  { id: "frumusete-igiena", name: "Frumusețe și Igienă" }
 ];
 
-const brands = ["Paracetamol", "Vitamin C", "Omega-3", "Probiotice", "Ibuprofen", "Cremă", "Magneziu", "Aspirina", "Efect"];
+const brands = uniqueBrands;
 
 const Products = () => {
   const [searchParams] = useSearchParams();
@@ -163,7 +164,9 @@ const Products = () => {
   const [sortBy, setSortBy] = useState("relevance");
   const [filterSearchTerm, setFilterSearchTerm] = useState("");
   
-  // Inițializăm hook-ul de search
+  // Inițializăm hook-ul de search cu toate produsele (vechi + noi)
+  const allProductsCombined = [...allProductsLegacy, ...allProducts];
+  
   const {
     searchTerm,
     setSearchTerm,
@@ -177,7 +180,7 @@ const Products = () => {
     isSearching,
     searchStats
   } = useSearch({ 
-    products: allProducts,
+    products: allProductsCombined,
     onResultsChange: (results) => {
       console.log(`Search found ${results.length} products`);
     }
@@ -237,7 +240,7 @@ const Products = () => {
   };
 
   // Combinăm rezultatele search-ului cu filtrele
-  let filteredProducts = searchTerm ? searchResults : allProducts;
+  let filteredProducts = searchTerm ? searchResults : allProductsCombined;
   
   // Aplicăm filtrele tradiționale
   filteredProducts = filteredProducts.filter(product => {
