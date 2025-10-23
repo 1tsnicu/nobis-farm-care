@@ -46,11 +46,11 @@ const HeroCategories = () => {
 
   const getCategoryShortName = (name: string) => {
     const shortNames: { [key: string]: string } = {
-      'Sănătate - Medicamente OTC': 'Sănătate',
+      'Sănătate - Medicamente OTC': 'Medicamente OTC',
       'Vitamine și Minerale': 'Vitamine și Minerale',
       'Sănătate - Parafarmaceutice': 'Frumusețe și Igienă',
       'Mamă și Copil': 'Mamă și Copil',
-      'Sănătate - Echipamente Medicale': 'Cuplu și Sex',
+      'Sănătate - Echipamente Medicale': 'Sănătate',
       'Dermato-Cosmetică': 'Dermatocosmetică',
     };
     return shortNames[name] || name;
