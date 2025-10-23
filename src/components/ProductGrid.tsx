@@ -6,16 +6,24 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Search, SlidersHorizontal, X, Package, MapPin, DollarSign } from "lucide-react";
 
 interface Product {
   id: string;
   name: string;
   manufacturer: string;
+  manufacturer_id: string | null;
   country: string;
   price: number;
   stock_quantity: number;
   image_url: string | null;
+}
+
+interface Manufacturer {
+  id: string;
+  name: string;
+  products_count: number;
 }
 
 interface ProductGridProps {
@@ -28,20 +36,32 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("name");
+  const [sortBy, setSortBy] = useState("name-asc");
   const [currentPage, setCurrentPage] = useState(1);
   
   // Filters
-  const [manufacturers, setManufacturers] = useState<string[]>([]);
+  const [manufacturers, setManufacturers] = useState<Manufacturer[]>([]);
   const [countries, setCountries] = useState<string[]>([]);
-  const [selectedManufacturer, setSelectedManufacturer] = useState("all");
-  const [selectedCountry, setSelectedCountry] = useState("all");
+  const [selectedManufacturer, setSelectedManufacturer] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("");
   const [priceRange, setPriceRange] = useState([0, 3500]);
   const [maxPrice, setMaxPrice] = useState(3500);
 
   useEffect(() => {
     fetchProducts();
+    fetchManufacturers();
   }, [categoryId]);
+
+  const fetchManufacturers = async () => {
+    const { data } = await supabase
+      .from('manufacturers')
+      .select('*')
+      .order('products_count', { ascending: false });
+    
+    if (data) {
+      setManufacturers(data);
+    }
+  };
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -62,10 +82,8 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
     } else {
       setProducts(productsData || []);
       
-      // Extract unique manufacturers and countries
-      const uniqueManufacturers = [...new Set(productsData?.map(p => p.manufacturer).filter(Boolean))] as string[];
+      // Extract unique countries
       const uniqueCountries = [...new Set(productsData?.map(p => p.country).filter(Boolean))] as string[];
-      setManufacturers(uniqueManufacturers.sort());
       setCountries(uniqueCountries.sort());
 
       // Set max price
@@ -83,12 +101,13 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.manufacturer?.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .filter(p => selectedManufacturer === "all" || p.manufacturer === selectedManufacturer)
-    .filter(p => selectedCountry === "all" || p.country === selectedCountry)
+    .filter(p => !selectedManufacturer || p.manufacturer_id === selectedManufacturer)
+    .filter(p => !selectedCountry || p.country === selectedCountry)
     .filter(p => p.price >= priceRange[0] && p.price <= priceRange[1])
     .sort((a, b) => {
       if (sortBy === "price-asc") return a.price - b.price;
       if (sortBy === "price-desc") return b.price - a.price;
+      if (sortBy === "name-desc") return b.name.localeCompare(a.name);
       if (sortBy === "stock") return b.stock_quantity - a.stock_quantity;
       return a.name.localeCompare(b.name);
     });
@@ -99,9 +118,11 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
     currentPage * itemsPerPage
   );
 
+  const hasActiveFilters = selectedManufacturer || selectedCountry || priceRange[0] > 0 || priceRange[1] < maxPrice;
+
   const resetFilters = () => {
-    setSelectedManufacturer("all");
-    setSelectedCountry("all");
+    setSelectedManufacturer("");
+    setSelectedCountry("");
     setPriceRange([0, maxPrice]);
     setSearchTerm("");
   };
@@ -114,173 +135,218 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {[...Array(8)].map((_, i) => (
-            <Skeleton key={i} className="h-80" />
-          ))}
+      <div className="flex gap-6">
+        {showFilters && <Skeleton className="w-80 h-[600px]" />}
+        <div className="flex-1 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, i) => (
+              <Skeleton key={i} className="h-80" />
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Product Count */}
-      <div className="flex items-center justify-between">
-        <p className="text-lg text-muted-foreground">
-          <span className="font-semibold text-primary">{filteredProducts.length}</span> produse disponibile
-        </p>
-      </div>
-
+    <div className="flex gap-6">
+      {/* Sidebar Filters */}
       {showFilters && (
-        <div className="bg-card rounded-lg p-6 shadow-sm border space-y-4">
-          {/* Filters Title */}
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold flex items-center gap-2">
-              <Filter className="w-4 h-4" />
-              Filtre
-            </h3>
-            <Button variant="ghost" size="sm" onClick={resetFilters}>
-              <X className="w-4 h-4 mr-1" />
-              Reset
-            </Button>
-          </div>
+        <aside className="w-80 flex-shrink-0 space-y-6">
+          <div className="border rounded-lg p-4 bg-card sticky top-20">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="w-5 h-5 text-primary" />
+                <h3 className="font-semibold text-lg">Filtre</h3>
+              </div>
+              {hasActiveFilters && (
+                <Badge variant="default" className="rounded-full">
+                  {[selectedManufacturer, selectedCountry, (priceRange[0] > 0 || priceRange[1] < maxPrice)].filter(Boolean).length}
+                </Badge>
+              )}
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Search in Filters */}
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Caută brand, categorie..."
+                className="pl-10"
+              />
+            </div>
+
             {/* Manufacturer Filter */}
-            <Select value={selectedManufacturer} onValueChange={setSelectedManufacturer}>
-              <SelectTrigger>
-                <SelectValue placeholder="Producător" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Toți producătorii</SelectItem>
-                {manufacturers.map(mfg => (
-                  <SelectItem key={mfg} value={mfg}>{mfg}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="mb-4">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <Package className="w-4 h-4" />
+                Brand
+              </h4>
+              <Select value={selectedManufacturer} onValueChange={setSelectedManufacturer}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selectează producător" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Toate brandurile</SelectItem>
+                  {manufacturers.map((m) => (
+                    <SelectItem key={m.id} value={m.id}>
+                      {m.name} ({m.products_count})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
             {/* Country Filter */}
-            <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-              <SelectTrigger>
-                <SelectValue placeholder="Țară" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Toate țările</SelectItem>
-                {countries.map(country => (
-                  <SelectItem key={country} value={country}>{country}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="mb-4">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                Țară
+              </h4>
+              <Select value={selectedCountry} onValueChange={setSelectedCountry}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selectează țara" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Toate țările</SelectItem>
+                  {countries.map((country) => (
+                    <SelectItem key={country} value={country}>
+                      {country}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-            {/* Sort */}
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger>
-                <SelectValue placeholder="Sortare" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="name">Nume (A-Z)</SelectItem>
-                <SelectItem value="price-asc">Preț (Crescător)</SelectItem>
-                <SelectItem value="price-desc">Preț (Descrescător)</SelectItem>
-                <SelectItem value="stock">Stoc disponibil</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            {/* Price Range */}
+            <div className="mb-4">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <DollarSign className="w-4 h-4" />
+                Interval Preț
+              </h4>
+              <div className="space-y-4">
+                <Slider
+                  min={0}
+                  max={maxPrice}
+                  step={10}
+                  value={priceRange}
+                  onValueChange={setPriceRange}
+                  className="w-full"
+                />
+                <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <span>{priceRange[0]} MDL</span>
+                  <span>{priceRange[1]} MDL</span>
+                </div>
+              </div>
+            </div>
 
-          {/* Price Range Slider */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">
-              Preț: {priceRange[0]} - {priceRange[1]} MDL
-            </label>
-            <Slider
-              value={priceRange}
-              onValueChange={setPriceRange}
-              max={maxPrice}
-              step={10}
+            {/* Reset Button */}
+            <Button 
+              variant="outline" 
+              onClick={resetFilters}
+              disabled={!hasActiveFilters}
               className="w-full"
-            />
+            >
+              <X className="w-4 h-4 mr-2" />
+              Reset Filtre
+            </Button>
           </div>
-        </div>
+        </aside>
       )}
 
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="🔍 Caută produs..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
-        />
-      </div>
+      {/* Main Content */}
+      <div className="flex-1 space-y-6">
+        {/* Product Count and Sort */}
+        <div className="flex items-center justify-between">
+          <p className="text-muted-foreground">
+            <span className="text-2xl font-bold text-primary">{filteredProducts.length}</span> produse disponibile
+          </p>
 
-      {/* Products Grid */}
-      {paginatedProducts.length > 0 ? (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {paginatedProducts.map(product => {
-              const stockBadge = getStockBadge(product.stock_quantity);
-              return (
-                <div key={product.id} className="relative">
-                  <ProductCard
-                    id={parseInt(product.id)}
-                    name={product.name}
-                    price={product.price}
-                    image={product.image_url || '/placeholder.svg'}
-                    rating={4.5}
-                    reviews={Math.floor(Math.random() * 200) + 10}
-                    inStock={product.stock_quantity > 0}
-                  />
-                  <div className={`absolute top-2 right-2 ${stockBadge.color} text-white text-xs px-2 py-1 rounded-full font-semibold`}>
-                    {stockBadge.text}
-                  </div>
-                </div>
-              );
-            })}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Sortează:</span>
+            <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Relevanță" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name-asc">✨ Relevanță</SelectItem>
+                <SelectItem value="price-asc">Preț crescător</SelectItem>
+                <SelectItem value="price-desc">Preț descrescător</SelectItem>
+                <SelectItem value="name-asc">Nume A-Z</SelectItem>
+                <SelectItem value="name-desc">Nume Z-A</SelectItem>
+                <SelectItem value="stock">Stoc</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+        </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-8">
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-              >
-                ← Precedent
-              </Button>
-              
-              {[...Array(Math.min(5, totalPages))].map((_, i) => {
-                const pageNum = i + 1;
+        {/* Products Grid */}
+        {paginatedProducts.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {paginatedProducts.map(product => {
+                const stockBadge = getStockBadge(product.stock_quantity);
                 return (
-                  <Button
-                    key={pageNum}
-                    variant={currentPage === pageNum ? "default" : "outline"}
-                    onClick={() => setCurrentPage(pageNum)}
-                  >
-                    {pageNum}
-                  </Button>
+                  <div key={product.id} className="relative">
+                    <ProductCard
+                      id={parseInt(product.id)}
+                      name={product.name}
+                      price={product.price}
+                      image={product.image_url || '/placeholder.svg'}
+                      rating={4.5}
+                      reviews={Math.floor(Math.random() * 200) + 10}
+                      inStock={product.stock_quantity > 0}
+                    />
+                    <div className={`absolute top-2 right-2 ${stockBadge.color} text-white text-xs px-2 py-1 rounded-full font-semibold`}>
+                      {stockBadge.text}
+                    </div>
+                  </div>
                 );
               })}
-
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-              >
-                Următor →
-              </Button>
             </div>
-          )}
-        </>
-      ) : (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground text-lg">
-            Nu s-au găsit produse {searchTerm && `pentru "${searchTerm}"`}
-          </p>
-        </div>
-      )}
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-8">
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                >
+                  ← Precedent
+                </Button>
+                
+                {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                  const pageNum = i + 1;
+                  return (
+                    <Button
+                      key={pageNum}
+                      variant={currentPage === pageNum ? "default" : "outline"}
+                      onClick={() => setCurrentPage(pageNum)}
+                    >
+                      {pageNum}
+                    </Button>
+                  );
+                })}
+
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Următor →
+                </Button>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg">
+              Nu s-au găsit produse {searchTerm && `pentru "${searchTerm}"`}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
