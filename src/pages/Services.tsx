@@ -28,7 +28,7 @@ const services = [
   {
     icon: Stethoscope,
     title: "Consiliere Farmaceutică Personalizată",
-    description: "Farmaciștii noștri cu experiență de peste 15 ani oferă consultații profesionale pentru alegerea corectă a medicamentelor și tratamentelor.",
+    description: "Farmaciștii noștri cu experiență de peste 8 ani oferă consultații profesionale pentru alegerea corectă a medicamentelor și tratamentelor.",
     features: [
       "Evaluarea interacțiunilor medicamentoase",
       "Recomandări personalizate de tratament", 
@@ -154,7 +154,7 @@ const Services = () => {
               </h1>
               <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
                 De la consiliere farmaceutică specializată până la testări rapide și monitorizare cronică - 
-                toate sub un singur acoperiș, cu experiența de 15+ ani.
+                toate sub un singur acoperiș, cu experiența de 8+ ani.
               </p>
               <div className="flex flex-wrap justify-center gap-8">
                 <div className="text-center">
@@ -162,7 +162,7 @@ const Services = () => {
                   <div className="text-white/80 text-sm">Servicii Principale</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-yellow-300">15+</div>
+                  <div className="text-3xl font-bold text-yellow-300">8+</div>
                   <div className="text-white/80 text-sm">Ani Experiență</div>
                 </div>
                 <div className="text-center">
@@ -344,7 +344,7 @@ const Services = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-green-600" />
-                    <span>15+ ani experiență</span>
+                    <span>8+ ani experiență</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Heart className="h-4 w-4 text-green-600" />

@@ -23,7 +23,7 @@ const FinalCTA = () => {
             Ai nevoie de sfaturi pentru <span className="text-yellow-300">sănătatea ta</span>?
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Echipa noastră de farmaciști cu experiență de peste 15 ani este gata să răspundă la toate întrebările tale 
+            Echipa noastră de farmaciști cu experiență de peste 8 ani este gata să răspundă la toate întrebările tale 
             și să te ghideze către cele mai potrivite soluții pentru sănătatea familiei tale.
           </p>
 
@@ -102,7 +102,7 @@ const FinalCTA = () => {
           <div className="mt-8 flex flex-wrap justify-center gap-6 text-white/80">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-              <span className="text-sm">15+ ani experiență</span>
+              <span className="text-sm">8+ ani experiență</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>

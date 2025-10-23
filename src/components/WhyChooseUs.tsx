@@ -34,7 +34,7 @@ const features = [
   {
     icon: Users,
     title: "Echipă Dedicată",
-    description: "15+ ani de experiență în îngrijirea sănătății comunității noastre",
+    description: "8+ ani de experiență în îngrijirea sănătății comunității noastre",
     color: "bg-blue-500"
   }
 ];
@@ -84,7 +84,7 @@ const WhyChooseUs = () => {
                 <div className="text-sm text-gray-600">Rating Google</div>
               </div>
               <div className="bg-white rounded-lg p-4 border border-blue-200 text-center">
-                <div className="text-2xl font-bold text-blue-600">15+</div>
+                <div className="text-2xl font-bold text-blue-600">8+</div>
                 <div className="text-sm text-gray-600">Ani experiență</div>
               </div>
               <div className="bg-white rounded-lg p-4 border border-green-200 text-center">

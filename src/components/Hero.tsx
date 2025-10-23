@@ -12,7 +12,6 @@ import {
   Award,
   Phone
 } from "lucide-react";
-import heroPharmacy from "@/assets/hero-pharmacy.jpg";
 
 const Hero = () => {
   return (
@@ -48,7 +47,7 @@ const Hero = () => {
                 <span className="text-gray-800">la Îndemâna Ta</span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto lg:mx-0">
-                Farmacia ta de încredere cu <span className="text-green-700 font-bold">peste 15 ani</span> de experiență în îngrijirea sănătății familiei tale
+                Farmacia ta de încredere cu <span className="text-green-700 font-bold">peste 8 ani</span> de experiență în îngrijirea sănătății familiei tale
               </p>
             </div>
 
@@ -103,7 +102,7 @@ const Hero = () => {
             {/* Trust Stats */}
             <div className="flex items-center justify-center lg:justify-start gap-8 pt-4">
               <div className="text-center">
-                <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">15+</p>
+                <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">8+</p>
                 <p className="text-sm text-gray-600">Ani experiență</p>
               </div>
               <div className="w-px h-12 bg-gray-300" />
@@ -130,7 +129,7 @@ const Hero = () => {
                 {/* Hero Image */}
                 <div className="aspect-[4/3] bg-gradient-to-br from-green-100 to-blue-100 rounded-2xl flex items-center justify-center overflow-hidden">
                   <img 
-                    src={heroPharmacy} 
+                    src="/poza cu farmacia.jpeg" 
                     alt="Farmacia Nobis Farm - Interior modern și primitor"
                     className="w-full h-full object-cover"
                   />

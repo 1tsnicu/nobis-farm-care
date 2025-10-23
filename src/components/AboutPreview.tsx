@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Users, Heart, Award, ArrowRight } from "lucide-react";
-import pharmacyTeam from "@/assets/pharmacy-team.jpg";
 
 const AboutPreview = () => {
   return (
@@ -13,14 +12,14 @@ const AboutPreview = () => {
             <div className="mb-6">
               <span className="text-green-600 font-semibold text-sm uppercase tracking-wide">Despre Nobis Farm</span>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mt-2 mb-4">
-                Povestea Noastră de <span className="text-green-600">15 Ani</span>
+                Povestea Noastră de <span className="text-green-600">8 Ani</span>
               </h2>
             </div>
             
             <p className="text-lg text-gray-600 mb-6 leading-relaxed">
               Farmacia Nobis Farm s-a născut din dorința de a oferi comunității noastre 
               <strong className="text-gray-800"> cea mai bună îngrijire farmaceutică</strong>. 
-              De peste 15 ani, echipa noastră de farmaciști calificați pune pe primul loc 
+              De peste 8 ani, echipa noastră de farmaciști calificați pune pe primul loc 
               sănătatea și bunăstarea fiecărui client.
             </p>
 
@@ -35,7 +34,7 @@ const AboutPreview = () => {
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-3">
                   <Users className="h-8 w-8 text-green-600" />
                 </div>
-                <div className="text-2xl font-bold text-gray-800">15+</div>
+                <div className="text-2xl font-bold text-gray-800">8+</div>
                 <div className="text-sm text-gray-600">Ani de experiență</div>
               </div>
               
@@ -68,7 +67,7 @@ const AboutPreview = () => {
           <div className="relative">
             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-green-100 to-blue-100">
               <img
-                src={pharmacyTeam}
+                src="/poza cu farmacia.jpeg"
                 alt="Farmacia Nobis Farm - Echipa de farmaciști profesioniști"
                 className="w-full h-full object-cover"
               />

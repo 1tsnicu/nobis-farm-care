@@ -19,7 +19,7 @@ const Footer = () => {
               <h3 className="text-xl font-bold text-nobis-white">Nobis Farm</h3>
             </div>
             <p className="text-nobis-gray-300 mb-4 leading-relaxed">
-              Farmacia ta de încredere cu peste 15 ani de experiență în îngrijirea sănătății familiei. 
+              Farmacia ta de încredere cu peste 8 ani de experiență în îngrijirea sănătății familiei. 
               Produse certificate, consiliere profesională, servicii complete.
             </p>
             <div className="flex gap-3 mb-4">
@@ -173,7 +173,7 @@ const Footer = () => {
             </div>
             <div className="flex items-center gap-2 text-nobis-gray-400">
               <Award className="h-5 w-5 text-nobis-blue-500" />
-              <span className="text-sm">15+ ani experiență în farmaceutică</span>
+              <span className="text-sm">8+ ani experiență în farmaceutică</span>
             </div>
             <div className="flex items-center gap-2 text-nobis-gray-400">
               <span className="text-nobis-green-500 font-bold">4.9★</span>

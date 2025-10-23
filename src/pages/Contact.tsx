@@ -106,7 +106,7 @@ const Contact = () => {
                   <div className="text-white/80 text-sm">Consiliere Disponibilă</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-yellow-300">15+</div>
+                  <div className="text-3xl font-bold text-yellow-300">8+</div>
                   <div className="text-white/80 text-sm">Ani Experiență</div>
                 </div>
                 <div className="text-center">

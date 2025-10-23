@@ -4,7 +4,7 @@ Un site web modern și complet pentru farmacia Nobis Farm, construit cu React, T
 
 ## 🏥 Despre Nobis Farm
 
-Farmacia Nobis Farm este o farmacie de încredere cu peste 15 ani de experiență în îngrijirea sănătății familiei din Moldova. Oferim produse farmaceutice de cea mai înaltă calitate, consiliere profesională și servicii complete pentru toate nevoile de sănătate.
+Farmacia Nobis Farm este o farmacie de încredere cu peste 8 ani de experiență în îngrijirea sănătății familiei din Moldova. Oferim produse farmaceutice de cea mai înaltă calitate, consiliere profesională și servicii complete pentru toate nevoile de sănătate.
 
 ## ✨ Caracteristici Principale
 
@@ -18,7 +18,7 @@ Farmacia Nobis Farm este o farmacie de încredere cu peste 15 ani de experienț�
 ### 📱 **Pagini Complete**
 
 #### **Despre Noi**
-- Povestea farmaciei de 15 ani
+- Povestea farmaciei de 8 ani
 - Echipa de farmaciști calificați
 - Misiunea și viziunea companiei
 - Valorile fundamentale
@@ -152,7 +152,7 @@ Acest proiect este propriitatea farmaciei Nobis Farm. Toate drepturile rezervate
 
 ---
 
-**Nobis Farm** - Sănătatea și bunăstarea familiei tale în centrul atenției noastre de peste 15 ani.
+**Nobis Farm** - Sănătatea și bunăstarea familiei tale în centrul atenției noastre de peste 8 ani.
 
 ## What technologies are used for this project?
 

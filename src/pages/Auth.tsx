@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import TopBanner from "@/components/TopBanner";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,7 +15,6 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <TopBanner />
       <Header />
       
       <main className="flex-1 bg-muted/30 py-12">

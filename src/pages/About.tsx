@@ -21,7 +21,7 @@ const teamMembers = [
   {
     name: "Dr. Maria Ionescu", 
     role: "Farmacist Senior",
-    experience: "15+ ani experiență",
+    experience: "8+ ani experiență",
     image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400",
     description: "Expert în dermato-cosmetică și produse pentru îngrijirea pielii",
     specialties: ["Dermatologie", "Cosmetică", "Alergii"]
@@ -68,7 +68,7 @@ const values = [
 ];
 
 const achievements = [
-  { number: "15+", label: "Ani de experiență" },
+  { number: "8+", label: "Ani de experiență" },
   { number: "25,000+", label: "Clienți mulțumiți" },
   { number: "5,000+", label: "Produse certificate" },
   { number: "4.9★", label: "Rating Google Reviews" }
@@ -90,7 +90,7 @@ const About = () => {
                 <span className="text-white font-semibold">Despre Farmacia Nobis Farm</span>
               </div>
               <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                Povestea Noastră de <span className="text-yellow-300">15 Ani</span>
+                Povestea Noastră de <span className="text-yellow-300">8 Ani</span>
               </h1>
               <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
                 Suntem mai mult decât o farmacie – suntem partenerul tău de încredere pentru o viață sănătoasă, 
@@ -124,7 +124,7 @@ const About = () => {
                     însoțite de consiliere profesionistă și personalizată.
                   </p>
                   <p>
-                    De-a lungul acestor <strong>15 ani de activitate</strong>, am crescut constant, evoluând de la o farmacie 
+                    De-a lungul acestor <strong>8 ani de activitate</strong>, am crescut constant, evoluând de la o farmacie 
                     locală la o rețea de încredere care servește peste 25.000 de familii în toată Moldova. 
                     Fiecare zi ne-a adus mai aproape de clienții noștri și ne-a întărit convingerea că sănătatea este cea mai prețioasă avere.
                   </p>
