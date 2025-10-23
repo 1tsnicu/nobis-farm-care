@@ -42,8 +42,8 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
   // Filters
   const [manufacturers, setManufacturers] = useState<Manufacturer[]>([]);
   const [countries, setCountries] = useState<string[]>([]);
-  const [selectedManufacturer, setSelectedManufacturer] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedManufacturer, setSelectedManufacturer] = useState("all");
+  const [selectedCountry, setSelectedCountry] = useState("all");
   const [priceRange, setPriceRange] = useState([0, 3500]);
   const [maxPrice, setMaxPrice] = useState(3500);
 
@@ -101,8 +101,8 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.manufacturer?.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .filter(p => !selectedManufacturer || p.manufacturer_id === selectedManufacturer)
-    .filter(p => !selectedCountry || p.country === selectedCountry)
+    .filter(p => selectedManufacturer === "all" || p.manufacturer_id === selectedManufacturer)
+    .filter(p => selectedCountry === "all" || p.country === selectedCountry)
     .filter(p => p.price >= priceRange[0] && p.price <= priceRange[1])
     .sort((a, b) => {
       if (sortBy === "price-asc") return a.price - b.price;
@@ -118,11 +118,11 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
     currentPage * itemsPerPage
   );
 
-  const hasActiveFilters = selectedManufacturer || selectedCountry || priceRange[0] > 0 || priceRange[1] < maxPrice;
+  const hasActiveFilters = selectedManufacturer !== "all" || selectedCountry !== "all" || priceRange[0] > 0 || priceRange[1] < maxPrice;
 
   const resetFilters = () => {
-    setSelectedManufacturer("");
-    setSelectedCountry("");
+    setSelectedManufacturer("all");
+    setSelectedCountry("all");
     setPriceRange([0, maxPrice]);
     setSearchTerm("");
   };
@@ -161,7 +161,7 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
               </div>
               {hasActiveFilters && (
                 <Badge variant="default" className="rounded-full">
-                  {[selectedManufacturer, selectedCountry, (priceRange[0] > 0 || priceRange[1] < maxPrice)].filter(Boolean).length}
+                  {[selectedManufacturer !== "all", selectedCountry !== "all", (priceRange[0] > 0 || priceRange[1] < maxPrice)].filter(Boolean).length}
                 </Badge>
               )}
             </div>
@@ -187,7 +187,7 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
                   <SelectValue placeholder="Selectează producător" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Toate brandurile</SelectItem>
+                  <SelectItem value="all">Toate brandurile</SelectItem>
                   {manufacturers.map((m) => (
                     <SelectItem key={m.id} value={m.id}>
                       {m.name} ({m.products_count})
@@ -208,7 +208,7 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
                   <SelectValue placeholder="Selectează țara" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Toate țările</SelectItem>
+                  <SelectItem value="all">Toate țările</SelectItem>
                   {countries.map((country) => (
                     <SelectItem key={country} value={country}>
                       {country}
