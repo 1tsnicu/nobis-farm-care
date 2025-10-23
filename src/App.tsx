@@ -19,6 +19,7 @@ import Wishlist from "./pages/Wishlist";
 import NotFound from "./pages/NotFound";
 import ProductsManagement from "./pages/ProductsManagement";
 import ImportProducts from "./pages/ImportProducts";
+import CategoryPage from "./pages/CategoryPage";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
           <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/categorie/:slug" element={<CategoryPage />} />
             <Route path="/produse" element={<Products />} />
             <Route path="/produs/:id" element={<ProductDetail />} />
             <Route path="/cos" element={<Cart />} />

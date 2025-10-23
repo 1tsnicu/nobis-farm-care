@@ -1,98 +1,110 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Menu, X, Globe, ChevronDown } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { ShoppingCart, Heart, User, Menu, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { categories } from "@/lib/data/categories";
 import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
-import { useSearch } from "@/hooks/useSearch";
-import { SearchBar } from "@/components/SearchBar";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-// Mock data pentru demonstrație - în realitate ar veni din API
-const mockProducts = [
-  { id: 1, name: "Paracetamol 500mg", category: "Medicamente", brand: "Farmacia Tei", price: 15, image: "", inStock: true, description: "Analgezic și antipiretic", tags: ["durere", "febra"], rating: 4.5, reviews: 234 },
-  { id: 2, name: "Vitamina C 1000mg", category: "Vitamine", brand: "Solgar", price: 45, image: "", inStock: true, description: "Supliment vitamina C", tags: ["imunitate", "antioxidant"], rating: 4.8, reviews: 189 },
-  { id: 3, name: "Aspenter 100mg", category: "Medicamente", brand: "Zentiva", price: 22, image: "", inStock: true, description: "Antiagregant plachetar", tags: ["inima", "preventie"], rating: 4.2, reviews: 156 },
-  { id: 4, name: "Omega 3", category: "Suplimente", brand: "Nordic Naturals", price: 89, image: "", inStock: false, description: "Acizi grași omega 3", tags: ["inima", "creier"], rating: 4.7, reviews: 298 },
-  { id: 5, name: "Magneziu B6", category: "Vitamine", brand: "Magne B6", price: 35, image: "", inStock: true, description: "Supliment magneziu cu vitamina B6", tags: ["stres", "oboseala"], rating: 4.3, reviews: 127 }
-];
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string;
+  display_order: number;
+}
 
 const Header = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [showCategories, setShowCategories] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { totalItems: cartItems } = useCart();
   const { totalItems: wishlistItems } = useWishlist();
-  
-  // Inițializăm hook-ul de search
-  const {
-    searchTerm,
-    setSearchTerm,
-    performSearch,
-    clearSearch,
-    searchHistory,
-    removeFromHistory,
-    getSearchSuggestions,
-    isSearching
-  } = useSearch({ 
-    products: mockProducts,
-    onResultsChange: (results) => {
-      // Callback opțional pentru când se schimbă rezultatele
-      console.log(`Found ${results.length} products`);
-    }
-  });
 
-  // Generăm sugestii în timp real
-  const suggestions = searchTerm.length > 1 ? getSearchSuggestions(searchTerm, 5) : [];
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    const { data } = await supabase
+      .from('categories')
+      .select('*')
+      .order('display_order');
+    
+    if (data) {
+      setCategories(data);
+    }
+  };
+
+  const topCategories = categories.slice(0, 6);
 
   return (
-    <header className="sticky top-0 z-50 bg-background shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         {/* Main Header */}
-        <div className="flex items-center justify-between py-4 gap-4">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 flex-shrink-0">
-            <div className="w-12 h-12 rounded-full overflow-hidden shadow-md">
-              <img 
-                src="/logo.jpeg" 
-                alt="NOBIS FARM" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="hidden sm:block">
-              <span className="text-2xl font-bold text-nobis-green-700 block leading-tight">
-                NOBIS FARM
-              </span>
-              <span className="text-xs text-nobis-gray-600">Sănătatea familiei tale</span>
-            </div>
+          <Link to="/" className="flex items-center space-x-2">
+            <img src="/logo.jpeg" alt="Nobis Farm" className="h-10 w-10 rounded-full" />
+            <span className="text-xl font-bold">Nobis Farm</span>
           </Link>
 
-          {/* Search Bar - Desktop */}
-          <div className="hidden lg:flex flex-1 max-w-2xl">
-            <SearchBar
-              searchTerm={searchTerm}
-              onSearchChange={setSearchTerm}
-              onSearch={performSearch}
-              onClear={clearSearch}
-              suggestions={suggestions}
-              searchHistory={searchHistory}
-              onRemoveFromHistory={removeFromHistory}
-              placeholder="Caută medicamente, suplimente sau produse de îngrijire..."
-              isLoading={isSearching}
-              showSuggestions={true}
-            />
-          </div>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-6">
+            <div 
+              className="relative"
+              onMouseEnter={() => setShowCategories(true)}
+              onMouseLeave={() => setShowCategories(false)}
+            >
+              <Button variant="ghost" className="flex items-center gap-1">
+                Categorii
+                <ChevronDown className={`h-4 w-4 transition-transform ${showCategories ? 'rotate-180' : ''}`} />
+              </Button>
+
+              {showCategories && (
+                <div className="absolute top-full left-0 mt-1 w-72 bg-background border rounded-lg shadow-lg py-2 z-50">
+                  {topCategories.map((cat) => (
+                    <Link
+                      key={cat.id}
+                      to={`/categorie/${cat.slug}`}
+                      className="block px-4 py-2.5 hover:bg-muted transition-colors"
+                      onClick={() => setShowCategories(false)}
+                    >
+                      <span className="mr-2 text-lg">{cat.icon}</span>
+                      <span className="text-sm">{cat.name}</span>
+                    </Link>
+                  ))}
+                  <div className="border-t my-2"></div>
+                  <Link
+                    to="/produse"
+                    className="block px-4 py-2.5 hover:bg-muted transition-colors text-primary font-semibold text-sm"
+                    onClick={() => setShowCategories(false)}
+                  >
+                    Vezi toate produsele →
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            <Link to="/produse" className="hover:text-primary transition-colors">
+              Toate Produsele
+            </Link>
+            <Link to="/despre" className="hover:text-primary transition-colors">
+              Despre
+            </Link>
+            <Link to="/contact" className="hover:text-primary transition-colors">
+              Contact
+            </Link>
+          </nav>
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" className="hidden lg:flex gap-1 text-muted-foreground">
-              <Globe className="h-4 w-4" />
-              Română
-            </Button>
             <Link to="/favorite">
-              <Button variant="ghost" size="icon" className="hidden md:flex relative">
+              <Button variant="ghost" size="icon" className="relative">
                 <Heart className="h-5 w-5" />
                 {wishlistItems > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
+                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {wishlistItems}
                   </span>
                 )}
@@ -102,7 +114,7 @@ const Header = () => {
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="h-5 w-5" />
                 {cartItems > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
+                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {cartItems}
                   </span>
                 )}
@@ -113,190 +125,61 @@ const Header = () => {
                 <User className="h-5 w-5" />
               </Button>
             </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
-        </div>
 
-        {/* Navigation - Desktop */}
-        <nav className="hidden lg:block border-t border-border">
-          <div className="flex items-center justify-between py-2">
-            <div className="flex items-center gap-1">
-              {categories.map((category) => (
-                <div key={category.id} className="relative group">
-                  <button className="text-sm font-medium h-auto py-2 px-4 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-1">
-                    {category.name}
-                    <ChevronDown className="h-3 w-3 transition-transform group-hover:rotate-180" />
-                  </button>
-                  <div className="absolute left-0 top-full mt-1 hidden group-hover:block z-50 min-w-[500px]">
-                    <div className="bg-popover border border-border rounded-md shadow-lg p-4">
-                      <div className="grid grid-cols-2 gap-2">
-                        <Link
-                          to={`/produse?categorie=${category.slug}`}
-                          className="block p-2 hover:bg-muted rounded-md transition-colors"
-                        >
-                          <div className="font-semibold text-sm text-primary">
-                            Toate produsele
-                          </div>
-                          {category.productCount && (
-                            <div className="text-xs text-muted-foreground">
-                              {category.productCount} produse
-                            </div>
-                          )}
-                        </Link>
-                        {category.subcategories.map((sub) => (
-                          <Link
-                            key={sub.id}
-                            to={`/produse?categorie=${category.slug}&subcategorie=${sub.slug}`}
-                            className="block p-2 hover:bg-muted rounded-md transition-colors"
-                          >
-                            <div className="text-sm text-foreground hover:text-primary">{sub.name}</div>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
+            {/* Mobile Menu */}
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80">
+                <div className="flex flex-col space-y-4 mt-8">
+                  <Link 
+                    to="/produse" 
+                    className="text-lg font-semibold hover:text-primary"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Toate Produsele
+                  </Link>
+
+                  <div className="border-t pt-4">
+                    <p className="text-sm font-semibold text-muted-foreground mb-3">Categorii</p>
+                    {categories.map((cat) => (
+                      <Link
+                        key={cat.id}
+                        to={`/categorie/${cat.slug}`}
+                        className="block py-2 hover:text-primary transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <span className="mr-2">{cat.icon}</span>
+                        {cat.name}
+                      </Link>
+                    ))}
+                  </div>
+
+                  <div className="border-t pt-4">
+                    <Link 
+                      to="/despre" 
+                      className="block py-2 hover:text-primary"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Despre
+                    </Link>
+                    <Link 
+                      to="/contact" 
+                      className="block py-2 hover:text-primary"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Contact
+                    </Link>
                   </div>
                 </div>
-              ))}
-            </div>
-            <div className="flex items-center gap-6">
-              <Link to="/despre" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
-                Despre Noi
-              </Link>
-              <Link to="/servicii" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
-                Servicii
-              </Link>
-              <Link to="/blog" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
-                Blog
-              </Link>
-              <Link to="/contact" className="text-sm text-foreground hover:text-primary transition-colors font-medium py-2">
-                Contact
-              </Link>
-              <Link to="/produse?oferte=true" className="text-sm text-accent hover:text-accent/80 transition-colors font-semibold py-2">
-                Oferte
-              </Link>
-            </div>
+              </SheetContent>
+            </Sheet>
           </div>
-        </nav>
-      </div>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-border bg-background max-h-[80vh] overflow-y-auto">
-          <nav className="container mx-auto px-4 py-4 flex flex-col gap-3">
-            <div className="pb-3">
-              <SearchBar
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                onSearch={(term) => {
-                  performSearch(term);
-                  setMobileMenuOpen(false);
-                }}
-                onClear={clearSearch}
-                suggestions={suggestions}
-                searchHistory={searchHistory}
-                onRemoveFromHistory={removeFromHistory}
-                placeholder="Caută produse..."
-                isLoading={isSearching}
-                showSuggestions={true}
-                className="w-full"
-              />
-            </div>
-            {categories.map((category) => (
-              <div key={category.id} className="border-b border-border pb-3 last:border-0">
-                <Link
-                  to={`/produse?categorie=${category.slug}`}
-                  className="block py-2 text-foreground hover:text-primary transition-colors font-semibold flex items-center justify-between"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {category.name}
-                  <ChevronDown className="h-4 w-4" />
-                </Link>
-                <div className="pl-4 space-y-1 mt-2">
-                  {category.subcategories.slice(0, 6).map((sub) => (
-                    <Link
-                      key={sub.id}
-                      to={`/produse?categorie=${category.slug}&subcategorie=${sub.slug}`}
-                      className="block py-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      {sub.name}
-                    </Link>
-                  ))}
-                  {category.subcategories.length > 6 && (
-                    <Link
-                      to={`/produse?categorie=${category.slug}`}
-                      className="block py-1.5 text-sm text-primary hover:text-primary/80 transition-colors font-medium"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Vezi toate ({category.subcategories.length}) →
-                    </Link>
-                  )}
-                </div>
-              </div>
-            ))}
-            <div className="border-t border-border pt-3 space-y-3">
-              <Link
-                to="/despre"
-                className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Despre Noi
-              </Link>
-              <Link
-                to="/servicii"
-                className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Servicii
-              </Link>
-              <Link
-                to="/blog"
-                className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Blog
-              </Link>
-              <Link
-                to="/contact"
-                className="block py-2 text-foreground hover:text-primary transition-colors font-medium"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Contact
-              </Link>
-              <Link
-                to="/favorite"
-                className="block py-2 text-foreground hover:text-primary transition-colors font-medium flex items-center gap-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Heart className="h-4 w-4" />
-                Favorite {wishlistItems > 0 && `(${wishlistItems})`}
-              </Link>
-              <Link
-                to="/cos"
-                className="block py-2 text-foreground hover:text-primary transition-colors font-medium flex items-center gap-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <ShoppingCart className="h-4 w-4" />
-                Coș {cartItems > 0 && `(${cartItems})`}
-              </Link>
-              <Link
-                to="/produse?oferte=true"
-                className="block py-2 text-accent hover:text-accent/80 transition-colors font-semibold"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Oferte
-              </Link>
-            </div>
-          </nav>
         </div>
-      )}
+      </div>
     </header>
   );
 };
