@@ -129,10 +129,16 @@ const Header = () => {
         <nav className="hidden lg:block border-t border-border">
           <div className="flex items-center justify-between py-2">
             <div className="flex items-center gap-1">
-              {categories.map((category) => (
+              <Link 
+                to="/categorii"
+                className="text-sm font-bold h-auto py-2 px-4 rounded-md bg-primary/10 text-primary hover:bg-primary hover:text-white transition-colors flex items-center gap-1"
+              >
+                📦 Toate Categoriile
+              </Link>
+              {categories.slice(0, 5).map((category) => (
                 <div key={category.id} className="relative group">
                   <Link 
-                    to={`/produse?categorie=${category.slug}`}
+                    to={`/categorie/${category.slug}`}
                     className="text-sm font-medium h-auto py-2 px-4 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-1"
                   >
                     {category.name}

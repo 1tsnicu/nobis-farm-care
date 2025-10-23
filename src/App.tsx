@@ -16,6 +16,7 @@ import Blog from "./pages/Blog";
 import Contact from "./pages/Contact";
 import Wishlist from "./pages/Wishlist";
 import NotFound from "./pages/NotFound";
+import Categories from "./pages/Categories";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
           <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/categorii" element={<Categories />} />
             <Route path="/produse" element={<AllProducts />} />
             <Route path="/categorie/:slug" element={<Products />} />
             <Route path="/produs/:id" element={<ProductDetail />} />
