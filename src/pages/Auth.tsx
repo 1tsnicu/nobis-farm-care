@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,10 +8,83 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Auth = () => {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate('/');
+      }
+    };
+    checkUser();
+  }, [navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      if (isLogin) {
+        // Login
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) throw error;
+        
+        toast.success("Autentificare reușită!");
+        navigate('/');
+      } else {
+        // Sign up
+        if (password !== confirmPassword) {
+          toast.error("Parolele nu se potrivesc!");
+          setLoading(false);
+          return;
+        }
+
+        if (password.length < 6) {
+          toast.error("Parola trebuie să aibă minim 6 caractere!");
+          setLoading(false);
+          return;
+        }
+
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/`,
+            data: {
+              full_name: name,
+            }
+          }
+        });
+
+        if (error) throw error;
+        
+        toast.success("Cont creat cu succes! Verifică-ți emailul pentru confirmare.");
+        setIsLogin(true);
+      }
+    } catch (error: any) {
+      console.error('Auth error:', error);
+      toast.error(error.message || "A apărut o eroare. Te rugăm să încerci din nou.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -32,44 +105,68 @@ const Auth = () => {
             </CardHeader>
             
             <CardContent className="space-y-4">
-              {!isLogin && (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {!isLogin && (
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nume complet</Label>
+                    <Input 
+                      id="name" 
+                      placeholder="Ion Popescu" 
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required={!isLogin}
+                    />
+                  </div>
+                )}
+
                 <div className="space-y-2">
-                  <Label htmlFor="name">Nume complet</Label>
-                  <Input id="name" placeholder="Ion Popescu" />
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email / Telefon</Label>
-                <Input id="email" type="email" placeholder="ion@exemplu.com" />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Parola</Label>
-                <div className="relative">
+                  <Label htmlFor="email">Email</Label>
                   <Input 
-                    id="password" 
-                    type={showPassword ? "text" : "password"} 
-                    placeholder="••••••••" 
+                    id="email" 
+                    type="email" 
+                    placeholder="ion@exemplu.com" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? "Ascunde" : "Arată"}
-                  </Button>
                 </div>
-              </div>
 
-              {!isLogin && (
                 <div className="space-y-2">
-                  <Label htmlFor="confirm-password">Confirmă parola</Label>
-                  <Input id="confirm-password" type="password" placeholder="••••••••" />
+                  <Label htmlFor="password">Parola</Label>
+                  <div className="relative">
+                    <Input 
+                      id="password" 
+                      type={showPassword ? "text" : "password"} 
+                      placeholder="••••••••" 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? "Ascunde" : "Arată"}
+                    </Button>
+                  </div>
                 </div>
-              )}
+
+                {!isLogin && (
+                  <div className="space-y-2">
+                    <Label htmlFor="confirm-password">Confirmă parola</Label>
+                    <Input 
+                      id="confirm-password" 
+                      type="password" 
+                      placeholder="••••••••" 
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required={!isLogin}
+                    />
+                  </div>
+                )}
 
               {isLogin && (
                 <div className="flex items-center justify-between">
@@ -105,9 +202,15 @@ const Auth = () => {
                 </div>
               )}
 
-              <Button className="w-full bg-primary hover:bg-primary/90 font-semibold" size="lg">
-                {isLogin ? "Intră în cont" : "Crează cont"}
-              </Button>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-primary hover:bg-primary/90 font-semibold" 
+                  size="lg"
+                  disabled={loading}
+                >
+                  {loading ? "Se procesează..." : (isLogin ? "Intră în cont" : "Crează cont")}
+                </Button>
+              </form>
 
               <div className="relative">
                 <Separator />
