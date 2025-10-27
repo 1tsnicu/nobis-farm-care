@@ -32,24 +32,25 @@ interface Product {
 }
 
 const CATEGORY_MAPPINGS: { [key: string]: string } = {
-  'cuplu_si_sex': 'Sănătate',
-  'Cuplu și sex': 'Sănătate',
+  'cuplu_si_sex': 'Sănătate - Parafarmaceutice',
+  'Cuplu și sex': 'Sănătate - Parafarmaceutice',
   'Dispozitive_medicale_-_articole_ortopedice': 'Sănătate - Echipamente Medicale',
   'Dispozitive medicale - articole ortopedice': 'Sănătate - Echipamente Medicale',
-  'Igiena_personala': 'Sănătate - Parafarmaceutice',
-  'Igiena personala': 'Sănătate - Parafarmaceutice',
-  'Îngrejire_corp-față': 'Dermato-Cosmetică',
-  'Îngrejire corp-față': 'Dermato-Cosmetică',
-  'Îngrijire_păr': 'Dermato-Cosmetică',
-  'Îngrijire păr': 'Dermato-Cosmetică',
+  'Igiena_personala': 'Frumusețe și Igienă - Igienă Personală',
+  'Igiena personala': 'Frumusețe și Igienă - Igienă Personală',
+  'Îngrejire_corp-față': 'Frumusețe și Igienă - Îngrijire Corp/Față',
+  'Îngrejire corp-față': 'Frumusețe și Igienă - Îngrijire Corp/Față',
+  'Îngrijire_păr': 'Frumusețe și Igienă - Îngrijire Păr',
+  'Îngrijire păr': 'Frumusețe și Igienă - Îngrijire Păr',
   'Mama_și_copil': 'Mamă și Copil',
   'Mama și copil': 'Mamă și Copil',
   'Medicamente': 'Sănătate - Medicamente OTC',
   'Optica': 'Sănătate - Echipamente Medicale',
-  'Protecție_solară': 'Dermato-Cosmetică',
-  'Protecție solară': 'Dermato-Cosmetică',
-  'Sănătate-plante_medicinale': 'Vitamine și Minerale',
-  'Sănătate-plante medicinale': 'Vitamine și Minerale',
+  'Protecție_solară': 'Frumusețe și Igienă - Protecție Solară',
+  'Protecție solară': 'Frumusețe și Igienă - Protecție Solară',
+  'Sănătate-plante_medicinale': 'Sănătate - Plante Medicinale',
+  'Sănătate-plante medicinale': 'Sănătate - Plante Medicinale',
+  'Sănătate': 'Sănătate - Medicamente OTC',
 };
 
 export default function AdminProducts() {

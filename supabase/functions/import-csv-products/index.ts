@@ -53,15 +53,19 @@ Deno.serve(async (req) => {
     const { products, categoryName } = await req.json()
     console.log(`Starting import of ${products.length} products for category: ${categoryName}`)
 
-    // Get category by name
+    // Get category by exact name
     const { data: category, error: catError } = await supabase
       .from('categories')
       .select('id, name')
-      .ilike('name', `%${categoryName}%`)
-      .single()
+      .eq('name', categoryName)
+      .maybeSingle()
     
-    if (catError || !category) {
-      throw new Error(`Category not found: ${categoryName}`)
+    if (catError) {
+      throw new Error(`Database error: ${catError.message}`)
+    }
+    
+    if (!category) {
+      throw new Error(`Category not found: ${categoryName}. Please check category name matches exactly with database.`)
     }
 
     // Get or create manufacturers
