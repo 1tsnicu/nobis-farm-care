@@ -9,7 +9,7 @@ import { useWishlist } from "@/hooks/useWishlist";
 import { toast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
-  id: number;
+  id: string;
   image: string;
   brand?: string;
   name: string;

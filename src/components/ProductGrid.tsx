@@ -241,7 +241,7 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
                 return (
                   <div key={product.id} className="relative">
                     <ProductCard
-                      id={parseInt(product.id)}
+                      id={product.id}
                       name={product.name}
                       price={product.price}
                       image={product.image_url || '/placeholder.svg'}

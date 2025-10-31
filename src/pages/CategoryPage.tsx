@@ -21,6 +21,23 @@ const CategoryPage = () => {
   const [category, setCategory] = useState<Category | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const getCategoryDisplayName = (name: string) => {
+    const displayNames: { [key: string]: string } = {
+      'Sănătate - Parafarmaceutice': 'Cuplu și sex',
+      'Sănătate - Medicamente OTC': 'Medicamente OTC',
+      'Vitamine și Minerale': 'Vitamine și Minerale',
+      'Frumusețe și Igienă - Protecție Solară': 'Protecție Solară',
+      'Frumusețe și Igienă - Îngrijire Corp/Față': 'Îngrijire Corp/Față',
+      'Frumusețe și Igienă - Îngrijire Păr': 'Îngrijire Păr',
+      'Frumusețe și Igienă - Igienă Personală': 'Igienă Personală',
+      'Mamă și Copil': 'Mamă și Copil',
+      'Sănătate - Echipamente Medicale': 'Echipamente Medicale',
+      'Sănătate - Articole Ortopedice': 'Articole Ortopedice',
+      'Sănătate - Plante Medicinale': 'Plante Medicinale',
+    };
+    return displayNames[name] || name;
+  };
+
   useEffect(() => {
     fetchCategory();
     // Scroll to top when category changes
@@ -87,7 +104,7 @@ const CategoryPage = () => {
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
           <Link to="/" className="hover:text-foreground">Acasă</Link>
           <ChevronRight className="w-4 h-4" />
-          <span className="text-foreground">{category.name}</span>
+          <span className="text-foreground">{getCategoryDisplayName(category.name)}</span>
         </div>
 
         {/* Category Header */}
@@ -95,7 +112,7 @@ const CategoryPage = () => {
           <div className="flex items-center gap-4 mb-3">
             <span className="text-5xl">{category.icon}</span>
             <div>
-              <h1 className="text-4xl font-bold text-foreground">{category.name}</h1>
+              <h1 className="text-4xl font-bold text-foreground">{getCategoryDisplayName(category.name)}</h1>
               <p className="text-muted-foreground mt-1">{category.description}</p>
             </div>
           </div>

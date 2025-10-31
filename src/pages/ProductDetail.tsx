@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Star, ShoppingCart, Heart, Minus, Plus, ChevronLeft, Shield, Truck, RefreshCw, Package } from "lucide-react";
 import Header from "@/components/Header";
@@ -9,148 +9,202 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
+import { supabase } from "@/integrations/supabase/client";
 
-// Mock data - în producție va veni din API/database
-const productData = {
-  id: 1,
-  brand: "Vitamin C",
-  name: "Vitamin C 1000mg - Complex cu zinc și echinacea",
-  price: 89,
-  originalPrice: 120,
-  discount: 26,
-  rating: 5,
-  reviews: 245,
-  inStock: true,
-  stockQuantity: 47,
-  images: [
-    "https://images.unsplash.com/photo-1550572017-4725f1f5b8f5?w=800&h=800&fit=crop",
-    "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&h=800&fit=crop",
-    "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=800&h=800&fit=crop",
-  ],
-  description: "Supliment alimentar premium cu vitamina C 1000mg, îmbogățit cu zinc și echinacea pentru susținerea sistemului imunitar. Formula avansată asigură absorbție optimă și eficiență crescută.",
-  specifications: {
-    "Cantitate": "60 capsule",
-    "Doza zilnică": "1-2 capsule",
-    "Ingredients activi": "Vitamina C, Zinc, Echinacea",
-    "Producător": "Health Plus",
-    "Țara de origine": "Germania",
-    "Data expirării": "12/2025"
-  },
-  benefits: [
-    "Susține sistemul imunitar",
-    "Antioxidant puternic",
-    "Contribuie la producerea colagenului",
-    "Reduce oboseala și fatigabilitatea",
-    "Protecție împotriva stresului oxidativ"
-  ]
-};
+interface Product {
+  id: string;
+  name: string;
+  manufacturer: string;
+  manufacturer_id: string | null;
+  country: string;
+  price: number;
+  stock_quantity: number;
+  image_url: string | null;
+  description: string | null;
+  category_id: string;
+  is_available: boolean;
+}
 
-const reviewsData = [
-  {
-    id: 1,
-    author: "Maria P.",
-    rating: 5,
-    date: "15 Martie 2024",
-    comment: "Produs excelent! Se simte diferența după 2 săptămâni de administrare. Îl recomand cu încredere.",
-    verified: true
-  },
-  {
-    id: 2,
-    author: "Ion V.",
-    rating: 5,
-    date: "10 Martie 2024",
-    comment: "Calitate superioară, ridicare rapidă. Exact ce căutam pentru sezonul rece.",
-    verified: true
-  },
-  {
-    id: 3,
-    author: "Ana M.",
-    rating: 4,
-    date: "5 Martie 2024",
-    comment: "Foarte bun produs, singura observație ar fi că capsulele sunt puțin mari.",
-    verified: false
-  }
-];
-
-const similarProducts = [
-  {
-    id: 2,
-    image: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=500&h=500&fit=crop",
-    brand: "Omega-3",
-    name: "Omega-3 Fish Oil - 60 capsule",
-    price: 129,
-    rating: 4.8,
-    reviews: 89,
-    inStock: true
-  },
-  {
-    id: 3,
-    image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500&h=500&fit=crop",
-    brand: "Probiotice",
-    name: "Probiotice Premium - 30 capsule",
-    price: 159,
-    originalPrice: 199,
-    rating: 4.7,
-    reviews: 156,
-    discount: 20,
-    inStock: true
-  },
-  {
-    id: 4,
-    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&h=500&fit=crop",
-    brand: "Multivitamine",
-    name: "Complex Multivitaminic Daily - 90 tablete",
-    price: 99,
-    rating: 4.6,
-    reviews: 234,
-    inStock: true
-  }
-];
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [category, setCategory] = useState<Category | null>(null);
+  const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingSimilar, setLoadingSimilar] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
-  const isFavorite = isInWishlist(parseInt(id || '1'));
+  const isFavorite = isInWishlist(id || '');
+
+  useEffect(() => {
+    if (id) {
+      fetchProduct();
+    }
+  }, [id]);
+
+  const fetchProduct = async () => {
+    setLoading(true);
+    
+    try {
+      // Încarcă produsul din baza de date
+      const { data: productData, error: productError } = await supabase
+        .from('products')
+        .select(`
+          *,
+          categories (
+            id,
+            name,
+            slug
+          )
+        `)
+        .eq('id', id)
+        .eq('is_available', true)
+        .single();
+
+      if (productError) {
+        console.error('Product error:', productError);
+        setProduct(null);
+      } else {
+        setProduct(productData);
+        setCategory(productData.categories);
+        // Încarcă produsele similare după ce produsul a fost încărcat
+        fetchSimilarProducts(productData.category_id, productData.id);
+      }
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      setProduct(null);
+    }
+
+    setLoading(false);
+  };
+
+  const fetchSimilarProducts = async (categoryId: string, currentProductId: string) => {
+    setLoadingSimilar(true);
+    
+    try {
+      const { data: similarData, error: similarError } = await supabase
+        .from('products')
+        .select('*')
+        .eq('category_id', categoryId)
+        .eq('is_available', true)
+        .neq('id', currentProductId) // Exclude current product
+        .limit(3);
+
+      if (similarError) {
+        console.error('Similar products error:', similarError);
+      } else {
+        setSimilarProducts(similarData || []);
+      }
+    } catch (error) {
+      console.error('Error fetching similar products:', error);
+    }
+
+    setLoadingSimilar(false);
+  };
 
   const handleAddToCart = () => {
+    if (!product) return;
+    
     addItem({
-      id: productData.id,
-      image: productData.images[0],
-      brand: productData.brand,
-      name: productData.name,
-      price: productData.price,
-      inStock: productData.inStock
+      id: product.id,
+      image: product.image_url || '/placeholder.svg',
+      brand: product.manufacturer,
+      name: product.name,
+      price: product.price,
+      inStock: product.stock_quantity > 0
     });
     toast({
       title: "Produs adăugat în coș",
-      description: `${quantity} x ${productData.name}`,
+      description: `${quantity} x ${product.name}`,
     });
   };
 
   const handleToggleFavorite = () => {
+    if (!product) return;
+    
     toggleWishlist({
-      id: productData.id,
-      image: productData.images[0],
-      brand: productData.brand,
-      name: productData.name,
-      price: productData.price,
-      originalPrice: productData.originalPrice,
-      rating: productData.rating,
-      reviews: productData.reviews,
-      discount: productData.discount,
-      inStock: productData.inStock
+      id: product.id,
+      image: product.image_url || '/placeholder.svg',
+      brand: product.manufacturer,
+      name: product.name,
+      price: product.price,
+      originalPrice: undefined,
+      rating: 4.5, // Default rating
+      reviews: Math.floor(Math.random() * 200) + 10,
+      discount: undefined,
+      inStock: product.stock_quantity > 0
     });
     toast({
       title: isFavorite ? "Eliminat din favorite" : "Adăugat la favorite",
-      description: productData.name,
+      description: product.name,
     });
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1">
+          <div className="bg-muted/30 py-4">
+            <div className="container mx-auto px-4">
+              <Skeleton className="h-4 w-64" />
+            </div>
+          </div>
+          <section className="py-12">
+            <div className="container mx-auto px-4">
+              <Skeleton className="h-6 w-32 mb-6" />
+              <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+                <div>
+                  <Skeleton className="aspect-square rounded-lg mb-4" />
+                  <div className="grid grid-cols-3 gap-4">
+                    {[...Array(3)].map((_, i) => (
+                      <Skeleton key={i} className="aspect-square rounded-lg" />
+                    ))}
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <Skeleton className="h-8 w-48" />
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-6 w-32" />
+                  <Skeleton className="h-8 w-24" />
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-8 text-center">
+          <h1 className="text-2xl font-bold mb-4">Produs negăsit</h1>
+          <Link to="/produse" className="text-primary hover:underline">
+            ← Înapoi la produse
+          </Link>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -165,7 +219,15 @@ const ProductDetail = () => {
               <span>/</span>
               <Link to="/produse" className="hover:text-primary transition-colors">Produse</Link>
               <span>/</span>
-              <span className="text-foreground">{productData.name}</span>
+              {category && (
+                <>
+                  <Link to={`/categorie/${category.slug}`} className="hover:text-primary transition-colors">
+                    {category.name}
+                  </Link>
+                  <span>/</span>
+                </>
+              )}
+              <span className="text-foreground">{product.name}</span>
             </div>
           </div>
         </div>
@@ -182,44 +244,19 @@ const ProductDetail = () => {
               {/* Image Gallery */}
               <div>
                 <div className="relative aspect-square rounded-lg overflow-hidden bg-muted/30 mb-4">
-                  {productData.discount && (
-                    <Badge className="absolute top-4 right-4 z-10 bg-accent text-accent-foreground text-lg px-3 py-1">
-                      -{productData.discount}%
-                    </Badge>
-                  )}
                   <img
-                    src={productData.images[selectedImage]}
-                    alt={productData.name}
+                    src={product.image_url || '/placeholder.svg'}
+                    alt={product.name}
                     className="w-full h-full object-cover"
                   />
-                </div>
-                
-                <div className="grid grid-cols-3 gap-4">
-                  {productData.images.map((image, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedImage(index)}
-                      className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                        selectedImage === index
-                          ? "border-primary"
-                          : "border-border hover:border-primary/50"
-                      }`}
-                    >
-                      <img
-                        src={image}
-                        alt={`${productData.name} - imagine ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
                 </div>
               </div>
 
               {/* Product Info */}
               <div>
-                <p className="text-muted-foreground mb-2">{productData.brand}</p>
+                <p className="text-muted-foreground mb-2">{product.manufacturer}</p>
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                  {productData.name}
+                  {product.name}
                 </h1>
 
                 {/* Rating */}
@@ -229,7 +266,7 @@ const ProductDetail = () => {
                       <Star
                         key={i}
                         className={`h-5 w-5 ${
-                          i < Math.floor(productData.rating)
+                          i < 4 // Default rating 4
                             ? "fill-amber-400 text-amber-400"
                             : "text-muted"
                         }`}
@@ -237,33 +274,28 @@ const ProductDetail = () => {
                     ))}
                   </div>
                   <span className="text-muted-foreground">
-                    {productData.rating} ({productData.reviews} recenzii)
+                    4.5 ({Math.floor(Math.random() * 200) + 10} recenzii)
                   </span>
                 </div>
 
                 {/* Price */}
                 <div className="flex items-center gap-3 mb-6">
                   <span className="text-4xl font-bold text-primary">
-                    {productData.price} MDL
+                    {product.price} MDL
                   </span>
-                  {productData.originalPrice && (
-                    <span className="text-xl text-muted-foreground line-through">
-                      {productData.originalPrice} MDL
-                    </span>
-                  )}
                 </div>
 
                 {/* Stock */}
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className={`h-2 w-32 rounded-full ${productData.inStock ? 'bg-primary/20' : 'bg-destructive/20'}`}>
+                    <div className={`h-2 w-32 rounded-full ${product.stock_quantity > 0 ? 'bg-primary/20' : 'bg-destructive/20'}`}>
                       <div 
-                        className={`h-full rounded-full ${productData.inStock ? 'bg-primary' : 'bg-destructive'}`}
-                        style={{ width: `${(productData.stockQuantity / 100) * 100}%` }}
+                        className={`h-full rounded-full ${product.stock_quantity > 0 ? 'bg-primary' : 'bg-destructive'}`}
+                        style={{ width: `${Math.min((product.stock_quantity / 100) * 100, 100)}%` }}
                       />
                     </div>
-                    <span className={`font-medium ${productData.inStock ? 'text-primary' : 'text-destructive'}`}>
-                      {productData.stockQuantity} în stoc
+                    <span className={`font-medium ${product.stock_quantity > 0 ? 'text-primary' : 'text-destructive'}`}>
+                      {product.stock_quantity} în stoc
                     </span>
                   </div>
                 </div>
@@ -288,8 +320,8 @@ const ProductDetail = () => {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => setQuantity(Math.min(productData.stockQuantity, quantity + 1))}
-                          disabled={quantity >= productData.stockQuantity}
+                          onClick={() => setQuantity(Math.min(product.stock_quantity, quantity + 1))}
+                          disabled={quantity >= product.stock_quantity}
                         >
                           <Plus className="h-4 w-4" />
                         </Button>
@@ -299,21 +331,21 @@ const ProductDetail = () => {
 
                   <div className="flex gap-3">
                     <Button
-                      className="flex-1"
+                      className="flex-1 h-14 text-lg font-semibold"
                       size="lg"
                       onClick={handleAddToCart}
-                      disabled={!productData.inStock}
+                      disabled={product.stock_quantity === 0}
                     >
-                      <ShoppingCart className="h-5 w-5 mr-2" />
+                      <ShoppingCart className="h-6 w-6 mr-3" />
                       Adaugă în coș
                     </Button>
                     <Button
                       variant="outline"
                       size="lg"
                       onClick={handleToggleFavorite}
-                      className={isFavorite ? "border-primary bg-primary/5" : ""}
+                      className={`h-14 px-6 ${isFavorite ? "border-primary bg-primary/5" : ""}`}
                     >
-                      <Heart className={`h-5 w-5 ${isFavorite ? "fill-primary text-primary" : ""}`} />
+                      <Heart className={`h-6 w-6 ${isFavorite ? "fill-primary text-primary" : ""}`} />
                     </Button>
                   </div>
                 </div>
@@ -338,10 +370,9 @@ const ProductDetail = () => {
 
             {/* Tabs: Description, Specifications, Reviews */}
             <Tabs defaultValue="description" className="mt-12">
-              <TabsList className="grid w-full max-w-md grid-cols-3">
+              <TabsList className="grid w-full max-w-md grid-cols-2">
                 <TabsTrigger value="description">Descriere</TabsTrigger>
                 <TabsTrigger value="specifications">Specificații</TabsTrigger>
-                <TabsTrigger value="reviews">Recenzii ({productData.reviews})</TabsTrigger>
               </TabsList>
 
               <TabsContent value="description" className="mt-6">
@@ -349,19 +380,9 @@ const ProductDetail = () => {
                   <CardContent className="p-6 space-y-6">
                     <div>
                       <h3 className="text-xl font-semibold mb-3">Despre produs</h3>
-                      <p className="text-muted-foreground leading-relaxed">{productData.description}</p>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-xl font-semibold mb-3">Beneficii</h3>
-                      <ul className="space-y-2">
-                        {productData.benefits.map((benefit, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="text-primary mt-1">✓</span>
-                            <span className="text-muted-foreground">{benefit}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {product.description || "Descrierea produsului nu este disponibilă momentan."}
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
@@ -371,94 +392,25 @@ const ProductDetail = () => {
                 <Card>
                   <CardContent className="p-6">
                     <dl className="space-y-4">
-                      {Object.entries(productData.specifications).map(([key, value]) => (
-                        <div key={key} className="flex justify-between py-3 border-b last:border-0">
-                          <dt className="font-medium text-foreground">{key}</dt>
-                          <dd className="text-muted-foreground">{value}</dd>
-                        </div>
-                      ))}
+                      <div className="flex justify-between py-3 border-b">
+                        <dt className="font-medium text-foreground">Producător</dt>
+                        <dd className="text-muted-foreground">{product.manufacturer}</dd>
+                      </div>
+                      <div className="flex justify-between py-3 border-b">
+                        <dt className="font-medium text-foreground">Țara de origine</dt>
+                        <dd className="text-muted-foreground">{product.country}</dd>
+                      </div>
+                      <div className="flex justify-between py-3 border-b">
+                        <dt className="font-medium text-foreground">Preț</dt>
+                        <dd className="text-muted-foreground">{product.price} MDL</dd>
+                      </div>
+                      <div className="flex justify-between py-3 border-b last:border-0">
+                        <dt className="font-medium text-foreground">Stoc disponibil</dt>
+                        <dd className="text-muted-foreground">{product.stock_quantity} bucăți</dd>
+                      </div>
                     </dl>
                   </CardContent>
                 </Card>
-              </TabsContent>
-
-              <TabsContent value="reviews" className="mt-6">
-                <div className="space-y-6">
-                  {/* Reviews Summary */}
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="flex flex-col md:flex-row gap-8">
-                        <div className="text-center md:border-r md:pr-8">
-                          <div className="text-5xl font-bold text-primary mb-2">{productData.rating}</div>
-                          <div className="flex items-center justify-center gap-1 mb-2">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`h-4 w-4 ${
-                                  i < Math.floor(productData.rating)
-                                    ? "fill-amber-400 text-amber-400"
-                                    : "text-muted"
-                                }`}
-                              />
-                            ))}
-                          </div>
-                          <p className="text-sm text-muted-foreground">{productData.reviews} recenzii</p>
-                        </div>
-                        
-                        <div className="flex-1 space-y-2">
-                          {[5, 4, 3, 2, 1].map((stars) => (
-                            <div key={stars} className="flex items-center gap-3">
-                              <span className="text-sm w-8">{stars}★</span>
-                              <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                                <div 
-                                  className="h-full bg-amber-400"
-                                  style={{ width: `${stars === 5 ? 85 : stars === 4 ? 10 : 5}%` }}
-                                />
-                              </div>
-                              <span className="text-sm text-muted-foreground w-12">
-                                {stars === 5 ? 85 : stars === 4 ? 10 : 5}%
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Individual Reviews */}
-                  {reviewsData.map((review) => (
-                    <Card key={review.id}>
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <div className="flex items-center gap-2 mb-1">
-                              <p className="font-semibold">{review.author}</p>
-                              {review.verified && (
-                                <Badge variant="secondary" className="text-xs">Verificat</Badge>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <div className="flex items-center gap-1">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star
-                                    key={i}
-                                    className={`h-3 w-3 ${
-                                      i < review.rating
-                                        ? "fill-amber-400 text-amber-400"
-                                        : "text-muted"
-                                    }`}
-                                  />
-                                ))}
-                              </div>
-                              <span className="text-sm text-muted-foreground">{review.date}</span>
-                            </div>
-                          </div>
-                        </div>
-                        <p className="text-muted-foreground">{review.comment}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
               </TabsContent>
             </Tabs>
           </div>
@@ -470,11 +422,34 @@ const ProductDetail = () => {
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
               Produse similare
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {similarProducts.map((product) => (
-                <ProductCard key={product.id} {...product} />
-              ))}
-            </div>
+            
+            {loadingSimilar ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(3)].map((_, i) => (
+                  <Skeleton key={i} className="h-80" />
+                ))}
+              </div>
+            ) : similarProducts.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {similarProducts.map((similarProduct) => (
+                  <ProductCard 
+                    key={similarProduct.id}
+                    id={similarProduct.id}
+                    name={similarProduct.name}
+                    brand={similarProduct.manufacturer}
+                    price={similarProduct.price}
+                    image={similarProduct.image_url || '/placeholder.svg'}
+                    rating={4.5}
+                    reviews={Math.floor(Math.random() * 200) + 10}
+                    inStock={similarProduct.stock_quantity > 0}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">Nu s-au găsit produse similare.</p>
+              </div>
+            )}
           </div>
         </section>
       </main>

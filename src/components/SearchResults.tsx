@@ -9,7 +9,7 @@ interface SearchResultsProps {
   results: any[];
   searchTerm: string;
   isLoading: boolean;
-  onAddToCart?: (productId: number) => void;
+  onAddToCart?: (productId: string) => void;
   className?: string;
 }
 

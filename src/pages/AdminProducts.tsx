@@ -10,7 +10,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ProductImageUpload } from '@/components/admin/ProductImageUpload';
 import { toast } from 'sonner';
-import { Upload, Search, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Upload, Search, Image as ImageIcon, Loader2, Wand2 } from 'lucide-react';
+import { moveVitaminsToCorrectCategory } from '@/utils/moveCategoryProducts';
+import { moveProtectionSolareProducts } from '@/utils/moveProtectionSolareProducts';
+import { moveMedicinalPlantsProducts } from '@/utils/moveMedicinalPlantsProducts';
+import { moveSkinCareProducts } from '@/utils/moveSkinCareProducts';
+import { moveHairCareProducts } from '@/utils/moveHairCareProducts';
+import { moveMedicalDevicesProducts } from '@/utils/moveMedicalDevicesProducts';
+import { moveBabyProductsProducts } from '@/utils/moveBabyProductsProducts';
+import { movePersonalHygieneProducts } from '@/utils/movePersonalHygieneProducts';
 
 interface Category {
   id: string;
@@ -34,10 +42,22 @@ interface Product {
 const CATEGORY_MAPPINGS: { [key: string]: string } = {
   'cuplu_si_sex': 'Sănătate - Parafarmaceutice',
   'Cuplu și sex': 'Sănătate - Parafarmaceutice',
-  'Dispozitive_medicale_-_articole_ortopedice': 'Sănătate - Echipamente Medicale',
-  'Dispozitive medicale - articole ortopedice': 'Sănătate - Echipamente Medicale',
+  'vitamine și minerale': 'Vitamine și Minerale',
+  'vitamine si minerale': 'Vitamine și Minerale',
+  'Vitamine_si_minerale': 'Vitamine și Minerale',
+  'protectie solara': 'Frumusețe și Igienă - Protecție Solară',
+  'protecție solară': 'Frumusețe și Igienă - Protecție Solară',
+  'Protecție solară': 'Frumusețe și Igienă - Protecție Solară',
+  'Protectie solara': 'Frumusețe și Igienă - Protecție Solară',
+  'Protecție_solară': 'Frumusețe și Igienă - Protecție Solară',
+  'Dispozitive_medicale_-_articole_ortopedice': 'Sănătate - Articole Ortopedice',
+  'Dispozitive medicale - articole ortopedice': 'Sănătate - Articole Ortopedice',
   'Igiena_personala': 'Frumusețe și Igienă - Igienă Personală',
   'Igiena personala': 'Frumusețe și Igienă - Igienă Personală',
+  'Igienă_personală': 'Frumusețe și Igienă - Igienă Personală',
+  'Igienă personală': 'Frumusețe și Igienă - Igienă Personală',
+  'Frumusețe și Igienă - Igienă Personală': 'Frumusețe și Igienă - Igienă Personală',
+  'Frumusete si igiena - igiena personala': 'Frumusețe și Igienă - Igienă Personală',
   'Îngrejire_corp-față': 'Frumusețe și Igienă - Îngrijire Corp/Față',
   'Îngrejire corp-față': 'Frumusețe și Igienă - Îngrijire Corp/Față',
   'Îngrijire_păr': 'Frumusețe și Igienă - Îngrijire Păr',
@@ -46,8 +66,7 @@ const CATEGORY_MAPPINGS: { [key: string]: string } = {
   'Mama și copil': 'Mamă și Copil',
   'Medicamente': 'Sănătate - Medicamente OTC',
   'Optica': 'Sănătate - Echipamente Medicale',
-  'Protecție_solară': 'Frumusețe și Igienă - Protecție Solară',
-  'Protecție solară': 'Frumusețe și Igienă - Protecție Solară',
+  'Optic': 'Sănătate - Echipamente Medicale',
   'Sănătate-plante_medicinale': 'Sănătate - Plante Medicinale',
   'Sănătate-plante medicinale': 'Sănătate - Plante Medicinale',
   'Sănătate': 'Sănătate - Medicamente OTC',
@@ -63,6 +82,7 @@ export default function AdminProducts() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [importing, setImporting] = useState(false);
   const [loadingProducts, setLoadingProducts] = useState(false);
+  const [fixingCategories, setFixingCategories] = useState(false);
 
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
@@ -118,18 +138,40 @@ export default function AdminProducts() {
     setLoadingProducts(false);
   };
 
+  const parseCSVLine = (line: string): string[] => {
+    const result: string[] = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        result.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    result.push(current.trim());
+    return result;
+  };
+
   const parseCSV = (text: string): any[] => {
     const lines = text.split('\n').filter(line => line.trim());
     if (lines.length < 2) return [];
 
-    const headers = lines[0].split(',');
+    const headerLine = lines[0];
+    const headers = parseCSVLine(headerLine);
     const products = [];
 
     for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(',');
+      const values = parseCSVLine(lines[i]);
       const product: any = {};
       headers.forEach((header, index) => {
-        product[header.trim()] = values[index]?.trim() || '';
+        product[header] = values[index] || '';
       });
       products.push(product);
     }
@@ -159,37 +201,101 @@ export default function AdminProducts() {
 
     try {
       const text = await selectedFile.text();
-      const products = parseCSV(text);
+      const csvProducts = parseCSV(text);
 
-      if (products.length === 0) {
+      console.log('CSV Headers:', Object.keys(csvProducts[0] || {}));
+      console.log('Sample product:', csvProducts[0]);
+      console.log('Total rows:', csvProducts.length);
+
+      if (csvProducts.length === 0) {
         toast.error('Fișierul CSV este gol sau invalid');
         return;
       }
 
-      // Extract category from filename
-      const fileName = selectedFile.name.replace('.csv', '');
-      const categoryKey = Object.keys(CATEGORY_MAPPINGS).find(key => 
-        fileName.includes(key.replace(/_/g, ' ')) || fileName.includes(key)
-      );
+      // Extract category from filename with better matching
+      const fileName = selectedFile.name.replace('.csv', '').toLowerCase();
       
-      const categoryName = categoryKey ? CATEGORY_MAPPINGS[categoryKey] : 'Sănătate - Medicamente OTC';
+      // Try exact matches first
+      let categoryName = 'Sănătate - Medicamente OTC'; // default
+      
+      for (const [key, value] of Object.entries(CATEGORY_MAPPINGS)) {
+        if (fileName.includes(key.toLowerCase().replace(/_/g, ' '))) {
+          categoryName = value;
+          break;
+        }
+      }
+      
+      console.log('File name:', fileName);
+      console.log('Detected category:', categoryName);
 
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error('Sesiune expirată. Vă rugăm să vă autentificați din nou.');
+      // Get category ID
+      const { data: categoryData } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('name', categoryName)
+        .single();
+
+      if (!categoryData) {
+        toast.error(`Categoria "${categoryName}" nu a fost găsită`);
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('import-csv-products', {
-        body: { products, categoryName },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
-        }
-      });
+      // Transform CSV data to match product schema
+      // Support multiple CSV formats (both Latin and Cyrillic headers)
+      const productsToInsert = csvProducts
+        .filter((p: any) => {
+          // Check for product name in any of the possible columns
+          const productName = p.Produs || p.Товар || p['Product'] || '';
+          return productName && productName.toString().trim();
+        })
+        .map((p: any, idx: number) => {
+          // Map headers to values - support both Latin and Cyrillic
+          const productName = (p.Produs || p.Товар || p['Product'] || '').toString().trim();
+          const manufacturer = (p.Producător || p.Производитель || p['Manufacturer'] || '').toString().trim() || null;
+          const country = (p.Țară || p.Страна || p['Country'] || '').toString().trim() || null;
+          
+          // Parse price - handle comma as decimal separator
+          let priceStr = (p['Prețul MDL'] || p['Preț MDL'] || p['Prețul'] || '0').toString().trim();
+          priceStr = priceStr.replace(/['"]/g, '').replace(',', '.'); // Remove quotes and convert comma to dot
+          const price = parseFloat(priceStr) || 0;
+          
+          // Get image URL
+          const imageUrl = (p['link poza'] || p['link_poza'] || p['image_url'] || '').toString().trim() || null;
+          
+          return {
+            category_id: categoryData.id,
+            name: productName || 'Produs fără nume',
+            manufacturer: manufacturer,
+            country: country,
+            price: price,
+            image_url: imageUrl,
+            stock_quantity: Math.floor(Math.random() * 50) + 10,
+            sku: `${categoryData.id.substring(0, 4).toUpperCase()}-${String(Date.now() + idx).slice(-8)}`,
+            is_available: true
+          };
+        });
 
-      if (error) throw error;
+      if (productsToInsert.length === 0) {
+        console.log('Filtered products:', csvProducts.slice(0, 3));
+        toast.error(`Nu s-au găsit produse valide în fișier. Verifică că fișierul are coloanele: Produs/Товар, Prețul MDL, Categorii, link poza`);
+        return;
+      }
 
-      toast.success(`${data.imported} produse importate cu succes în categoria ${data.category}!`);
+      // Insert in batches of 100
+      const batchSize = 100;
+      let totalInserted = 0;
+
+      for (let i = 0; i < productsToInsert.length; i += batchSize) {
+        const batch = productsToInsert.slice(i, i + batchSize);
+        const { error } = await supabase
+          .from('products')
+          .insert(batch);
+
+        if (error) throw error;
+        totalInserted += batch.length;
+      }
+
+      toast.success(`${totalInserted} produse importate cu succes în categoria "${categoryName}"!`);
       fetchProducts();
       setSelectedFile(null);
     } catch (error) {
@@ -197,6 +303,135 @@ export default function AdminProducts() {
       toast.error('Eroare la import: ' + (error as Error).message);
     } finally {
       setImporting(false);
+    }
+  };
+
+  const handleFixCategories = async () => {
+    setFixingCategories(true);
+    try {
+      const result = await moveVitaminsToCorrectCategory();
+      if (result.moved > 0) {
+        toast.success(`✅ ${result.moved} produse au fost mutate în categoria corectă!`);
+        fetchProducts();
+      } else {
+        toast.info('Nu au fost găsite produse care trebuie mutate');
+      }
+    } catch (error) {
+      console.error('Error fixing categories:', error);
+      toast.error('Eroare la fixare: ' + (error as Error).message);
+    } finally {
+      setFixingCategories(false);
+    }
+  };
+
+  const handleMoveProtectionSolareProducts = async () => {
+    setFixingCategories(true);
+    try {
+      const result = await moveProtectionSolareProducts();
+      if (result.moved > 0) {
+        toast.success(`✅ ${result.moved} produse de Protecție Solară au fost mutate din Medicamente OTC!`);
+        fetchProducts();
+      } else {
+        toast.info('Nu au fost găsite produse de Protecție Solară în Medicamente OTC');
+      }
+    } catch (error) {
+      console.error('Error moving protection solaire products:', error);
+      toast.error('Eroare la mutare: ' + (error as Error).message);
+    } finally {
+      setFixingCategories(false);
+    }
+  };
+
+  const handleMoveMedicinalPlantsProducts = async () => {
+    setFixingCategories(true);
+    try {
+      const result = await moveMedicinalPlantsProducts();
+      if (result.moved > 0) {
+        toast.success(`✅ ${result.moved} produse de Plante Medicinale au fost mutate din Medicamente OTC!`);
+        fetchProducts();
+      } else {
+        toast.info('Nu au fost găsite produse de Plante Medicinale în Medicamente OTC');
+      }
+    } catch (error) {
+      console.error('Error moving medicinal plants products:', error);
+      toast.error('Eroare la mutare: ' + (error as Error).message);
+    } finally {
+      setFixingCategories(false);
+    }
+  };
+
+  const handleMoveSkinCareProducts = async () => {
+    setFixingCategories(true);
+    try {
+      const result = await moveSkinCareProducts();
+      if (result.moved > 0) {
+        toast.success(`✅ ${result.moved} produse de Îngrijire Corp/Față au fost mutate din Medicamente OTC!`);
+        fetchProducts();
+      } else {
+        toast.info('Nu au fost găsite produse de Îngrijire Corp/Față în Medicamente OTC');
+      }
+    } catch (error) {
+      console.error('Error moving skin care products:', error);
+      toast.error('Eroare la mutare: ' + (error as Error).message);
+    } finally {
+      setFixingCategories(false);
+    }
+  };
+
+  const handleMoveHairCareProducts = async () => {
+    setFixingCategories(true);
+    try {
+      const result = await moveHairCareProducts();
+      if (result.moved > 0) {
+        toast.success(`✅ ${result.moved} produse de Îngrijire Păr au fost mutate din Medicamente OTC!`);
+        fetchProducts();
+      } else {
+        toast.info('Nu au fost găsite produse de Îngrijire Păr în Medicamente OTC');
+      }
+    } catch (error) {
+      console.error('Error moving hair care products:', error);
+      toast.error('Eroare la mutare: ' + (error as Error).message);
+    } finally {
+      setFixingCategories(false);
+    }
+  };
+
+  const handleMoveMedicalDevicesProducts = async () => {
+    setFixingCategories(true);
+    try {
+      await moveMedicalDevicesProducts();
+      fetchProducts();
+    } catch (error) {
+      console.error('Error moving medical devices products:', error);
+      toast.error('Eroare la mutare: ' + (error as Error).message);
+    } finally {
+      setFixingCategories(false);
+    }
+  };
+
+  const handleMoveBabyProductsProducts = async () => {
+    setFixingCategories(true);
+    try {
+      await moveBabyProductsProducts();
+      fetchProducts();
+    } catch (error) {
+      console.error('Error moving baby products:', error);
+      toast.error('Eroare la mutare: ' + (error as Error).message);
+    } finally {
+      setFixingCategories(false);
+    }
+  };
+
+  const handleMovePersonalHygieneProducts = async () => {
+    setFixingCategories(true);
+    try {
+      await movePersonalHygieneProducts();
+      fetchProducts();
+    } catch (error) {
+      console.error('Error moving personal hygiene products:', error);
+      toast.error('Eroare la mutare: ' + (error as Error).message);
+    } finally {
+      setFixingCategories(false);
     }
   };
 
@@ -259,6 +494,198 @@ export default function AdminProducts() {
               </div>
               <p className="text-sm text-muted-foreground">
                 Încărcați fișiere CSV cu produse. Categoria va fi detectată automat din numele fișierului.
+              </p>
+              <div className="bg-muted/50 p-4 rounded-lg text-sm space-y-3">
+                <p className="font-semibold">📋 Format CSV așteptat:</p>
+                <code className="text-xs bg-background p-2 rounded block overflow-x-auto whitespace-nowrap">
+                  Produs,Producător,Țară,Prețul MDL,Categorii,link poza
+                </code>
+                <p className="text-xs text-muted-foreground space-y-1">
+                  <div>✓ Coloane suportate (oricare din variantele Cyrilice sau Latin):</div>
+                  <div className="ml-3">• Produs / Товар (obligatoriu)</div>
+                  <div className="ml-3">• Producător / Производитель</div>
+                  <div className="ml-3">• Țară / Страна</div>
+                  <div className="ml-3">• Prețul MDL / Prețul (cu virgulă: 15,50 → 15.50)</div>
+                  <div className="ml-3">• link poza / link_poza (URL imagine)</div>
+                  <div className="mt-2">✓ Detectare categorie din nume fișier:</div>
+                  <div className="ml-3">Ex: "Cuplu și sex - Cuplu și sex.csv" → Sănătate - Parafarmaceutice</div>
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>🔧 Utilități Admin</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button
+                onClick={handleMoveBabyProductsProducts}
+                disabled={fixingCategories}
+                className="w-full bg-indigo-600 hover:bg-indigo-700"
+              >
+                {fixingCategories ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Se mută produsele pentru bebeluși...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    👶 Muta TOATE produsele de Mamă și Copil din Medicamente OTC
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Va muta TOATE produsele de Mamă și Copil (scutece, mâncare copii, îngrijire) din "Medicamente OTC" în categoria corectă.
+              </p>
+
+              <Button
+                onClick={handleMoveHairCareProducts}
+                disabled={fixingCategories}
+                className="w-full bg-purple-600 hover:bg-purple-700"
+              >
+                {fixingCategories ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Se mută produsele de Îngrijire Păr...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    💇 Muta TOATE produsele de Îngrijire Păr din Medicamente OTC
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Va muta TOATE produsele de Îngrijire Păr (conțin cuvinte cheie: sampon, masca par, ulei par, spray par, etc.) din "Medicamente OTC" în categoria corectă.
+              </p>
+
+              <Button
+                onClick={handleMoveMedicalDevicesProducts}
+                disabled={fixingCategories}
+                className="w-full bg-blue-600 hover:bg-blue-700"
+              >
+                {fixingCategories ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Se mută produsele medicale...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    🏥 Muta TOATE produsele de Articole Ortopedice din Medicamente OTC
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Va muta TOATE produsele de Articole Ortopedice (bandaje, aparate ortopedice, echipamente medicale) din "Medicamente OTC" în categoria corectă.
+              </p>
+
+              <Button
+                onClick={handleMovePersonalHygieneProducts}
+                disabled={fixingCategories}
+                className="w-full bg-amber-600 hover:bg-amber-700"
+              >
+                {fixingCategories ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Se mută produsele de igienă...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    🧼 Muta TOATE produsele de Igienă Personală din Medicamente OTC
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Va muta TOATE produsele de Igienă Personală (paste de dinți, deodoranți, absorbante) din "Medicamente OTC" în categoria corectă.
+              </p>
+
+              <Button
+                onClick={handleMoveSkinCareProducts}
+                disabled={fixingCategories}
+                className="w-full bg-pink-600 hover:bg-pink-700"
+              >
+                {fixingCategories ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Se mută produsele de Îngrijire Corp/Față...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    ✨ Muta TOATE produsele de Îngrijire Corp/Față din Medicamente OTC
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Va muta TOATE produsele de Îngrijire Corp/Față (conțin cuvinte cheie: crema, gel, ser, balsam, ulei, etc.) din "Medicamente OTC" în categoria corectă.
+              </p>
+
+              <Button
+                onClick={handleMoveMedicinalPlantsProducts}
+                disabled={fixingCategories}
+                className="w-full bg-green-600 hover:bg-green-700"
+              >
+                {fixingCategories ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Se mută produsele de Plante Medicinale...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    🌿 Muta produsele de Plante Medicinale din Medicamente OTC
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Va muta DOAR produsele de Plante Medicinale (conțin cuvintele "ceai", "ulei", "tinctura", etc.) din "Medicamente OTC" în "Sănătate - Plante Medicinale".
+              </p>
+
+              <Button
+                onClick={handleMoveProtectionSolareProducts}
+                disabled={fixingCategories}
+                className="w-full bg-orange-600 hover:bg-orange-700"
+              >
+                {fixingCategories ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Se mută produsele de Protecție Solară...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    ☀️ Muta produsele de Protecție Solară din Medicamente OTC
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Va muta DOAR produsele de Protecție Solară (conțin cuvintele "protectie", "spf", "solar", etc.) din "Medicamente OTC" în "Frumusețe și Igienă - Protecție Solară".
+              </p>
+
+              <Button
+                onClick={handleFixCategories}
+                disabled={fixingCategories}
+                className="w-full"
+                variant="outline"
+              >
+                {fixingCategories ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Se fixează categoriile...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    Muta TOATE produsele din Medicamente OTC → Vitamine și Minerale
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                ⚠️ Va muta TOATE produsele din categoria "Medicamente OTC" în categoria "Vitamine și Minerale". Această acțiune va affect TOATE produsele din acea categorie.
               </p>
             </CardContent>
           </Card>

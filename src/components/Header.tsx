@@ -48,7 +48,7 @@ const Header = () => {
     const shortNames: { [key: string]: string } = {
       'Sănătate - Medicamente OTC': 'Medicamente OTC',
       'Vitamine și Minerale': 'Vitamine',
-      'Sănătate - Parafarmaceutice': 'Parafarmaceutice',
+      'Sănătate - Parafarmaceutice': 'Cuplu și sex',
       'Mamă și Copil': 'Mamă & Copil',
       'Sănătate - Echipamente Medicale': 'Echipamente',
       'Sănătate - Plante Medicinale': 'Plante',

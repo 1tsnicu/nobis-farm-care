@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export interface SearchableProduct {
-  id: number;
+  id: string;
   name: string;
   category: string;
   brand?: string;

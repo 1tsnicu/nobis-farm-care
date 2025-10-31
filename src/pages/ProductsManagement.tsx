@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -7,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Upload, Filter } from "lucide-react";
+import { Search, Upload, Filter, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
 interface Category {
@@ -30,6 +31,7 @@ interface Product {
 }
 
 const ProductsManagement = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,29 +85,7 @@ const ProductsManagement = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    toast.info("Se procesează fișierul...");
-    
-    // Parse Excel file (simplified - in production use a library like xlsx)
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      try {
-        // This is a simplified version - you'd need to use a proper Excel parser
-        toast.info("Import în curs...");
-        
-        // Call edge function to import
-        const { data, error } = await supabase.functions.invoke('import-products', {
-          body: { products: [] } // Pass parsed products here
-        });
-
-        if (error) throw error;
-        
-        toast.success(`Import finalizat! ${data.imported} produse adăugate.`);
-        fetchProducts();
-      } catch (error) {
-        toast.error("Eroare la import");
-      }
-    };
-    reader.readAsArrayBuffer(file);
+    navigate('/admin/produse');
   };
 
   const getStockBadge = (stock: number) => {
@@ -178,10 +158,11 @@ const ProductsManagement = () => {
               <Button 
                 variant="outline" 
                 className="w-full"
-                onClick={() => document.getElementById('file-upload')?.click()}
+                onClick={() => navigate('/admin/produse')}
               >
                 <Upload className="w-4 h-4 mr-2" />
-                Import Excel
+                Import CSV
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
           </div>
