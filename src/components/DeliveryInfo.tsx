@@ -71,6 +71,26 @@ const PickupInfo = () => {
           </Card>
         </div>
 
+        {/* Map Section */}
+        <div className="max-w-4xl mx-auto mb-12">
+          <Card className="border-gray-200 overflow-hidden">
+            <CardContent className="p-0">
+              <div className="aspect-video w-full">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2719.234!2d28.755833!3d46.947222!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDbCsDU2JzUwLjAiTiAyOMKwNDUnMjEuMCJF!5e0!3m2!1sro!2smd!4v1620000000000!5m2!1sro!2smd"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Nobis Farm - Str. Ștefan cel Mare 138, Horești"
+                ></iframe>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Additional Info */}
         <div className="max-w-4xl mx-auto">
           <Card className="border-gray-200 bg-white/80 backdrop-blur-sm">
