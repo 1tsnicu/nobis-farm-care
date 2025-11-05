@@ -11,7 +11,7 @@ import probiotics from "@/assets/probiotics-natural.jpg";
 // Mock data - în producție, acestea vor veni din API/database
 const products = [
   {
-    id: 1,
+    id: "1",
     image: paracetamolOTC,
     brand: "Paracetamol",
     name: "Paracetamol 500mg - 20 tablete",
@@ -23,7 +23,7 @@ const products = [
     inStock: true
   },
   {
-    id: 2,
+    id: "2",
     image: vitaminC,
     brand: "Vitamin C",
     name: "Vitamin C 1000mg - Complex cu zinc",
@@ -35,7 +35,7 @@ const products = [
     inStock: true
   },
   {
-    id: 3,
+    id: "3",
     image: omega3,
     brand: "Omega-3",
     name: "Omega-3 Fish Oil - 60 capsule",
@@ -45,7 +45,7 @@ const products = [
     inStock: true
   },
   {
-    id: 4,
+    id: "4",
     image: probiotics,
     brand: "Probiotice",
     name: "Probiotice Premium - 30 capsule",

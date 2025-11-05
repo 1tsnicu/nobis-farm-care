@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
+import pozaFarmacia from "@/assets/poza-farmacia.jpeg";
+import {
   Heart, 
   Shield, 
   Clock, 
@@ -140,7 +141,7 @@ const Hero = () => {
                   <div className="absolute inset-0 bg-gradient-to-br from-green-300/30 to-blue-300/30 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500" />
                   <div className="relative aspect-[5/4] md:aspect-[16/12] bg-gradient-to-br from-green-100 to-blue-100 rounded-3xl flex items-center justify-center overflow-hidden shadow-2xl border-4 border-white/50 hover:shadow-2xl hover:shadow-green-200/50 transition-all duration-500">
                     <img 
-                      src="/poza cu farmacia.jpeg" 
+                      src={pozaFarmacia} 
                       alt="Farmacia Nobis Farm - Interior modern și primitor"
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 brightness-105"
                     />
