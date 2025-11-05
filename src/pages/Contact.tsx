@@ -253,14 +253,14 @@ const Contact = () => {
                 {/* Map */}
                 <div className="aspect-video rounded-xl overflow-hidden shadow-xl mb-6 border border-gray-200">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2719.8747374996894!2d28.8336!3d47.0105!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDfCsDAwJzM3LjgiTiAyOMKwNTAnMDEuMyJF!5e0!3m2!1sen!2s!4v1234567890"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2719.234!2d28.755833!3d46.947222!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDbCsDU2JzUwLjAiTiAyOMKwNDUnMjEuMCJF!5e0!3m2!1sro!2smd!4v1620000000000!5m2!1sro!2smd"
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}
                     allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    title="Nobis Farm Location"
+                    title="Nobis Farm - Str. Ștefan cel Mare 138, Horești"
                   ></iframe>
                 </div>
 
