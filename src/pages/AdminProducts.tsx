@@ -7,18 +7,35 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Label } from '@/components/ui/label';
 import { ProductImageUpload } from '@/components/admin/ProductImageUpload';
 import { toast } from 'sonner';
-import { Upload, Search, Image as ImageIcon, Loader2, Wand2 } from 'lucide-react';
-import { moveVitaminsToCorrectCategory } from '@/utils/moveCategoryProducts';
-import { moveProtectionSolareProducts } from '@/utils/moveProtectionSolareProducts';
-import { moveMedicinalPlantsProducts } from '@/utils/moveMedicinalPlantsProducts';
-import { moveSkinCareProducts } from '@/utils/moveSkinCareProducts';
-import { moveHairCareProducts } from '@/utils/moveHairCareProducts';
-import { moveMedicalDevicesProducts } from '@/utils/moveMedicalDevicesProducts';
-import { moveBabyProductsProducts } from '@/utils/moveBabyProductsProducts';
-import { movePersonalHygieneProducts } from '@/utils/movePersonalHygieneProducts';
+import { Upload, Search, Image as ImageIcon, Loader2, Trash2, Edit2 } from 'lucide-react';
 
 interface Category {
   id: string;
@@ -34,6 +51,8 @@ interface Product {
   category_id: string;
   manufacturer: string;
   stock_quantity: number;
+  old_price?: number;
+  discount?: number;
   categories?: {
     name: string;
   };
@@ -83,6 +102,9 @@ export default function AdminProducts() {
   const [importing, setImporting] = useState(false);
   const [loadingProducts, setLoadingProducts] = useState(false);
   const [fixingCategories, setFixingCategories] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
+  const [editFormData, setEditFormData] = useState<Partial<Product>>({});
 
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
@@ -125,8 +147,7 @@ export default function AdminProducts() {
     const { data, error } = await supabase
       .from('products')
       .select('id, name, price, image_url, category_id, manufacturer, stock_quantity, categories(name)')
-      .order('created_at', { ascending: false })
-      .limit(100);
+      .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching products:', error);
@@ -306,132 +327,66 @@ export default function AdminProducts() {
     }
   };
 
-  const handleFixCategories = async () => {
-    setFixingCategories(true);
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setEditFormData({
+      name: product.name,
+      manufacturer: product.manufacturer,
+      price: product.price,
+      old_price: product.old_price,
+      discount: product.discount,
+      stock_quantity: product.stock_quantity,
+      category_id: product.category_id,
+    });
+  };
+
+  const handleSaveProduct = async () => {
+    if (!editingProduct) return;
+
     try {
-      const result = await moveVitaminsToCorrectCategory();
-      if (result.moved > 0) {
-        toast.success(`✅ ${result.moved} produse au fost mutate în categoria corectă!`);
-        fetchProducts();
+      const { error } = await supabase
+        .from('products')
+        .update({
+          name: editFormData.name,
+          manufacturer: editFormData.manufacturer,
+          price: editFormData.price,
+          old_price: editFormData.old_price,
+          discount: editFormData.discount,
+          stock_quantity: editFormData.stock_quantity,
+          category_id: editFormData.category_id,
+        })
+        .eq('id', editingProduct.id);
+
+      if (error) {
+        toast.error('Eroare la salvare: ' + error.message);
       } else {
-        toast.info('Nu au fost găsite produse care trebuie mutate');
+        toast.success('Produs actualizat cu succes!');
+        setEditingProduct(null);
+        fetchProducts();
       }
     } catch (error) {
-      console.error('Error fixing categories:', error);
-      toast.error('Eroare la fixare: ' + (error as Error).message);
-    } finally {
-      setFixingCategories(false);
+      toast.error('Eroare: ' + (error as Error).message);
     }
   };
 
-  const handleMoveProtectionSolareProducts = async () => {
-    setFixingCategories(true);
+  const handleDeleteProduct = async () => {
+    if (!deletingProductId) return;
+
     try {
-      const result = await moveProtectionSolareProducts();
-      if (result.moved > 0) {
-        toast.success(`✅ ${result.moved} produse de Protecție Solară au fost mutate din Medicamente OTC!`);
-        fetchProducts();
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', deletingProductId);
+
+      if (error) {
+        toast.error('Eroare la ștergere: ' + error.message);
       } else {
-        toast.info('Nu au fost găsite produse de Protecție Solară în Medicamente OTC');
+        toast.success('Produs șters cu succes!');
+        setDeletingProductId(null);
+        fetchProducts();
       }
     } catch (error) {
-      console.error('Error moving protection solaire products:', error);
-      toast.error('Eroare la mutare: ' + (error as Error).message);
-    } finally {
-      setFixingCategories(false);
-    }
-  };
-
-  const handleMoveMedicinalPlantsProducts = async () => {
-    setFixingCategories(true);
-    try {
-      const result = await moveMedicinalPlantsProducts();
-      if (result.moved > 0) {
-        toast.success(`✅ ${result.moved} produse de Plante Medicinale au fost mutate din Medicamente OTC!`);
-        fetchProducts();
-      } else {
-        toast.info('Nu au fost găsite produse de Plante Medicinale în Medicamente OTC');
-      }
-    } catch (error) {
-      console.error('Error moving medicinal plants products:', error);
-      toast.error('Eroare la mutare: ' + (error as Error).message);
-    } finally {
-      setFixingCategories(false);
-    }
-  };
-
-  const handleMoveSkinCareProducts = async () => {
-    setFixingCategories(true);
-    try {
-      const result = await moveSkinCareProducts();
-      if (result.moved > 0) {
-        toast.success(`✅ ${result.moved} produse de Îngrijire Corp/Față au fost mutate din Medicamente OTC!`);
-        fetchProducts();
-      } else {
-        toast.info('Nu au fost găsite produse de Îngrijire Corp/Față în Medicamente OTC');
-      }
-    } catch (error) {
-      console.error('Error moving skin care products:', error);
-      toast.error('Eroare la mutare: ' + (error as Error).message);
-    } finally {
-      setFixingCategories(false);
-    }
-  };
-
-  const handleMoveHairCareProducts = async () => {
-    setFixingCategories(true);
-    try {
-      const result = await moveHairCareProducts();
-      if (result.moved > 0) {
-        toast.success(`✅ ${result.moved} produse de Îngrijire Păr au fost mutate din Medicamente OTC!`);
-        fetchProducts();
-      } else {
-        toast.info('Nu au fost găsite produse de Îngrijire Păr în Medicamente OTC');
-      }
-    } catch (error) {
-      console.error('Error moving hair care products:', error);
-      toast.error('Eroare la mutare: ' + (error as Error).message);
-    } finally {
-      setFixingCategories(false);
-    }
-  };
-
-  const handleMoveMedicalDevicesProducts = async () => {
-    setFixingCategories(true);
-    try {
-      await moveMedicalDevicesProducts();
-      fetchProducts();
-    } catch (error) {
-      console.error('Error moving medical devices products:', error);
-      toast.error('Eroare la mutare: ' + (error as Error).message);
-    } finally {
-      setFixingCategories(false);
-    }
-  };
-
-  const handleMoveBabyProductsProducts = async () => {
-    setFixingCategories(true);
-    try {
-      await moveBabyProductsProducts();
-      fetchProducts();
-    } catch (error) {
-      console.error('Error moving baby products:', error);
-      toast.error('Eroare la mutare: ' + (error as Error).message);
-    } finally {
-      setFixingCategories(false);
-    }
-  };
-
-  const handleMovePersonalHygieneProducts = async () => {
-    setFixingCategories(true);
-    try {
-      await movePersonalHygieneProducts();
-      fetchProducts();
-    } catch (error) {
-      console.error('Error moving personal hygiene products:', error);
-      toast.error('Eroare la mutare: ' + (error as Error).message);
-    } finally {
-      setFixingCategories(false);
+      toast.error('Eroare: ' + (error as Error).message);
     }
   };
 
@@ -514,181 +469,6 @@ export default function AdminProducts() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>🔧 Utilități Admin</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button
-                onClick={handleMoveBabyProductsProducts}
-                disabled={fixingCategories}
-                className="w-full bg-indigo-600 hover:bg-indigo-700"
-              >
-                {fixingCategories ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Se mută produsele pentru bebeluși...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="mr-2 h-4 w-4" />
-                    👶 Muta TOATE produsele de Mamă și Copil din Medicamente OTC
-                  </>
-                )}
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                Va muta TOATE produsele de Mamă și Copil (scutece, mâncare copii, îngrijire) din "Medicamente OTC" în categoria corectă.
-              </p>
-
-              <Button
-                onClick={handleMoveHairCareProducts}
-                disabled={fixingCategories}
-                className="w-full bg-purple-600 hover:bg-purple-700"
-              >
-                {fixingCategories ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Se mută produsele de Îngrijire Păr...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="mr-2 h-4 w-4" />
-                    💇 Muta TOATE produsele de Îngrijire Păr din Medicamente OTC
-                  </>
-                )}
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                Va muta TOATE produsele de Îngrijire Păr (conțin cuvinte cheie: sampon, masca par, ulei par, spray par, etc.) din "Medicamente OTC" în categoria corectă.
-              </p>
-
-              <Button
-                onClick={handleMoveMedicalDevicesProducts}
-                disabled={fixingCategories}
-                className="w-full bg-blue-600 hover:bg-blue-700"
-              >
-                {fixingCategories ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Se mută produsele medicale...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="mr-2 h-4 w-4" />
-                    🏥 Muta TOATE produsele de Articole Ortopedice din Medicamente OTC
-                  </>
-                )}
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                Va muta TOATE produsele de Articole Ortopedice (bandaje, aparate ortopedice, echipamente medicale) din "Medicamente OTC" în categoria corectă.
-              </p>
-
-              <Button
-                onClick={handleMovePersonalHygieneProducts}
-                disabled={fixingCategories}
-                className="w-full bg-amber-600 hover:bg-amber-700"
-              >
-                {fixingCategories ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Se mută produsele de igienă...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="mr-2 h-4 w-4" />
-                    🧼 Muta TOATE produsele de Igienă Personală din Medicamente OTC
-                  </>
-                )}
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                Va muta TOATE produsele de Igienă Personală (paste de dinți, deodoranți, absorbante) din "Medicamente OTC" în categoria corectă.
-              </p>
-
-              <Button
-                onClick={handleMoveSkinCareProducts}
-                disabled={fixingCategories}
-                className="w-full bg-pink-600 hover:bg-pink-700"
-              >
-                {fixingCategories ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Se mută produsele de Îngrijire Corp/Față...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="mr-2 h-4 w-4" />
-                    ✨ Muta TOATE produsele de Îngrijire Corp/Față din Medicamente OTC
-                  </>
-                )}
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                Va muta TOATE produsele de Îngrijire Corp/Față (conțin cuvinte cheie: crema, gel, ser, balsam, ulei, etc.) din "Medicamente OTC" în categoria corectă.
-              </p>
-
-              <Button
-                onClick={handleMoveMedicinalPlantsProducts}
-                disabled={fixingCategories}
-                className="w-full bg-green-600 hover:bg-green-700"
-              >
-                {fixingCategories ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Se mută produsele de Plante Medicinale...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="mr-2 h-4 w-4" />
-                    🌿 Muta produsele de Plante Medicinale din Medicamente OTC
-                  </>
-                )}
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                Va muta DOAR produsele de Plante Medicinale (conțin cuvintele "ceai", "ulei", "tinctura", etc.) din "Medicamente OTC" în "Sănătate - Plante Medicinale".
-              </p>
-
-              <Button
-                onClick={handleMoveProtectionSolareProducts}
-                disabled={fixingCategories}
-                className="w-full bg-orange-600 hover:bg-orange-700"
-              >
-                {fixingCategories ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Se mută produsele de Protecție Solară...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="mr-2 h-4 w-4" />
-                    ☀️ Muta produsele de Protecție Solară din Medicamente OTC
-                  </>
-                )}
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                Va muta DOAR produsele de Protecție Solară (conțin cuvintele "protectie", "spf", "solar", etc.) din "Medicamente OTC" în "Frumusețe și Igienă - Protecție Solară".
-              </p>
-
-              <Button
-                onClick={handleFixCategories}
-                disabled={fixingCategories}
-                className="w-full"
-                variant="outline"
-              >
-                {fixingCategories ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Se fixează categoriile...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="mr-2 h-4 w-4" />
-                    Muta TOATE produsele din Medicamente OTC → Vitamine și Minerale
-                  </>
-                )}
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                ⚠️ Va muta TOATE produsele din categoria "Medicamente OTC" în categoria "Vitamine și Minerale". Această acțiune va affect TOATE produsele din acea categorie.
-              </p>
-            </CardContent>
-          </Card>
 
           <Card>
             <CardHeader>
@@ -711,58 +491,210 @@ export default function AdminProducts() {
                 <div className="text-center py-8">
                   <Loader2 className="h-8 w-8 animate-spin mx-auto" />
                 </div>
+              ) : filteredProducts.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  Nu au fost găsite produse.
+                </div>
               ) : (
-                <div className="grid gap-4">
-                  {filteredProducts.map((product) => (
-                    <Dialog key={product.id}>
-                      <div className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
-                        <div className="w-16 h-16 flex-shrink-0">
-                          {product.image_url ? (
-                            <img
-                              src={product.image_url}
-                              alt={product.name}
-                              className="w-full h-full object-cover rounded"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-muted rounded flex items-center justify-center">
-                              <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                <div className="border rounded-lg overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-12">Imagine</TableHead>
+                        <TableHead>Nume</TableHead>
+                        <TableHead>Producător</TableHead>
+                        <TableHead>Preț</TableHead>
+                        <TableHead>Categorie</TableHead>
+                        <TableHead>Stoc</TableHead>
+                        <TableHead className="text-right">Acțiuni</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredProducts.map((product) => (
+                        <TableRow key={product.id}>
+                          <TableCell>
+                            <div className="w-10 h-10">
+                              {product.image_url ? (
+                                <img
+                                  src={product.image_url}
+                                  alt={product.name}
+                                  className="w-full h-full object-cover rounded"
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-muted rounded flex items-center justify-center">
+                                  <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                              )}
                             </div>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-medium truncate">{product.name}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {product.manufacturer} • {product.price} MDL
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {product.categories?.name}
-                          </p>
-                        </div>
-                        <DialogTrigger asChild>
-                          <Button variant="outline" size="sm">
-                            <ImageIcon className="mr-2 h-4 w-4" />
-                            Adaugă Poză
-                          </Button>
-                        </DialogTrigger>
-                      </div>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Adaugă imagine pentru {product.name}</DialogTitle>
-                        </DialogHeader>
-                        <ProductImageUpload
-                          productId={product.id}
-                          currentImageUrl={product.image_url}
-                          onImageUpdated={(url) => {
-                            setProducts(prev =>
-                              prev.map(p =>
-                                p.id === product.id ? { ...p, image_url: url } : p
-                              )
-                            );
-                          }}
-                        />
-                      </DialogContent>
-                    </Dialog>
-                  ))}
+                          </TableCell>
+                          <TableCell className="max-w-xs truncate">{product.name}</TableCell>
+                          <TableCell>{product.manufacturer || '-'}</TableCell>
+                          <TableCell>{product.price} MDL</TableCell>
+                          <TableCell className="text-sm">{product.categories?.name || '-'}</TableCell>
+                          <TableCell>{product.stock_quantity}</TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex gap-2 justify-end">
+                              <Dialog open={editingProduct?.id === product.id} onOpenChange={(open) => !open && setEditingProduct(null)}>
+                                <DialogTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleEditProduct(product)}
+                                  >
+                                    <Edit2 className="h-4 w-4" />
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-md">
+                                  <DialogHeader>
+                                    <DialogTitle>Editează produs</DialogTitle>
+                                  </DialogHeader>
+                                  <div className="space-y-4">
+                                    <div>
+                                      <Label htmlFor="name">Nume</Label>
+                                      <Input
+                                        id="name"
+                                        value={editFormData.name || ''}
+                                        onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label htmlFor="manufacturer">Producător</Label>
+                                      <Input
+                                        id="manufacturer"
+                                        value={editFormData.manufacturer || ''}
+                                        onChange={(e) => setEditFormData({ ...editFormData, manufacturer: e.target.value })}
+                                      />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <Label htmlFor="price">Preț</Label>
+                                        <Input
+                                          id="price"
+                                          type="number"
+                                          value={editFormData.price || ''}
+                                          onChange={(e) => setEditFormData({ ...editFormData, price: parseFloat(e.target.value) })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="old_price">Preț vechi</Label>
+                                        <Input
+                                          id="old_price"
+                                          type="number"
+                                          value={editFormData.old_price || ''}
+                                          onChange={(e) => setEditFormData({ ...editFormData, old_price: parseFloat(e.target.value) })}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div>
+                                        <Label htmlFor="discount">Discount %</Label>
+                                        <Input
+                                          id="discount"
+                                          type="number"
+                                          value={editFormData.discount || ''}
+                                          onChange={(e) => setEditFormData({ ...editFormData, discount: parseFloat(e.target.value) })}
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label htmlFor="stock">Stoc</Label>
+                                        <Input
+                                          id="stock"
+                                          type="number"
+                                          value={editFormData.stock_quantity || ''}
+                                          onChange={(e) => setEditFormData({ ...editFormData, stock_quantity: parseInt(e.target.value) })}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <Label htmlFor="category">Categorie</Label>
+                                      <select
+                                        id="category"
+                                        value={editFormData.category_id || ''}
+                                        onChange={(e) => setEditFormData({ ...editFormData, category_id: e.target.value })}
+                                        className="w-full border rounded-md px-3 py-2 bg-background"
+                                      >
+                                        <option value="">Selectați categorie</option>
+                                        {categories.map((cat) => (
+                                          <option key={cat.id} value={cat.id}>
+                                            {cat.name}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2 pt-4">
+                                      <Button
+                                        variant="outline"
+                                        onClick={() => setEditingProduct(null)}
+                                      >
+                                        Anulează
+                                      </Button>
+                                      <Button
+                                        onClick={handleSaveProduct}
+                                      >
+                                        Salvează
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
+                              <AlertDialog open={deletingProductId === product.id} onOpenChange={(open) => !open && setDeletingProductId(null)}>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-destructive hover:text-destructive"
+                                    onClick={() => setDeletingProductId(product.id)}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Ești sigur?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Aceasta va șterge permanent produsul "{product.name}". Această acțiune nu poate fi anulată.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <div className="flex gap-2">
+                                    <AlertDialogCancel>Anulează</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={handleDeleteProduct}
+                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                    >
+                                      Șterge
+                                    </AlertDialogAction>
+                                  </div>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button variant="outline" size="sm">
+                                    <ImageIcon className="h-4 w-4" />
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>Adaugă imagine pentru {product.name}</DialogTitle>
+                                  </DialogHeader>
+                                  <ProductImageUpload
+                                    productId={product.id}
+                                    currentImageUrl={product.image_url}
+                                    onImageUpdated={(url) => {
+                                      setProducts(prev =>
+                                        prev.map(p =>
+                                          p.id === product.id ? { ...p, image_url: url } : p
+                                        )
+                                      );
+                                    }}
+                                  />
+                                </DialogContent>
+                              </Dialog>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
               )}
             </CardContent>

@@ -1,26 +1,10 @@
-import React, { useState } from 'react';
-import { Search, TrendingUp, Clock, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, X, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { useSearch } from '@/hooks/useSearch';
-import { SearchResults } from '@/components/SearchResults';
 import { cn } from '@/lib/utils';
-
-// Mock data pentru demonstrație
-const mockProducts = [
-  { id: 1, name: "Paracetamol 500mg", category: "Medicamente", brand: "Farmacia Tei", price: 15, originalPrice: 20, rating: 4.5, reviews: 128, discount: 25, image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&h=500&fit=crop", inStock: true, description: "Analgezic și antipiretic", tags: ["durere", "febra"] },
-  { id: 2, name: "Vitamina C 1000mg", category: "Vitamine", brand: "Solgar", price: 45, originalPrice: 60, rating: 5, reviews: 245, discount: 25, image: "https://images.unsplash.com/photo-1550572017-4725f1f5b8f5?w=500&h=500&fit=crop", inStock: true, description: "Supliment vitamina C", tags: ["imunitate", "antioxidant"] },
-  { id: 3, name: "Aspenter 100mg", category: "Medicamente", brand: "Zentiva", price: 22, rating: 4.3, reviews: 94, image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&h=500&fit=crop", inStock: true, description: "Antiagregant plachetar", tags: ["inima", "preventie"] },
-  { id: 4, name: "Omega 3", category: "Suplimente", brand: "Nordic Naturals", price: 89, originalPrice: 120, rating: 4.8, reviews: 89, discount: 26, image: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=500&h=500&fit=crop", inStock: false, description: "Acizi grași omega 3", tags: ["inima", "creier"] },
-  { id: 5, name: "Magneziu B6", category: "Vitamine", brand: "Magne B6", price: 35, rating: 4.9, reviews: 203, image: "https://images.unsplash.com/photo-1616671276746-6ff1a6a55b6e?w=500&h=500&fit=crop", inStock: true, description: "Supliment magneziu cu vitamina B6", tags: ["stres", "oboseala"] }
-];
-
-// Căutări populare
-const popularSearches = [
-  "Paracetamol", "Vitamina C", "Omega 3", "Probiotice", "Magneziu",
-  "Aspirina", "Ibuprofen", "Vitamina D", "Zinc", "Fer"
-];
+import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 
 interface QuickSearchProps {
   className?: string;
@@ -31,185 +15,197 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
   className,
   showResults = true
 }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [showQuickResults, setShowQuickResults] = useState(false);
-  
-  const {
-    searchTerm,
-    setSearchTerm,
-    searchResults,
-    performSearch,
-    quickSearch,
-    clearSearch,
-    searchHistory,
-    removeFromHistory,
-    getSearchSuggestions,
-    isSearching
-  } = useSearch({ 
-    products: mockProducts
-  });
+  const [isSearching, setIsSearching] = useState(false);
+  const navigate = useNavigate();
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const handleQuickSearch = (term: string) => {
-    quickSearch(term);
-    setShowQuickResults(true);
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
+          inputRef.current && !inputRef.current.contains(event.target as Node)) {
+        setShowQuickResults(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Search direct din baza de date
+  const handleSearch = async (term: string) => {
+    if (!term.trim()) {
+      setSearchResults([]);
+      setShowQuickResults(false);
+      return;
+    }
+
+    setIsSearching(true);
+    console.log('🔍 Searching for:', term);
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('id, name, price, image_url, manufacturer')
+        .ilike('name', `%${term}%`)
+        .limit(10);
+
+      if (error) {
+        console.error('❌ Search error:', error);
+        setSearchResults([]);
+      } else if (data) {
+        console.log('✅ Found products:', data.length);
+        const mappedResults = data.map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          price: parseFloat(p.price) || 0,
+          image: p.image_url || '',
+          brand: p.manufacturer || 'Unknown',
+          category: 'Medicamente',
+          description: p.name,
+          inStock: true,
+          rating: 4.5,
+          reviews: 0
+        }));
+        console.log('📊 Mapped results:', mappedResults);
+        setSearchResults(mappedResults);
+        setShowQuickResults(true);
+      } else {
+        console.log('ℹ️ No data returned');
+        setSearchResults([]);
+      }
+    } catch (error) {
+      console.error('❌ Error searching:', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
-  const handleFullSearch = (term?: string) => {
-    const searchValue = term || searchTerm;
-    performSearch(searchValue);
+  const handleQuickSearch = (term: string) => {
+    setSearchTerm(term);
+    handleSearch(term);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    
+    if (value.length > 1) {
+      handleSearch(value);
+    } else {
+      setShowQuickResults(false);
+      setSearchResults([]);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearch(searchTerm);
+    }
+  };
+
+  const handleProductClick = (productId: string) => {
+    console.log('🛍️ Navigating to product:', productId);
+    setShowQuickResults(false);
+    navigate(`/produs/${productId}`);
+  };
+
+  const handleViewAllClick = () => {
+    console.log('📋 Viewing all results for:', searchTerm);
+    navigate(`/categorie/medicamente-otc?search=${encodeURIComponent(searchTerm)}`);
     setShowQuickResults(false);
   };
 
-  const suggestions = searchTerm.length > 1 ? getSearchSuggestions(searchTerm, 5) : [];
-
   return (
-    <div className={cn("space-y-6", className)}>
-      {/* Search Input */}
+    <div className={cn("w-full relative", className)}>
       <div className="relative">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <Input
             type="text"
+            placeholder={isSearching ? "Se cauta..." : "Cauta produse..."}
             value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              if (e.target.value) {
-                handleQuickSearch(e.target.value);
-              } else {
-                setShowQuickResults(false);
-              }
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                handleFullSearch();
-              }
-            }}
-            placeholder="Caută medicamente, vitamine, suplimente..."
-            className="w-full h-14 pl-12 pr-32 text-lg border-2 border-gray-200 focus:border-green-500 rounded-xl"
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onFocus={() => searchTerm.length > 1 && setShowQuickResults(true)}
+            disabled={isSearching}
+            className="pl-10 pr-10 py-2 w-full text-sm"
           />
-          <Button
-            onClick={() => handleFullSearch()}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 h-10 px-6 bg-green-600 hover:bg-green-700"
-          >
-            <Search className="w-4 h-4 mr-2" />
-            Caută
-          </Button>
+          {searchTerm && (
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setSearchResults([]);
+                setShowQuickResults(false);
+              }}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              ✕
+            </button>
+          )}
         </div>
 
-        {/* Quick suggestions dropdown */}
-        {searchTerm && suggestions.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg z-10 max-h-64 overflow-y-auto">
-            <div className="p-3 border-b border-gray-100">
-              <div className="text-xs font-semibold text-gray-500 mb-2">Sugestii rapide</div>
-              {suggestions.map((suggestion, index) => (
+        {/* Quick Results Dropdown */}
+        {showQuickResults && searchResults.length > 0 && (
+          <div 
+            ref={dropdownRef}
+            className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50"
+          >
+            <div className="max-h-96 overflow-y-auto">
+              {searchResults.slice(0, 8).map((product) => (
                 <button
-                  key={index}
-                  onClick={() => {
-                    setSearchTerm(suggestion);
-                    handleQuickSearch(suggestion);
-                  }}
-                  className="w-full text-left px-3 py-2 hover:bg-green-50 rounded-lg transition-colors flex items-center justify-between"
+                  key={product.id}
+                  onClick={() => handleProductClick(product.id)}
+                  className="w-full px-4 py-3 hover:bg-green-50 border-b last:border-b-0 text-left transition-colors"
                 >
-                  <span className="text-sm">{suggestion}</span>
-                  <ArrowRight className="w-3 h-3 text-gray-400" />
+                  <div className="flex gap-3">
+                    {product.image && (
+                      <img 
+                        src={product.image} 
+                        alt={product.name}
+                        className="w-12 h-12 object-cover rounded"
+                      />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-gray-900 truncate">{product.name}</div>
+                      <div className="flex justify-between items-center mt-1">
+                        <span className="text-sm text-green-600 font-semibold">{product.price} lei</span>
+                        <span className="text-xs text-gray-500">{product.brand}</span>
+                      </div>
+                    </div>
+                  </div>
                 </button>
               ))}
             </div>
-            
-            {searchHistory.length > 0 && (
-              <div className="p-3">
-                <div className="text-xs font-semibold text-gray-500 mb-2 flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  Căutări recente
-                </div>
-                {searchHistory.slice(0, 3).map((term) => (
-                  <button
-                    key={term}
-                    onClick={() => {
-                      setSearchTerm(term);
-                      handleQuickSearch(term);
-                    }}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors text-sm text-gray-600"
-                  >
-                    {term}
-                  </button>
-                ))}
-              </div>
-            )}
+            <div className="px-4 py-2 bg-gray-50 border-t text-center">
+              <button
+                onClick={handleViewAllClick}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center gap-2 w-full py-2"
+              >
+                Vedeti toate cele {searchResults.length} rezultate <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Popular Searches */}
+
+        {/* No Results */}
+        {showQuickResults && searchTerm && searchResults.length === 0 && !isSearching && (
+          <div 
+            ref={dropdownRef}
+            className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50 p-4 text-center"
+          >
+            <Search className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+            <p className="text-sm text-gray-600">Nu au fost găsite produse pentru "{searchTerm}"</p>
           </div>
         )}
       </div>
-
-      {/* Popular searches */}
-      {!searchTerm && (
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-orange-500" />
-            <span className="text-sm font-medium text-gray-700">Căutări populare</span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {popularSearches.map((term) => (
-              <Button
-                key={term}
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSearchTerm(term);
-                  handleQuickSearch(term);
-                }}
-                className="h-8 px-3 text-xs hover:bg-green-50 hover:border-green-300"
-              >
-                {term}
-              </Button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Quick Results */}
-      {showResults && showQuickResults && searchTerm && (
-        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-lg">
-          <SearchResults
-            results={searchResults.slice(0, 5)}
-            searchTerm={searchTerm}
-            isLoading={isSearching}
-            onAddToCart={(productId) => {
-              console.log('Add to cart:', productId);
-              // Aici se va integra cu hook-ul de cart
-            }}
-          />
-          
-          {searchResults.length > 5 && (
-            <div className="text-center mt-4 pt-4 border-t border-gray-100">
-              <Button
-                onClick={() => handleFullSearch()}
-                variant="outline"
-                className="gap-2"
-              >
-                Vezi toate cele {searchResults.length} rezultate
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* No results message */}
-      {showResults && showQuickResults && searchTerm && searchResults.length === 0 && !isSearching && (
-        <div className="bg-white border border-gray-200 rounded-xl p-6 text-center">
-          <Search className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">
-            Nu am găsit rezultate pentru "{searchTerm}"
-          </h3>
-          <p className="text-gray-500 mb-4">Încearcă un termen diferit sau explorează categoriile noastre</p>
-          <Button
-            onClick={() => handleFullSearch()}
-            variant="outline"
-          >
-            Caută în toate produsele
-          </Button>
-        </div>
-      )}
     </div>
   );
 };

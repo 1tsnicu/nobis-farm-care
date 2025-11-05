@@ -197,7 +197,7 @@ const ProductDetail = () => {
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 text-center">
           <h1 className="text-2xl font-bold mb-4">Produs negăsit</h1>
-          <Link to="/produse" className="text-primary hover:underline">
+          <Link to="/categorie/medicamente-otc" className="text-primary hover:underline">
             ← Înapoi la produse
           </Link>
         </main>
@@ -217,7 +217,7 @@ const ProductDetail = () => {
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Link to="/" className="hover:text-primary transition-colors">Acasă</Link>
               <span>/</span>
-              <Link to="/produse" className="hover:text-primary transition-colors">Produse</Link>
+              <Link to="/categorie/medicamente-otc" className="hover:text-primary transition-colors">Produse</Link>
               <span>/</span>
               {category && (
                 <>
@@ -235,7 +235,7 @@ const ProductDetail = () => {
         {/* Product Details */}
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <Link to="/produse" className="inline-flex items-center gap-2 text-primary hover:underline mb-6">
+            <Link to="/categorie/medicamente-otc" className="inline-flex items-center gap-2 text-primary hover:underline mb-6">
               <ChevronLeft className="h-4 w-4" />
               Înapoi la produse
             </Link>

@@ -45,7 +45,7 @@ const Wishlist = () => {
                 Explorează produsele noastre și adaugă-le la favorite pentru a le găsi mai ușor
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link to="/produse">
+                <Link to="/categorie/medicamente-otc">
                   <Button>
                     <ShoppingBag className="h-4 w-4 mr-2" />
                     Explorează produsele
@@ -78,7 +78,7 @@ const Wishlist = () => {
                 >
                   Șterge toate
                 </Button>
-                <Link to="/produse">
+                <Link to="/categorie/medicamente-otc">
                   <Button variant="outline" size="sm">
                     <ShoppingBag className="h-4 w-4 mr-2" />
                     Adaugă mai multe

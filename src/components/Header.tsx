@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ShoppingCart, Heart, User, Menu, X, Search } from "lucide-react";
+import { ShoppingCart, Heart, User, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import HeroCategories from "@/components/HeroCategories";
+import { QuickSearch } from "@/components/QuickSearch";
 
 interface Category {
   id: string;
@@ -80,19 +80,7 @@ const Header = () => {
 
               {/* Search Bar */}
               <div className="hidden md:flex flex-1 max-w-2xl">
-                <div className="relative w-full">
-                  <Input
-                    type="text"
-                    placeholder="Caută medicamente, suplimente sau produse de îngrijire..."
-                    className="w-full pr-12 pl-4"
-                  />
-                  <Button 
-                    size="icon"
-                    className="absolute right-0 top-0 rounded-l-none"
-                  >
-                    <Search className="h-4 w-4" />
-                  </Button>
-                </div>
+                <QuickSearch className="w-full" showResults={true} />
               </div>
 
               {/* Desktop Links */}

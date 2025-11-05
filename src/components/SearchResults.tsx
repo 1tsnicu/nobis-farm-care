@@ -74,7 +74,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
           </ul>
         </div>
         <div className="mt-6">
-          <Link to="/produse">
+          <Link to="/categorie/medicamente-otc">
             <Button variant="outline">
               Vezi toate produsele
             </Button>
@@ -228,7 +228,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
       {/* Link pentru mai multe rezultate */}
       {results.length > 10 && (
         <div className="text-center pt-4">
-          <Link to={`/produse?search=${encodeURIComponent(searchTerm)}`}>
+          <Link to={`/categorie/medicamente-otc?search=${encodeURIComponent(searchTerm)}`}>
             <Button variant="outline">
               Vezi toate cele {results.length} rezultate
             </Button>

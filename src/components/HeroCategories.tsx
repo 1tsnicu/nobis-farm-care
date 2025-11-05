@@ -7,7 +7,6 @@ interface Category {
   name: string;
   slug: string;
   icon: string;
-  products_count?: number;
 }
 
 const HeroCategories = () => {
@@ -25,28 +24,13 @@ const HeroCategories = () => {
       .order('display_order');
 
     if (categoriesData) {
-      // Fetch product counts for each category
-      const categoriesWithCount = await Promise.all(
-        categoriesData.map(async (cat) => {
-          const { count } = await supabase
-            .from('products')
-            .select('*', { count: 'exact', head: true })
-            .eq('category_id', cat.id);
-          
-          return {
-            ...cat,
-            products_count: count || 0
-          };
-        })
-      );
-      
-      setCategories(categoriesWithCount);
+      setCategories(categoriesData);
     }
   };
 
   const getCategoryShortName = (name: string) => {
     const shortNames: { [key: string]: string } = {
-      'Sănătate - Medicamente OTC': 'Medicamente OTC',
+      'Sănătate - Medicamente OTC': 'Medicamente',
       'Vitamine și Minerale': 'Vitamine și Minerale',
       'Sănătate - Parafarmaceutice': 'Cuplu și sex',
       'Mamă și Copil': 'Mamă și Copil',
@@ -122,7 +106,10 @@ const HeroCategories = () => {
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex items-center gap-8 overflow-x-auto py-4 scrollbar-hide">
-          {categories.slice(0, 6).map((cat) => (
+          {categories
+            .filter(cat => cat.name !== 'Sănătate - Echipamente Medicale')
+            .slice(0, 6)
+            .map((cat) => (
             <Link
               key={cat.id}
               to={`/categorie/${cat.slug}`}
@@ -130,9 +117,6 @@ const HeroCategories = () => {
             >
               <span className="font-medium group-hover:font-semibold">
                 {getCategoryShortName(cat.name)}
-              </span>
-              <span className="text-muted-foreground">
-                ({cat.products_count || 0})
               </span>
             </Link>
           ))}
@@ -142,15 +126,7 @@ const HeroCategories = () => {
             to={`/categorie/${getProtectionSolareSlug()}`}
             className="flex items-center gap-2 whitespace-nowrap text-sm hover:text-primary transition-colors group font-medium border-l pl-8"
           >
-            <span>☀️ Protecție Solară</span>
-          </Link>
-
-          {/* Direct link to Plante Medicinale */}
-          <Link
-            to={`/categorie/${getMedicinalPlantsSlug()}`}
-            className="flex items-center gap-2 whitespace-nowrap text-sm hover:text-primary transition-colors group font-medium"
-          >
-            <span>🌿 Plante Medicinale</span>
+            <span>Protecție Solară</span>
           </Link>
 
           {/* Direct link to Optica */}
@@ -158,7 +134,7 @@ const HeroCategories = () => {
             to={`/categorie/${getOpticsSlug()}`}
             className="flex items-center gap-2 whitespace-nowrap text-sm hover:text-primary transition-colors group font-medium"
           >
-            <span>👓 Optică</span>
+            <span>Optică</span>
           </Link>
 
           {/* Direct link to Îngrijire Corp/Față */}
@@ -166,7 +142,7 @@ const HeroCategories = () => {
             to={`/categorie/${getSkinCareSlug()}`}
             className="flex items-center gap-2 whitespace-nowrap text-sm hover:text-primary transition-colors group font-medium"
           >
-            <span>✨ Îngrijire Corp/Față</span>
+            <span>Îngrijire Corp/Față</span>
           </Link>
 
           {/* Direct link to Îngrijire Păr */}
@@ -174,23 +150,7 @@ const HeroCategories = () => {
             to={`/categorie/${getHairCareSlug()}`}
             className="flex items-center gap-2 whitespace-nowrap text-sm hover:text-primary transition-colors group font-medium"
           >
-            <span>💇 Îngrijire Păr</span>
-          </Link>
-
-          {/* Direct link to Articole Ortopedice */}
-          <Link
-            to={`/categorie/${getMedicalDevicesSlug()}`}
-            className="flex items-center gap-2 whitespace-nowrap text-sm hover:text-primary transition-colors group font-medium"
-          >
-            <span>🏥 Articole Ortopedice</span>
-          </Link>
-
-          {/* Direct link to Mamă și Copil */}
-          <Link
-            to={`/categorie/${getBabyProductsSlug()}`}
-            className="flex items-center gap-2 whitespace-nowrap text-sm hover:text-primary transition-colors group font-medium"
-          >
-            <span>👶 Mamă și Copil</span>
+            <span>Îngrijire Păr</span>
           </Link>
 
           {/* Direct link to Igienă Personală */}
@@ -198,15 +158,9 @@ const HeroCategories = () => {
             to={`/categorie/${getPersonalHygieneSlug()}`}
             className="flex items-center gap-2 whitespace-nowrap text-sm hover:text-primary transition-colors group font-medium"
           >
-            <span>🧼 Igienă Personală</span>
+            <span>Igienă Personală</span>
           </Link>
           
-          <Link
-            to="/blog"
-            className="whitespace-nowrap text-sm hover:text-primary transition-colors font-medium"
-          >
-            Blog
-          </Link>
           <Link
             to="/contact"
             className="whitespace-nowrap text-sm hover:text-primary transition-colors font-medium"

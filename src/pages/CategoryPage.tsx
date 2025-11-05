@@ -24,7 +24,7 @@ const CategoryPage = () => {
   const getCategoryDisplayName = (name: string) => {
     const displayNames: { [key: string]: string } = {
       'Sănătate - Parafarmaceutice': 'Cuplu și sex',
-      'Sănătate - Medicamente OTC': 'Medicamente OTC',
+      'Sănătate - Medicamente OTC': 'Medicamente',
       'Vitamine și Minerale': 'Vitamine și Minerale',
       'Frumusețe și Igienă - Protecție Solară': 'Protecție Solară',
       'Frumusețe și Igienă - Îngrijire Corp/Față': 'Îngrijire Corp/Față',

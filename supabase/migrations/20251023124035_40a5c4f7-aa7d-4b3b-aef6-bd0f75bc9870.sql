@@ -65,7 +65,7 @@ EXECUTE FUNCTION public.update_updated_at_column();
 
 -- Insert categories in order
 INSERT INTO public.categories (name, slug, icon, description, display_order) VALUES
-('Sănătate - Medicamente OTC', 'medicamente-otc', '💊', 'Medicamente fără prescripție medicală', 1),
+('Sănătate - Medicamente OTC', 'medicamente-otc', '💊', 'Medicamente', 1),
 ('Vitamine și Minerale', 'vitamine-minerale', '🌟', 'Suplimente nutritive și vitamine', 2),
 ('Sănătate - Parafarmaceutice', 'parafarmaceutice', '⚕️', 'Produse de sănătate fără prescripție', 3),
 ('Mamă și Copil', 'mama-copil', '👶', 'Produse pentru copii și mame', 4),

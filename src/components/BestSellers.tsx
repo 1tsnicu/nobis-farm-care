@@ -99,7 +99,7 @@ const BestSellers = () => {
             </h2>
             <p className="text-muted-foreground">Produse preferate de clienții noștri</p>
           </div>
-          <Link to="/produse">
+          <Link to="/categorie/medicamente-otc">
             <Button variant="outline" className="hidden sm:flex border-primary text-primary hover:bg-primary hover:text-primary-foreground">
               Vezi toate
             </Button>
@@ -193,7 +193,7 @@ const BestSellers = () => {
         )}
 
         <div className="mt-8 text-center sm:hidden">
-          <Link to="/produse">
+          <Link to="/categorie/medicamente-otc">
             <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
               Vezi toate produsele
             </Button>

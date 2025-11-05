@@ -56,7 +56,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/produse" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors flex items-center gap-2">
+                <Link to="/categorie/medicamente-otc" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors flex items-center gap-2">
                   <span>Toate Produsele</span>
                 </Link>
               </li>
@@ -78,22 +78,22 @@ const Footer = () => {
             <h3 className="text-xl font-bold mb-4 text-nobis-white">Categorii & Informații</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/produse?categorie=medicamente-otc" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors">
+                <Link to="/categorie/medicamente-otc" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors">
                   Medicamente OTC
                 </Link>
               </li>
               <li>
-                <Link to="/produse?categorie=suplimente" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors">
+                <Link to="/categorie/vitamine-minerale" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors">
                   Suplimente & Vitamine
                 </Link>
               </li>
               <li>
-                <Link to="/produse?categorie=dermato-cosmetice" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors">
+                <Link to="/categorie/cosmetice-ingrijire-piele" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors">
                   Dermato-Cosmetice
                 </Link>
               </li>
               <li>
-                <Link to="/produse?categorie=mama-copil" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors">
+                <Link to="/categorie/mama-copil" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors">
                   Mama & Copilul
                 </Link>
               </li>

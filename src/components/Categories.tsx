@@ -19,7 +19,7 @@ const Categories = () => {
           {categories.map((category) => (
             <Link
               key={category.id}
-              to={`/produse?categorie=${category.slug}`}
+              to={`/categorie/${category.slug}`}
               className="group relative bg-card rounded-3xl overflow-hidden shadow-card hover:shadow-hover transition-all duration-500 border border-border/50 hover:border-primary/30"
             >
               {/* Background gradient overlay */}

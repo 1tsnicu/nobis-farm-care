@@ -53,6 +53,11 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
     fetchManufacturers();
   }, [categoryId]);
 
+  useEffect(() => {
+    // Reset to page 1 when filters change
+    setCurrentPage(1);
+  }, [searchTerm, sortBy, selectedManufacturer, selectedCountry, priceRange]);
+
   const fetchManufacturers = async () => {
     const { data } = await supabase
       .from('manufacturers')
@@ -208,12 +213,8 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
 
       {/* Main Content */}
       <div className="flex-1 space-y-6">
-        {/* Product Count and Sort */}
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground">
-            <span className="text-2xl font-bold text-primary">{filteredProducts.length}</span> produse disponibile
-          </p>
-
+        {/* Sort */}
+        <div className="flex items-center justify-end">
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Sortează:</span>
             <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
@@ -259,7 +260,7 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-8">
+              <div className="flex items-center justify-center gap-2 mt-8 flex-wrap">
                 <Button
                   variant="outline"
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
@@ -268,17 +269,47 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
                   ← Precedent
                 </Button>
                 
-                {[...Array(Math.min(5, totalPages))].map((_, i) => {
-                  const pageNum = i + 1;
-                  return (
-                    <Button
-                      key={pageNum}
-                      variant={currentPage === pageNum ? "default" : "outline"}
-                      onClick={() => setCurrentPage(pageNum)}
-                    >
-                      {pageNum}
-                    </Button>
-                  );
+                {/* Dynamic Page Numbers */}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                  const maxPagesToShow = 5;
+                  
+                  // Calculează range-ul de pagini de afișat
+                  let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+                  let endPage = startPage + maxPagesToShow - 1;
+                  
+                  if (endPage > totalPages) {
+                    endPage = totalPages;
+                    startPage = Math.max(1, endPage - maxPagesToShow + 1);
+                  }
+                  
+                  // Afișează dots la început dacă nu e pagina 1
+                  if (page === 1 && startPage > 1) {
+                    return (
+                      <span key="dots-start" className="px-2 text-muted-foreground">...</span>
+                    );
+                  }
+                  
+                  // Afișează pagina dacă e în range
+                  if (page >= startPage && page <= endPage) {
+                    return (
+                      <Button
+                        key={page}
+                        variant={currentPage === page ? "default" : "outline"}
+                        onClick={() => setCurrentPage(page)}
+                      >
+                        {page}
+                      </Button>
+                    );
+                  }
+                  
+                  // Afișează dots la sfârșit dacă nu e ultima pagină
+                  if (page === totalPages && endPage < totalPages) {
+                    return (
+                      <span key="dots-end" className="px-2 text-muted-foreground">...</span>
+                    );
+                  }
+                  
+                  return null;
                 })}
 
                 <Button

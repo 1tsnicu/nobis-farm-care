@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SearchBarProps {
   searchTerm: string;
@@ -34,6 +35,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [dbSuggestions, setDbSuggestions] = useState<string[]>([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -54,10 +57,47 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Cauta in baza de date pentru sugestii
+  const fetchSuggestionsFromDb = async (term: string) => {
+    if (!term.trim() || term.length < 2) {
+      setDbSuggestions([]);
+      return;
+    }
+
+    setIsLoadingSuggestions(true);
+    console.log('🔍 Fetching suggestions for:', term);
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('name')
+        .ilike('name', `%${term}%`)
+        .limit(8);
+
+      if (error) {
+        console.error('❌ Error fetching suggestions:', error);
+        setDbSuggestions([]);
+      } else if (data) {
+        console.log('✅ Suggestions found:', data.length);
+        const uniqueNames = [...new Set(data.map((p: any) => p.name))];
+        setDbSuggestions(uniqueNames.slice(0, 5));
+        console.log('📊 Unique suggestions:', uniqueNames.slice(0, 5));
+      } else {
+        console.log('ℹ️ No suggestions data');
+        setDbSuggestions([]);
+      }
+    } catch (error) {
+      console.error('❌ Error:', error);
+      setDbSuggestions([]);
+    } finally {
+      setIsLoadingSuggestions(false);
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     onSearchChange(value);
     setShowDropdown(true);
+    fetchSuggestionsFromDb(value);
   };
 
   const handleInputFocus = () => {
@@ -93,6 +133,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const handleClear = () => {
     onClear();
     setShowDropdown(false);
+    setDbSuggestions([]);
     inputRef.current?.focus();
   };
 
@@ -112,7 +153,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     return null;
   };
 
-  const hasContent = showSuggestions && (suggestions.length > 0 || searchHistory.length > 0);
+  // Combina sugestii din DB si search history
+  const allSuggestions = dbSuggestions.length > 0 ? dbSuggestions : suggestions;
+  const hasContent = showSuggestions && (allSuggestions.length > 0 || searchHistory.length > 0);
 
   return (
     <div className={cn("relative w-full max-w-lg", className)}>
@@ -150,9 +193,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           <div className="absolute right-12 top-1/2 transform -translate-y-1/2">
             <div className="animate-spin h-4 w-4 border-2 border-green-500 border-t-transparent rounded-full"></div>
           </div>
-        )}
-
-        {/* Clear Button */}
+        )}        {/* Clear Button */}
         {searchTerm && (
           <Button
             type="button"
@@ -187,14 +228,14 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           )}
         >
           {/* Current Suggestions */}
-          {suggestions.length > 0 && (
+          {allSuggestions.length > 0 && (
             <div className="p-3 border-b border-gray-100">
               <div className="text-xs font-semibold text-gray-500 mb-2 flex items-center gap-1">
                 <Search className="h-3 w-3" />
-                Sugestii pentru "{searchTerm}"
+                {dbSuggestions.length > 0 ? 'Produse găsite' : `Sugestii pentru "${searchTerm}"`}
               </div>
               <div className="space-y-1">
-                {suggestions.map((suggestion, index) => (
+                {allSuggestions.map((suggestion, index) => (
                   <button
                     key={suggestion}
                     onClick={() => handleSuggestionClick(suggestion)}
@@ -255,7 +296,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           )}
 
           {/* No Results */}
-          {suggestions.length === 0 && searchHistory.length === 0 && searchTerm && (
+          {allSuggestions.length === 0 && searchHistory.length === 0 && searchTerm && (
             <div className="p-4 text-center text-gray-500">
               <Search className="h-8 w-8 mx-auto mb-2 text-gray-300" />
               <p className="text-sm">Nu am găsit sugestii pentru "{searchTerm}"</p>

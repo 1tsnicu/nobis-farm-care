@@ -151,7 +151,7 @@ export const useSearch = ({ products, onResultsChange }: UseSearchProps) => {
 
     // Navigăm la pagina de produse cu termenul de căutare
     if (navigateToResults) {
-      navigate(`/produse?search=${encodeURIComponent(trimmedTerm)}`);
+      navigate(`/categorie/medicamente-otc?search=${encodeURIComponent(trimmedTerm)}`);
     }
   };
 

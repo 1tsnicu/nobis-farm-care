@@ -7,7 +7,6 @@ import { CartProvider } from "@/hooks/useCart";
 import { WishlistProvider } from "@/hooks/useWishlist";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
-import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import Auth from "./pages/Auth";
 import { Checkout } from "./pages/Checkout";
@@ -21,6 +20,7 @@ import ProductsManagement from "./pages/ProductsManagement";
 import ImportProducts from "./pages/ImportProducts";
 import CategoryPage from "./pages/CategoryPage";
 import AdminProducts from "./pages/AdminProducts";
+import { Navigate } from "react-router-dom";
 
 const queryClient = new QueryClient();
 
@@ -35,7 +35,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/categorie/:slug" element={<CategoryPage />} />
-            <Route path="/produse" element={<Products />} />
+            <Route path="/produse" element={<Navigate to="/categorie/medicamente-otc" replace />} />
             <Route path="/produs/:id" element={<ProductDetail />} />
             <Route path="/cos" element={<Cart />} />
             <Route path="/favorite" element={<Wishlist />} />

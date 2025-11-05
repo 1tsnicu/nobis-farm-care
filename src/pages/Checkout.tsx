@@ -465,7 +465,7 @@ export const Checkout = () => {
               <p className="text-gray-600 mb-4">
                 Adăugați produse în coș pentru a continua cu comanda.
               </p>
-              <Button onClick={() => window.location.href = "/produse"}>
+              <Button onClick={() => window.location.href = "/categorie/medicamente-otc"}>
                 Continuă cumpărăturile
               </Button>
             </CardContent>
@@ -550,7 +550,7 @@ export const Checkout = () => {
 
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button onClick={() => window.location.href = "/produse"} className="flex-1" size="default">
+                  <Button onClick={() => window.location.href = "/categorie/medicamente-otc"} className="flex-1" size="default">
                     Continuă cumpărăturile
                   </Button>
                   <Button 

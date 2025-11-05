@@ -53,46 +53,46 @@ const Hero = () => {
 
             {/* Key Benefits Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-2xl mx-auto lg:mx-0">
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-green-100 hover:border-green-300 transition-colors group text-center">
-                <div className="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform">
-                  <Stethoscope className="w-6 h-6 text-green-600" />
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 border border-green-100 hover:border-green-400 hover:shadow-lg hover:shadow-green-200/50 transition-all duration-300 group text-center hover:-translate-y-1">
+                <div className="bg-gradient-to-br from-green-100 to-green-50 rounded-full w-14 h-14 flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <Stethoscope className="w-7 h-7 text-green-600" />
                 </div>
-                <p className="font-semibold text-sm text-gray-800">Consiliere</p>
-                <p className="text-xs text-gray-600">Specializată</p>
+                <p className="font-bold text-sm text-gray-800">Consiliere</p>
+                <p className="text-xs text-gray-500 font-medium">Specializată</p>
               </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-blue-100 hover:border-blue-300 transition-colors group text-center">
-                <div className="bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform">
-                  <Heart className="w-6 h-6 text-blue-600" />
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 border border-blue-100 hover:border-blue-400 hover:shadow-lg hover:shadow-blue-200/50 transition-all duration-300 group text-center hover:-translate-y-1">
+                <div className="bg-gradient-to-br from-blue-100 to-blue-50 rounded-full w-14 h-14 flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <Heart className="w-7 h-7 text-blue-600" />
                 </div>
-                <p className="font-semibold text-sm text-gray-800">Gamă Variată</p>
-                <p className="text-xs text-gray-600">5000+ produse</p>
+                <p className="font-bold text-sm text-gray-800">Gamă Variată</p>
+                <p className="text-xs text-gray-500 font-medium">5000+ produse</p>
               </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-green-100 hover:border-green-300 transition-colors group text-center">
-                <div className="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform">
-                  <Award className="w-6 h-6 text-green-600" />
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 border border-green-100 hover:border-green-400 hover:shadow-lg hover:shadow-green-200/50 transition-all duration-300 group text-center hover:-translate-y-1">
+                <div className="bg-gradient-to-br from-green-100 to-green-50 rounded-full w-14 h-14 flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <Award className="w-7 h-7 text-green-600" />
                 </div>
-                <p className="font-semibold text-sm text-gray-800">Prețuri</p>
-                <p className="text-xs text-gray-600">Competitive</p>
+                <p className="font-bold text-sm text-gray-800">Prețuri</p>
+                <p className="text-xs text-gray-500 font-medium">Competitive</p>
               </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-blue-100 hover:border-blue-300 transition-colors group text-center">
-                <div className="bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform">
-                  <Clock className="w-6 h-6 text-blue-600" />
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 border border-blue-100 hover:border-blue-400 hover:shadow-lg hover:shadow-blue-200/50 transition-all duration-300 group text-center hover:-translate-y-1">
+                <div className="bg-gradient-to-br from-blue-100 to-blue-50 rounded-full w-14 h-14 flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform duration-300 shadow-md">
+                  <Clock className="w-7 h-7 text-blue-600" />
                 </div>
-                <p className="font-semibold text-sm text-gray-800">Program</p>
-                <p className="text-xs text-gray-600">Extins</p>
+                <p className="font-bold text-sm text-gray-800">Program</p>
+                <p className="text-xs text-gray-500 font-medium">Extins</p>
               </div>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link to="/produse">
-                <Button size="lg" className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white text-lg px-8 py-6 rounded-xl group shadow-lg">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
+              <Link to="/categorie/medicamente-otc" className="flex-1 sm:flex-none">
+                <Button size="lg" className="w-full bg-gradient-to-r from-green-600 via-green-600 to-emerald-600 hover:from-green-700 hover:via-green-700 hover:to-emerald-700 text-white text-lg px-10 py-6 rounded-xl group shadow-lg hover:shadow-xl hover:shadow-green-500/30 transition-all duration-300 transform hover:-translate-y-1">
                   Vezi Produsele Noastre
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Link to="/contact">
-                <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white text-lg px-8 py-6 rounded-xl">
+              <Link to="/contact" className="flex-1 sm:flex-none">
+                <Button size="lg" variant="outline" className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white text-lg px-10 py-6 rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/30">
                   <Phone className="mr-2 w-5 h-5" />
                   Contactează-ne
                 </Button>
@@ -100,65 +100,66 @@ const Hero = () => {
             </div>
 
             {/* Trust Stats */}
-            <div className="flex items-center justify-center lg:justify-start gap-8 pt-4">
+            <div className="flex items-center justify-center lg:justify-start gap-8 pt-8">
               <div className="text-center">
-                <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">8+</p>
-                <p className="text-sm text-gray-600">Ani experiență</p>
+                <p className="text-4xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">8+</p>
+                <p className="text-sm text-gray-600 font-medium mt-1">Ani experiență</p>
               </div>
-              <div className="w-px h-12 bg-gray-300" />
+              <div className="w-px h-14 bg-gradient-to-b from-green-200 to-blue-200" />
               <div className="text-center">
-                <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">25K+</p>
-                <p className="text-sm text-gray-600">Clienți mulțumiți</p>
+                <p className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">25K+</p>
+                <p className="text-sm text-gray-600 font-medium mt-1">Clienți mulțumiți</p>
               </div>
-              <div className="w-px h-12 bg-gray-300" />
+              <div className="w-px h-14 bg-gradient-to-b from-blue-200 to-green-200" />
               <div className="text-center">
-                <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">5★</p>
-                <p className="text-sm text-gray-600">Rating Google</p>
+                <p className="text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">5★</p>
+                <p className="text-sm text-gray-600 font-medium mt-1">Rating Google</p>
               </div>
             </div>
           </div>
 
           {/* Right Side - Hero Image */}
-          <div className="relative">
-            <div className="relative bg-gradient-to-br from-white/90 to-green-50/90 rounded-3xl p-8 shadow-2xl border border-green-100 backdrop-blur-xl overflow-hidden">
-              {/* Decorative Elements */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-green-200/30 to-blue-200/30 rounded-full blur-3xl -translate-y-32 translate-x-32" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-blue-200/30 to-green-200/30 rounded-full blur-3xl translate-y-32 -translate-x-32" />
+          <div className="relative group">
+            {/* Background Glow Effects */}
+            <div className="absolute inset-0 bg-gradient-to-br from-green-400/25 to-blue-400/25 rounded-3xl blur-3xl group-hover:blur-4xl transition-all duration-700 opacity-0 group-hover:opacity-100" />
+            <div className="absolute -inset-2 bg-gradient-to-r from-green-300/20 via-blue-300/20 to-green-300/20 rounded-4xl blur-2xl opacity-50 group-hover:opacity-70 transition-all duration-700" />
+            
+            <div className="relative bg-gradient-to-br from-white/98 via-green-50/95 to-blue-50/95 rounded-4xl shadow-2xl border border-green-100/80 backdrop-blur-xl overflow-hidden hover:shadow-3xl hover:border-green-300 transition-all duration-500">
+              {/* Premium Decorative Background Elements */}
+              <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-green-200/50 to-blue-200/30 rounded-full blur-3xl -translate-y-40 translate-x-40 group-hover:scale-125 transition-transform duration-700 animate-pulse" />
+              <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-blue-200/50 to-green-200/30 rounded-full blur-3xl translate-y-40 -translate-x-40 group-hover:scale-125 transition-transform duration-700 animate-pulse" style={{ animationDelay: '1s' }} />
               
-              <div className="relative z-10 space-y-6">
-                {/* Hero Image */}
-                <div className="aspect-[4/3] bg-gradient-to-br from-green-100 to-blue-100 rounded-2xl flex items-center justify-center overflow-hidden">
-                  <img 
-                    src="/poza cu farmacia.jpeg" 
-                    alt="Farmacia Nobis Farm - Interior modern și primitor"
-                    className="w-full h-full object-cover"
-                  />
+              {/* Floating Accent Shapes */}
+              <div className="absolute top-10 left-8 w-20 h-20 bg-gradient-to-br from-green-400/20 to-transparent rounded-3xl blur-xl group-hover:rotate-12 transition-transform duration-500" />
+              <div className="absolute top-1/3 right-12 w-16 h-16 bg-gradient-to-bl from-blue-400/20 to-transparent rounded-full blur-xl group-hover:-rotate-12 transition-transform duration-500" />
+              <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-gradient-to-tr from-green-300/15 to-transparent rounded-2xl blur-2xl group-hover:scale-110 transition-transform duration-500" />
+              
+              <div className="relative z-10 space-y-6 p-4 md:p-8">
+                {/* Hero Image - Larger */}
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-300/30 to-blue-300/30 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500" />
+                  <div className="relative aspect-[5/4] md:aspect-[16/12] bg-gradient-to-br from-green-100 to-blue-100 rounded-3xl flex items-center justify-center overflow-hidden shadow-2xl border-4 border-white/50 hover:shadow-2xl hover:shadow-green-200/50 transition-all duration-500">
+                    <img 
+                      src="/poza cu farmacia.jpeg" 
+                      alt="Farmacia Nobis Farm - Interior modern și primitor"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 brightness-105"
+                    />
+                    {/* Image Overlay Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  </div>
                 </div>
 
-                {/* Quick Contact Card */}
-                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border border-green-200">
-                  <h4 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
-                    <Star className="w-5 h-5 text-yellow-500" />
-                    Consiliere Farmaceutică Gratuită
-                  </h4>
-                  <p className="text-gray-600 mb-4">
-                    Echipa noastră de farmaciști cu experiență îți oferă consiliere personalizată pentru toate nevoile tale de sănătate.
-                  </p>
-                  <Link to="/servicii">
-                    <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg">
-                      Programează o Consultație
-                    </Button>
-                  </Link>
-                </div>
-
-                {/* Emergency Contact */}
-                <div className="text-center bg-red-50 rounded-xl p-4 border border-red-200">
-                  <p className="text-sm text-red-800 font-semibold">
-                    🚨 Urgență? Sună-ne acum: 
-                    <a href="tel:026858762" className="block text-lg font-bold hover:underline">
-                      026 858 762
-                    </a>
-                  </p>
+                {/* Trust Badge at Bottom */}
+                <div className="flex items-center justify-center gap-4 pt-2 px-4">
+                  <div className="flex items-center gap-2 text-center">
+                    <Shield className="w-5 h-5 text-green-600" />
+                    <span className="text-xs md:text-sm font-semibold text-gray-700">100% Sigur</span>
+                  </div>
+                  <div className="w-px h-6 bg-gray-300" />
+                  <div className="flex items-center gap-2">
+                    <Award className="w-5 h-5 text-blue-600" />
+                    <span className="text-xs md:text-sm font-semibold text-gray-700">Autorizat</span>
+                  </div>
                 </div>
               </div>
             </div>

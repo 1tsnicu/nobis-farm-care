@@ -63,7 +63,7 @@ const Cart = () => {
                   <p className="text-muted-foreground mb-6">
                     Adaugă produse pentru a începe cumpărăturile
                   </p>
-                  <Link to="/produse">
+                  <Link to="/categorie/medicamente-otc">
                     <Button>Explorează produsele</Button>
                   </Link>
                 </CardContent>

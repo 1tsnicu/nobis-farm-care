@@ -89,42 +89,6 @@ const LoyaltyProgram = () => {
             </Card>
           ))}
         </div>
-
-        {/* CTA Section */}
-        <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 md:p-12 border-2 border-white/30 shadow-2xl max-w-3xl mx-auto">
-          <div className="text-center">
-            <Sparkles className="w-12 h-12 text-gold mx-auto mb-6 animate-pulse" />
-            
-            <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
-              Începe să economisești astăzi!
-            </h3>
-            <p className="text-white/90 mb-8 text-lg">
-              Înscrierea este gratuită și primești instant 50 de puncte cadou
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                className="bg-white text-primary hover:bg-white/90 shadow-xl text-lg px-10 transform hover:scale-105 transition-all"
-              >
-                <Crown className="w-5 h-5 mr-2" />
-                Devino Membru GRATUIT
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-primary text-lg px-8"
-              >
-                Află mai multe
-              </Button>
-            </div>
-
-            <p className="text-white/70 mt-6 text-sm flex items-center justify-center gap-2">
-              <Star className="w-4 h-4" />
-              Durează mai puțin de 1 minut • Fără taxe ascunse
-            </p>
-          </div>
-        </div>
       </div>
     </section>
   );
