@@ -68,10 +68,10 @@ const Header = () => {
         <div className="border-b">
           <div className="container mx-auto px-4">
             {/* Main Header */}
-            <div className="flex h-16 items-center justify-between gap-4">
+            <div className="flex h-20 items-center justify-between gap-4">
               {/* Logo */}
               <Link to="/" className="flex items-center space-x-3 flex-shrink-0">
-                <img src="/logo.jpeg" alt="Nobis Farm" className="h-14 w-14 rounded-full" />
+                <img src="/logo.jpeg" alt="Nobis Farm" className="h-20 w-20 rounded-full" />
                 <div className="hidden sm:block">
                   <div className="font-bold text-primary text-xl">NOBIS FARM</div>
                   <div className="text-xs text-muted-foreground">Sănătatea familiei tale</div>
