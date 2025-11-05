@@ -74,7 +74,7 @@ const Header = () => {
                 <img src="/logo.jpeg" alt="Nobis Farm" className="h-14 w-14 rounded-full" />
                 <div className="hidden sm:block">
                   <div className="font-bold text-primary text-xl">NOBIS FARM</div>
-                  <div className="text-xs text-muted-foreground">Str. Ștefan cel Mare 138, Horești</div>
+                  <div className="text-xs text-muted-foreground">Sănătatea familiei tale</div>
                 </div>
               </Link>
 
