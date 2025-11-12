@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { ShoppingCart, MapPin, Phone, Mail, CreditCard, Package, Truck, CheckCircle, AlertCircle } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface OrderData {
   deliveryInfo: {
@@ -388,6 +389,33 @@ export const Checkout = () => {
         status: 'pending_pickup',
         createdAt: new Date().toISOString()
       };
+
+      // Trimite notificarea în Telegram
+      try {
+        const { error: telegramError } = await supabase.functions.invoke('send-telegram-notification', {
+          body: {
+            firstName: orderData.deliveryInfo.firstName,
+            lastName: orderData.deliveryInfo.lastName,
+            phone: orderData.deliveryInfo.phone,
+            email: orderData.deliveryInfo.email,
+            notes: orderData.notes,
+            products: items.map(item => ({
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price
+            })),
+            total: finalTotal,
+            deliveryMethod: 'pickup'
+          }
+        });
+
+        if (telegramError) {
+          console.error('Error sending Telegram notification:', telegramError);
+        }
+      } catch (telegramError) {
+        console.error('Failed to send Telegram notification:', telegramError);
+        // Nu blocăm comanda dacă notificarea eșuează
+      }
 
       setOrderResult(order);
       setCurrentStep(3); // Pas final de confirmare
