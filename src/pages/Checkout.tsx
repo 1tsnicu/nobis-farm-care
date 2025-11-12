@@ -792,7 +792,7 @@ export const Checkout = () => {
 
                       <div className="space-y-1 mt-3">
                         <Label htmlFor="notes" className="text-xs font-medium text-gray-700 flex items-center gap-1">
-                          💬 Observații (opțional)
+                          💬 Observații (specificați de la ce farmacie veți ridica)
                         </Label>
                         <Textarea
                           id="notes"
