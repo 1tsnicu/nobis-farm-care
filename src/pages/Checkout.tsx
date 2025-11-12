@@ -798,7 +798,7 @@ export const Checkout = () => {
                           id="notes"
                           value={orderData.notes}
                           onChange={(e) => setOrderData(prev => ({ ...prev, notes: e.target.value }))}
-                          placeholder="Observații pentru comandă..."
+                          placeholder="Observații pentru comandă (specificați de la ce farmacie veți ridica comanda)..."
                           rows={2}
                           className="border-2 border-gray-200 rounded-lg focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all resize-none text-sm"
                         />
