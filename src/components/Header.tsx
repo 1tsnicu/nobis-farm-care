@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import HeroCategories from "@/components/HeroCategories";
 import { QuickSearch } from "@/components/QuickSearch";
 
 interface Category {
@@ -184,9 +183,6 @@ const Header = () => {
             </div>
           </div>
         </div>
-        
-        {/* Categories Menu */}
-        <HeroCategories />
       </header>
     </>
   );

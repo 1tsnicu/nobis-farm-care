@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Search, X, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,6 +22,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
   const navigate = useNavigate();
   const dropdownRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const currentSearchRef = React.useRef<string>('');
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -36,22 +37,33 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Search direct din baza de date
-  const handleSearch = async (term: string) => {
+  // Search direct din baza de date - memoizat cu useCallback
+  const handleSearch = useCallback(async (term: string) => {
     if (!term.trim()) {
       setSearchResults([]);
       setShowQuickResults(false);
+      currentSearchRef.current = '';
       return;
     }
 
+    // Salvăm termenul curent de căutare
+    currentSearchRef.current = term;
     setIsSearching(true);
     console.log('🔍 Searching for:', term);
+    
     try {
       const { data, error } = await supabase
         .from('products')
         .select('id, name, price, image_url, manufacturer')
         .ilike('name', `%${term}%`)
         .limit(10);
+
+      // Verificăm dacă termenul de căutare s-a schimbat în timpul cererii
+      // Dacă da, ignorăm rezultatele pentru a evita afișarea rezultatelor învechite
+      if (currentSearchRef.current !== term) {
+        console.log('⏭️ Search term changed, ignoring old results');
+        return;
+      }
 
       if (error) {
         console.error('❌ Search error:', error);
@@ -71,8 +83,12 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
           reviews: 0
         }));
         console.log('📊 Mapped results:', mappedResults);
-        setSearchResults(mappedResults);
-        setShowQuickResults(true);
+        
+        // Verificăm din nou înainte de a actualiza starea
+        if (currentSearchRef.current === term) {
+          setSearchResults(mappedResults);
+          setShowQuickResults(true);
+        }
       } else {
         console.log('ℹ️ No data returned');
         setSearchResults([]);
@@ -81,25 +97,43 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
       console.error('❌ Error searching:', error);
       setSearchResults([]);
     } finally {
-      setIsSearching(false);
+      // Setăm isSearching la false doar dacă termenul nu s-a schimbat
+      if (currentSearchRef.current === term) {
+        setIsSearching(false);
+      }
     }
-  };
+  }, []);
+
+  // Debouncing pentru căutare type-ahead
+  useEffect(() => {
+    // Dacă termenul este prea scurt, ștergem rezultatele imediat
+    if (!searchTerm.trim() || searchTerm.length < 2) {
+      setShowQuickResults(false);
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    // Setăm un timer pentru debouncing (150ms - mai rapid)
+    const debounceTimer = setTimeout(() => {
+      handleSearch(searchTerm);
+    }, 150);
+
+    // Cleanup: anulăm timer-ul dacă utilizatorul continuă să tasteze
+    return () => {
+      clearTimeout(debounceTimer);
+    };
+  }, [searchTerm, handleSearch]);
 
   const handleQuickSearch = (term: string) => {
     setSearchTerm(term);
-    handleSearch(term);
+    // Nu mai apelăm handleSearch direct - se va apela prin useEffect cu debouncing
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    
-    if (value.length > 1) {
-      handleSearch(value);
-    } else {
-      setShowQuickResults(false);
-      setSearchResults([]);
-    }
+    // Nu mai apelăm handleSearch direct - se va apela prin useEffect cu debouncing
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -133,7 +167,6 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             onFocus={() => searchTerm.length > 1 && setShowQuickResults(true)}
-            disabled={isSearching}
             className="pl-10 pr-10 py-2 w-full text-sm"
           />
           {searchTerm && (

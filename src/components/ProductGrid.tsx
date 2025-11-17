@@ -58,6 +58,11 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
     setCurrentPage(1);
   }, [searchTerm, sortBy, selectedManufacturer, selectedCountry, priceRange]);
 
+  // Scroll to top when page changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
+
   const fetchManufacturers = async () => {
     const { data } = await supabase
       .from('manufacturers')

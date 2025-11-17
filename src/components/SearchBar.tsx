@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Search, X, Clock, TrendingUp, ArrowRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -57,8 +57,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Cauta in baza de date pentru sugestii
-  const fetchSuggestionsFromDb = async (term: string) => {
+  // Cauta in baza de date pentru sugestii - memoizat cu useCallback
+  const fetchSuggestionsFromDb = useCallback(async (term: string) => {
     if (!term.trim() || term.length < 2) {
       setDbSuggestions([]);
       return;
@@ -91,13 +91,33 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     } finally {
       setIsLoadingSuggestions(false);
     }
-  };
+  }, []);
+
+  // Debouncing pentru căutare type-ahead
+  useEffect(() => {
+    // Dacă termenul este prea scurt, ștergem sugestiile imediat
+    if (!searchTerm.trim() || searchTerm.length < 2) {
+      setDbSuggestions([]);
+      setIsLoadingSuggestions(false);
+      return;
+    }
+
+    // Setăm un timer pentru debouncing (150ms - mai rapid)
+    const debounceTimer = setTimeout(() => {
+      fetchSuggestionsFromDb(searchTerm);
+    }, 150);
+
+    // Cleanup: anulăm timer-ul dacă utilizatorul continuă să tasteze
+    return () => {
+      clearTimeout(debounceTimer);
+    };
+  }, [searchTerm, fetchSuggestionsFromDb]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     onSearchChange(value);
     setShowDropdown(true);
-    fetchSuggestionsFromDb(value);
+    // Nu mai apelăm fetchSuggestionsFromDb direct - se va apela prin useEffect cu debouncing
   };
 
   const handleInputFocus = () => {
