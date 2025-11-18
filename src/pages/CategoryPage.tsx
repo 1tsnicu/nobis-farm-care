@@ -43,17 +43,19 @@ const CategoryPage = () => {
     fetchCategory();
   }, [slug]);
 
-  // Scroll to top when category changes - use useLayoutEffect to run before paint
+  // Clear saved scroll when category changes - let ScrollToTop handle the actual scrolling
   useLayoutEffect(() => {
-    window.scrollTo(0, 0);
-  }, [slug]);
-
-  // Also scroll after loading completes
-  useEffect(() => {
-    if (!loading) {
-      window.scrollTo(0, 0);
+    // Check if this is a back navigation (flag set by ProductDetail)
+    const isBackNavigation = sessionStorage.getItem(`back-nav-${location.pathname}`);
+    
+    if (!isBackNavigation) {
+      // Clear saved scroll position when category changes
+      sessionStorage.removeItem(`scroll-${location.pathname}`);
+    } else {
+      // This is a back navigation - clear the flag, let ProductGrid restore scroll
+      sessionStorage.removeItem(`back-nav-${location.pathname}`);
     }
-  }, [loading, slug]);
+  }, [slug, location.pathname]);
 
   const fetchCategory = async () => {
     setLoading(true);

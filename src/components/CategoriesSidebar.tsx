@@ -86,9 +86,15 @@ const CategoriesSidebar = () => {
   ], [categories]);
 
   const handleCategoryClick = () => {
-    // Scroll to top when clicking on a category - use setTimeout to ensure it runs after navigation
+    // Force scroll to top immediately when clicking a category
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    // Also scroll after a short delay to ensure it works
     setTimeout(() => {
       window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
     }, 0);
   };
 

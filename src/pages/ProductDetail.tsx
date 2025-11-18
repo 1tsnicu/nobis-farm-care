@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { Star, ShoppingCart, Heart, Minus, Plus, ChevronLeft, Shield, Truck, RefreshCw, Package } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -37,6 +37,8 @@ interface Category {
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [product, setProduct] = useState<Product | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
   const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
@@ -47,6 +49,21 @@ const ProductDetail = () => {
   const { addItem } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const isFavorite = isInWishlist(id || '');
+
+  // Get referrer from location state or sessionStorage
+  const getBackUrl = () => {
+    // Check if we have a referrer in location state
+    if (location.state?.from) {
+      return location.state.from;
+    }
+    // Check sessionStorage for the last category page
+    const lastCategoryPage = sessionStorage.getItem('lastCategoryPage');
+    if (lastCategoryPage) {
+      return lastCategoryPage;
+    }
+    // Default fallback
+    return '/categorie/medicamente-otc';
+  };
 
   useEffect(() => {
     if (id) {
@@ -197,9 +214,22 @@ const ProductDetail = () => {
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 text-center">
           <h1 className="text-2xl font-bold mb-4">Produs negăsit</h1>
-          <Link to="/categorie/medicamente-otc" className="text-primary hover:underline">
+          <button 
+            onClick={() => {
+              const backUrl = getBackUrl();
+              // Parse URL to ensure proper navigation with query params
+              const url = new URL(backUrl, window.location.origin);
+              // Set flag to indicate this is a back navigation
+              sessionStorage.setItem(`back-nav-${url.pathname}`, 'true');
+              navigate({
+                pathname: url.pathname,
+                search: url.search
+              });
+            }}
+            className="text-primary hover:underline"
+          >
             ← Înapoi la produse
-          </Link>
+          </button>
         </main>
         <Footer />
       </div>
@@ -235,10 +265,23 @@ const ProductDetail = () => {
         {/* Product Details */}
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <Link to="/categorie/medicamente-otc" className="inline-flex items-center gap-2 text-primary hover:underline mb-6">
+            <button 
+              onClick={() => {
+                const backUrl = getBackUrl();
+                // Parse URL to ensure proper navigation with query params
+                const url = new URL(backUrl, window.location.origin);
+                // Set flag to indicate this is a back navigation
+                sessionStorage.setItem(`back-nav-${url.pathname}`, 'true');
+                navigate({
+                  pathname: url.pathname,
+                  search: url.search
+                });
+              }}
+              className="inline-flex items-center gap-2 text-primary hover:underline mb-6"
+            >
               <ChevronLeft className="h-4 w-4" />
               Înapoi la produse
-            </Link>
+            </button>
 
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
               {/* Image Gallery */}

@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import ProductCard from "@/components/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,11 +35,18 @@ interface ProductGridProps {
 }
 
 const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: ProductGridProps) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const scrollPositionRef = useRef<number>(0);
+  const gridRef = useRef<HTMLDivElement>(null);
+  
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("name-asc");
-  const [currentPage, setCurrentPage] = useState(1);
+  
+  // Get page from URL or default to 1
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
   
   // Filters
   const [manufacturers, setManufacturers] = useState<Manufacturer[]>([]);
@@ -48,20 +56,82 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
   const [priceRange, setPriceRange] = useState([0, 3500]);
   const [maxPrice, setMaxPrice] = useState(3500);
 
+  // Save scroll position before navigation
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      sessionStorage.setItem(`scroll-${location.pathname}`, window.scrollY.toString());
+    };
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [location.pathname]);
+
+  // Save scroll position when leaving page
+  useEffect(() => {
+    return () => {
+      sessionStorage.setItem(`scroll-${location.pathname}`, window.scrollY.toString());
+    };
+  }, [location.pathname]);
+
+  // Restore scroll position only when coming back from product detail (back navigation)
+  useEffect(() => {
+    // Check if this is a back navigation (flag set by ProductDetail)
+    const isBackNavigation = sessionStorage.getItem(`back-nav-${location.pathname}`);
+    const savedScroll = sessionStorage.getItem(`scroll-${location.pathname}`);
+    
+    if (isBackNavigation && savedScroll) {
+      // Only restore if we have both the back flag and saved scroll
+      // Wait for content to load - use a longer delay to ensure ScrollToTop doesn't interfere
+      const timer = setTimeout(() => {
+        const scrollY = parseInt(savedScroll, 10);
+        if (scrollY > 0) {
+          window.scrollTo({ top: scrollY, behavior: 'auto' });
+          document.documentElement.scrollTop = scrollY;
+          document.body.scrollTop = scrollY;
+        }
+      }, 400);
+      return () => clearTimeout(timer);
+    } else if (!isBackNavigation && savedScroll) {
+      // If it's not a back navigation but we have saved scroll, clear it
+      // This happens when navigating to a new category
+      sessionStorage.removeItem(`scroll-${location.pathname}`);
+    }
+  }, [location.pathname, currentPage]);
+
   useEffect(() => {
     fetchProducts();
     fetchManufacturers();
   }, [categoryId]);
 
+  // Track previous filter values to detect actual changes
+  const prevFiltersRef = useRef({ searchTerm, sortBy, selectedManufacturer, selectedCountry, priceRange: priceRange.join(',') });
+  
   useEffect(() => {
-    // Reset to page 1 when filters change
-    setCurrentPage(1);
-  }, [searchTerm, sortBy, selectedManufacturer, selectedCountry, priceRange]);
+    // Only reset to page 1 when filters actually change (not on initial load or page change)
+    const currentFilters = { searchTerm, sortBy, selectedManufacturer, selectedCountry, priceRange: priceRange.join(',') };
+    const filtersChanged = 
+      prevFiltersRef.current.searchTerm !== currentFilters.searchTerm ||
+      prevFiltersRef.current.sortBy !== currentFilters.sortBy ||
+      prevFiltersRef.current.selectedManufacturer !== currentFilters.selectedManufacturer ||
+      prevFiltersRef.current.selectedCountry !== currentFilters.selectedCountry ||
+      prevFiltersRef.current.priceRange !== currentFilters.priceRange;
+    
+    if (filtersChanged) {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set('page', '1');
+      setSearchParams(newParams, { replace: true });
+      prevFiltersRef.current = currentFilters;
+    }
+  }, [searchTerm, sortBy, selectedManufacturer, selectedCountry, priceRange, searchParams, setSearchParams]);
 
-  // Scroll to top when page changes
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentPage]);
+  // Update URL when page changes (but don't scroll)
+  const handlePageChange = (page: number) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('page', page.toString());
+    setSearchParams(newParams, { replace: true });
+    // Save current scroll position
+    scrollPositionRef.current = window.scrollY;
+  };
 
   const fetchManufacturers = async () => {
     const { data } = await supabase
@@ -241,7 +311,7 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
         {/* Products Grid */}
         {paginatedProducts.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+            <div ref={gridRef} className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
               {paginatedProducts.map(product => {
                 const stockBadge = getStockBadge(product.stock_quantity);
                 return (
@@ -268,7 +338,7 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
               <div className="flex items-center justify-center gap-2 mt-8 flex-wrap">
                 <Button
                   variant="outline"
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
                 >
                   ← Precedent
@@ -300,7 +370,7 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
                       <Button
                         key={page}
                         variant={currentPage === page ? "default" : "outline"}
-                        onClick={() => setCurrentPage(page)}
+                        onClick={() => handlePageChange(page)}
                       >
                         {page}
                       </Button>
@@ -319,7 +389,7 @@ const ProductGrid = ({ categoryId, showFilters = true, itemsPerPage = 20 }: Prod
 
                 <Button
                   variant="outline"
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages}
                 >
                   Următor →
