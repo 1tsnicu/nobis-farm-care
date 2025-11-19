@@ -390,9 +390,9 @@ export const Checkout = () => {
         createdAt: new Date().toISOString()
       };
 
-      // Trimite notificarea în Telegram
+      // Trimite notificarea în WhatsApp
       try {
-        const { error: telegramError } = await supabase.functions.invoke('send-telegram-notification', {
+        const { error: whatsappError } = await supabase.functions.invoke('send-whatsapp-notification', {
           body: {
             firstName: orderData.deliveryInfo.firstName,
             lastName: orderData.deliveryInfo.lastName,
@@ -409,11 +409,11 @@ export const Checkout = () => {
           }
         });
 
-        if (telegramError) {
-          console.error('Error sending Telegram notification:', telegramError);
+        if (whatsappError) {
+          console.error('Error sending WhatsApp notification:', whatsappError);
         }
-      } catch (telegramError) {
-        console.error('Failed to send Telegram notification:', telegramError);
+      } catch (whatsappError) {
+        console.error('Failed to send WhatsApp notification:', whatsappError);
         // Nu blocăm comanda dacă notificarea eșuează
       }
 
