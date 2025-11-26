@@ -456,6 +456,33 @@ export const Checkout = () => {
           createdAt: new Date().toISOString()
         };
 
+        // Trimite notificarea în WhatsApp pentru toate tipurile de comenzi
+        try {
+          const { error: whatsappError } = await supabase.functions.invoke('send-whatsapp-notification', {
+            body: {
+              firstName: orderData.deliveryInfo.firstName,
+              lastName: orderData.deliveryInfo.lastName,
+              phone: orderData.deliveryInfo.phone,
+              email: orderData.deliveryInfo.email,
+              notes: orderData.notes,
+              products: items.map(item => ({
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price
+              })),
+              total: finalTotal,
+              deliveryMethod: 'pickup'
+            }
+          });
+
+          if (whatsappError) {
+            console.error('Error sending WhatsApp notification:', whatsappError);
+          }
+        } catch (whatsappError) {
+          console.error('Failed to send WhatsApp notification:', whatsappError);
+          // Nu blocăm comanda dacă notificarea eșuează
+        }
+
         setOrderResult(order);
         setCurrentStep(4);
         clearCart();
