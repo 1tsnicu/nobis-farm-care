@@ -93,7 +93,7 @@ const Header = () => {
               <div className="flex items-center gap-2 flex-shrink-0">
                 <Link to="/favorite">
                   <Button variant="ghost" size="icon" className="relative">
-                    <Heart className="h-6 w-6" />
+                    <Heart className="h-6 w-6 md:h-7 md:w-7" />
                     {wishlistItems > 0 && (
                       <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {wishlistItems}
@@ -103,7 +103,7 @@ const Header = () => {
                 </Link>
                 <Link to="/cos">
                   <Button variant="ghost" size="icon" className="relative">
-                    <ShoppingCart className="h-6 w-6" />
+                    <ShoppingCart className="h-6 w-6 md:h-7 md:w-7" />
                     {cartItems > 0 && (
                       <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {cartItems}
@@ -113,7 +113,7 @@ const Header = () => {
                 </Link>
                 <Link to="/auth">
                   <Button variant="ghost" size="icon">
-                    <User className="h-6 w-6" />
+                    <User className="h-6 w-6 md:h-7 md:w-7" />
                   </Button>
                 </Link>
 
