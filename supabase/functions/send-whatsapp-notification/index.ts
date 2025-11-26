@@ -85,7 +85,8 @@ ${productsList}
     // WhatsApp Business Cloud API endpoint
     const whatsappUrl = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
     
-    const whatsappResponse = await fetch(whatsappUrl, {
+    // First, send template to open conversation
+    const templateResponse = await fetch(whatsappUrl, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${whatsappToken}`,
@@ -104,17 +105,46 @@ ${productsList}
       }),
     });
 
-    const whatsappData = await whatsappResponse.json();
+    const templateData = await templateResponse.json();
     
-    if (!whatsappResponse.ok) {
-      console.error('WhatsApp API error:', whatsappData);
-      throw new Error(`WhatsApp API error: ${JSON.stringify(whatsappData)}`);
+    if (!templateResponse.ok) {
+      console.error('WhatsApp template API error:', templateData);
+      throw new Error(`WhatsApp template API error: ${JSON.stringify(templateData)}`);
     }
 
-    console.log('WhatsApp notification sent successfully:', whatsappData);
+    console.log('WhatsApp template sent successfully:', templateData);
+
+    // Wait a bit before sending the actual message
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Now send the actual order details message
+    const messageResponse = await fetch(whatsappUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${whatsappToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        to: whatsappNumber,
+        type: 'text',
+        text: {
+          body: message
+        }
+      }),
+    });
+
+    const messageData = await messageResponse.json();
+    
+    if (!messageResponse.ok) {
+      console.error('WhatsApp message API error:', messageData);
+      throw new Error(`WhatsApp message API error: ${JSON.stringify(messageData)}`);
+    }
+
+    console.log('WhatsApp order details sent successfully:', messageData);
 
     return new Response(
-      JSON.stringify({ success: true, message: 'Notification sent', data: whatsappData }),
+      JSON.stringify({ success: true, message: 'Notification sent', data: { template: templateData, message: messageData } }),
       {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
