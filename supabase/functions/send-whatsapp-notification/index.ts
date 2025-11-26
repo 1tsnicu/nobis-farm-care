@@ -1,8 +1,7 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
 interface OrderProduct {
@@ -24,10 +23,13 @@ interface OrderData {
   city?: string;
 }
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { 
+      status: 200,
+      headers: corsHeaders 
+    });
   }
 
   try {
@@ -35,9 +37,9 @@ serve(async (req) => {
     
     const whatsappToken = Deno.env.get('WHATSAPP_TOKEN');
     const phoneNumberId = Deno.env.get('WHATSAPP_PHONE_NUMBER_ID');
-    const yourWhatsappNumber = Deno.env.get('YOUR_WHATSAPP_NUMBER');
+    const whatsappNumber = Deno.env.get('YOUR_WHATSAPP_NUMBER');
 
-    if (!whatsappToken || !phoneNumberId || !yourWhatsappNumber) {
+    if (!whatsappToken || !phoneNumberId || !whatsappNumber) {
       throw new Error('WhatsApp credentials not configured');
     }
 
@@ -57,8 +59,7 @@ serve(async (req) => {
     }
 
     // Build the message
-    const message = `
-🆕 *COMANDĂ NOUĂ PLASATĂ!*
+    const message = `🆕 *COMANDĂ NOUĂ PLASATĂ!*
 
 👤 *Date Client:*
 • Prenume: ${orderData.firstName}
@@ -77,29 +78,28 @@ ${productsList}
   timeZone: 'Europe/Chisinau',
   dateStyle: 'short',
   timeStyle: 'short'
-})}
-    `.trim();
+})}`;
 
     console.log('Sending WhatsApp notification...');
     
-    const whatsappResponse = await fetch(
-      `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${whatsappToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messaging_product: 'whatsapp',
-          to: yourWhatsappNumber,
-          type: 'text',
-          text: {
-            body: message
-          }
-        }),
-      }
-    );
+    // WhatsApp Business Cloud API endpoint
+    const whatsappUrl = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
+    
+    const whatsappResponse = await fetch(whatsappUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${whatsappToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        to: whatsappNumber,
+        type: 'text',
+        text: {
+          body: message
+        }
+      }),
+    });
 
     const whatsappData = await whatsappResponse.json();
     
@@ -108,10 +108,10 @@ ${productsList}
       throw new Error(`WhatsApp API error: ${JSON.stringify(whatsappData)}`);
     }
 
-    console.log('WhatsApp notification sent successfully');
+    console.log('WhatsApp notification sent successfully:', whatsappData);
 
     return new Response(
-      JSON.stringify({ success: true, message: 'Notification sent' }),
+      JSON.stringify({ success: true, message: 'Notification sent', data: whatsappData }),
       {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

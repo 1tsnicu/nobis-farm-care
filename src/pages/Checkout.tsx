@@ -390,7 +390,7 @@ export const Checkout = () => {
         createdAt: new Date().toISOString()
       };
 
-      // Trimite notificarea în WhatsApp
+      // Trimite notificarea pe WhatsApp
       try {
         const { error: whatsappError } = await supabase.functions.invoke('send-whatsapp-notification', {
           body: {

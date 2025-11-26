@@ -92,8 +92,8 @@ const Header = () => {
               {/* Actions */}
               <div className="flex items-center gap-2 flex-shrink-0">
                 <Link to="/favorite">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Heart className="h-9 w-9 md:h-11 md:w-11" />
+                  <Button variant="ghost" size="icon" className="relative md:h-10 md:w-10 lg:h-11 lg:w-11 [&_svg]:!h-5 [&_svg]:!w-5 md:[&_svg]:!h-[22px] md:[&_svg]:!w-[22px] lg:[&_svg]:!h-6 lg:[&_svg]:!w-6">
+                    <Heart className="h-5 w-5 md:h-[22px] md:w-[22px] lg:h-6 lg:w-6" />
                     {wishlistItems > 0 && (
                       <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {wishlistItems}
@@ -102,8 +102,8 @@ const Header = () => {
                   </Button>
                 </Link>
                 <Link to="/cos">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <ShoppingCart className="h-9 w-9 md:h-11 md:w-11" />
+                  <Button variant="ghost" size="icon" className="relative md:h-10 md:w-10 lg:h-11 lg:w-11 [&_svg]:!h-5 [&_svg]:!w-5 md:[&_svg]:!h-[22px] md:[&_svg]:!w-[22px] lg:[&_svg]:!h-6 lg:[&_svg]:!w-6">
+                    <ShoppingCart className="h-5 w-5 md:h-[22px] md:w-[22px] lg:h-6 lg:w-6" />
                     {cartItems > 0 && (
                       <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {cartItems}
@@ -112,8 +112,8 @@ const Header = () => {
                   </Button>
                 </Link>
                 <Link to="/auth">
-                  <Button variant="ghost" size="icon">
-                    <User className="h-9 w-9 md:h-11 md:w-11" />
+                  <Button variant="ghost" size="icon" className="md:h-10 md:w-10 lg:h-11 lg:w-11 [&_svg]:!h-5 [&_svg]:!w-5 md:[&_svg]:!h-[22px] md:[&_svg]:!w-[22px] lg:[&_svg]:!h-6 lg:[&_svg]:!w-6">
+                    <User className="h-5 w-5 md:h-[22px] md:w-[22px] lg:h-6 lg:w-6" />
                   </Button>
                 </Link>
 
