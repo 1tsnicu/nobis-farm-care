@@ -94,9 +94,12 @@ ${productsList}
       body: JSON.stringify({
         messaging_product: 'whatsapp',
         to: whatsappNumber,
-        type: 'text',
-        text: {
-          body: message
+        type: 'template',
+        template: {
+          name: 'hello_world',
+          language: {
+            code: 'en_US'
+          }
         }
       }),
     });
