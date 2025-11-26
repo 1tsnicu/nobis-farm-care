@@ -92,8 +92,8 @@ const Header = () => {
               {/* Actions */}
               <div className="flex items-center gap-2 flex-shrink-0">
                 <Link to="/favorite">
-                  <Button variant="ghost" size="icon" className="relative md:h-14 md:w-14">
-                    <Heart className="h-8 w-8 md:h-10 md:w-10" />
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Heart className="h-9 w-9 md:h-11 md:w-11" />
                     {wishlistItems > 0 && (
                       <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {wishlistItems}
@@ -102,8 +102,8 @@ const Header = () => {
                   </Button>
                 </Link>
                 <Link to="/cos">
-                  <Button variant="ghost" size="icon" className="relative md:h-14 md:w-14">
-                    <ShoppingCart className="h-8 w-8 md:h-10 md:w-10" />
+                  <Button variant="ghost" size="icon" className="relative">
+                    <ShoppingCart className="h-9 w-9 md:h-11 md:w-11" />
                     {cartItems > 0 && (
                       <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {cartItems}
@@ -112,8 +112,8 @@ const Header = () => {
                   </Button>
                 </Link>
                 <Link to="/auth">
-                  <Button variant="ghost" size="icon" className="md:h-14 md:w-14">
-                    <User className="h-8 w-8 md:h-10 md:w-10" />
+                  <Button variant="ghost" size="icon">
+                    <User className="h-9 w-9 md:h-11 md:w-11" />
                   </Button>
                 </Link>
 
