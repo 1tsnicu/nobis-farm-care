@@ -1,1 +1,10 @@
 project_id = "uaknipkqvlwsgikmpyzl"
+
+[functions.send-whatsapp-notification]
+verify_jwt = false
+
+[functions.send-telegram-notification]
+verify_jwt = false
+
+[functions.import-csv-products]
+verify_jwt = true
