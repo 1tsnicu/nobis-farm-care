@@ -43,49 +43,29 @@ Deno.serve(async (req) => {
       throw new Error('WhatsApp credentials not configured');
     }
 
-    // Build products list
-    const productsList = orderData.products
-      .map((produs, index) => 
-        `${index + 1}. ${produs.name} - ${produs.quantity}x - ${produs.price} MDL`
-      )
-      .join('\n');
-
-    // Build delivery info
-    let deliveryInfo = '';
-    if (orderData.deliveryMethod === 'delivery' && orderData.address) {
-      deliveryInfo = `\n📦 *Livrare:*\n• Oraș: ${orderData.city || 'N/A'}\n• Adresă: ${orderData.address}`;
-    } else {
-      deliveryInfo = '\n📦 *Ridicare din farmacie*';
-    }
-
-    // Build the message
-    const message = `🆕 *COMANDĂ NOUĂ PLASATĂ!*
-
-👤 *Date Client:*
-• Prenume: ${orderData.firstName}
-• Nume: ${orderData.lastName}
-• 📞 Telefon: ${orderData.phone}
-• 📧 Email: ${orderData.email}
-${orderData.notes ? `• 💬 Observații: ${orderData.notes}` : ''}
-${deliveryInfo}
-
-🛒 *Produse Comandate:*
-${productsList}
-
-💰 *TOTAL: ${orderData.total.toFixed(2)} MDL*
-
-⏰ Data: ${new Date().toLocaleString('ro-RO', { 
-  timeZone: 'Europe/Chisinau',
-  dateStyle: 'short',
-  timeStyle: 'short'
-})}`;
-
     console.log('Sending WhatsApp notification...');
     
     // WhatsApp Business Cloud API endpoint
     const whatsappUrl = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
     
-    // First, send template to open conversation
+    // Build products list for template
+    const productsListShort = orderData.products
+      .map((p) => `${p.name} x${p.quantity}`)
+      .join(', ');
+
+    // Build delivery info for template
+    const deliveryMethodText = orderData.deliveryMethod === 'delivery' 
+      ? `Livrare la ${orderData.city || ''}, ${orderData.address || ''}`
+      : 'Ridicare din farmacie';
+
+    // Format timestamp
+    const timestamp = new Date().toLocaleString('ro-RO', { 
+      timeZone: 'Europe/Chisinau',
+      dateStyle: 'short',
+      timeStyle: 'short'
+    });
+
+    // Send using the approved template
     const templateResponse = await fetch(whatsappUrl, {
       method: 'POST',
       headers: {
@@ -97,10 +77,24 @@ ${productsList}
         to: whatsappNumber,
         type: 'template',
         template: {
-          name: 'hello_world',
+          name: 'nobis_colect_lead',
           language: {
-            code: 'en_US'
-          }
+            code: 'ro'
+          },
+          components: [
+            {
+              type: 'body',
+              parameters: [
+                { type: 'text', text: `${orderData.firstName} ${orderData.lastName}` },
+                { type: 'text', text: orderData.phone },
+                { type: 'text', text: orderData.email },
+                { type: 'text', text: deliveryMethodText },
+                { type: 'text', text: productsListShort },
+                { type: 'text', text: orderData.total.toFixed(2) },
+                { type: 'text', text: timestamp }
+              ]
+            }
+          ]
         }
       }),
     });
@@ -112,39 +106,10 @@ ${productsList}
       throw new Error(`WhatsApp template API error: ${JSON.stringify(templateData)}`);
     }
 
-    console.log('WhatsApp template sent successfully:', templateData);
-
-    // Wait a bit before sending the actual message
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // Now send the actual order details message
-    const messageResponse = await fetch(whatsappUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${whatsappToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        messaging_product: 'whatsapp',
-        to: whatsappNumber,
-        type: 'text',
-        text: {
-          body: message
-        }
-      }),
-    });
-
-    const messageData = await messageResponse.json();
-    
-    if (!messageResponse.ok) {
-      console.error('WhatsApp message API error:', messageData);
-      throw new Error(`WhatsApp message API error: ${JSON.stringify(messageData)}`);
-    }
-
-    console.log('WhatsApp order details sent successfully:', messageData);
+    console.log('WhatsApp notification sent successfully:', templateData);
 
     return new Response(
-      JSON.stringify({ success: true, message: 'Notification sent', data: { template: templateData, message: messageData } }),
+      JSON.stringify({ success: true, message: 'Notification sent', data: templateData }),
       {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
