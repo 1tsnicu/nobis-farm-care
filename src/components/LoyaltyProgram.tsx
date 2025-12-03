@@ -51,16 +51,16 @@ const LoyaltyProgram = () => {
             <span className="text-white font-bold text-sm tracking-wider">PROGRAM VIP</span>
           </div>
           
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl 2xl:text-7xl font-bold text-white mb-6 leading-tight">
             💎 FAMILIA NOBIS
           </h2>
-          <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl 2xl:text-2xl text-white/90 max-w-3xl 2xl:max-w-4xl mx-auto leading-relaxed">
             Alătură-te programului nostru de loialitate și bucură-te de beneficii exclusive, reduceri speciale și premii surpriză
           </p>
         </div>
 
         {/* Benefits Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-4 gap-6 2xl:gap-8 mb-12 max-w-7xl mx-auto">
           {benefits.map((benefit, index) => (
             <Card 
               key={benefit.title} 

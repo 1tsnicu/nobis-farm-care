@@ -7,24 +7,24 @@ const AboutPreview = () => {
   return (
     <section className="py-16 bg-gradient-to-br from-green-50 to-blue-50">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 2xl:gap-20 items-center">
           {/* Left Content */}
           <div>
             <div className="mb-6">
               <span className="text-green-600 font-semibold text-sm uppercase tracking-wide">Despre Nobis Farm</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mt-2 mb-4">
+              <h2 className="text-3xl md:text-4xl 2xl:text-5xl font-bold text-gray-800 mt-2 mb-4">
                 Povestea Noastră de <span className="text-green-600">8 Ani</span>
               </h2>
             </div>
             
-            <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+            <p className="text-lg 2xl:text-xl text-gray-600 mb-6 leading-relaxed">
               Farmacia Nobis Farm s-a născut din dorința de a oferi comunității noastre 
               <strong className="text-gray-800"> cea mai bună îngrijire farmaceutică</strong>. 
               De peste 8 ani, echipa noastră de farmaciști calificați pune pe primul loc 
               sănătatea și bunăstarea fiecărui client.
             </p>
 
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+            <p className="text-lg 2xl:text-xl text-gray-600 mb-8 leading-relaxed">
               <strong className="text-gray-800">Misiunea noastră</strong> este să fim mai mult decât o farmacie – 
               să fim partenerul tău de încredere în călătoria către o viață sănătoasă, oferind 
               consiliere specializată și produse de cea mai înaltă calitate.

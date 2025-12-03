@@ -107,8 +107,8 @@ const BestSellers = () => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-            {[...Array(5)].map((_, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
+            {[...Array(6)].map((_, i) => (
               <div key={i} className="bg-card rounded-xl shadow-card border border-border overflow-hidden">
                 <Skeleton className="aspect-square" />
                 <div className="p-4 space-y-2">
@@ -123,7 +123,7 @@ const BestSellers = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
             {products.map((product) => (
               <Link
                 key={product.id}
