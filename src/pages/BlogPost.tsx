@@ -620,27 +620,6 @@ const BlogPost = () => {
           </section>
         )}
 
-        {/* CTA */}
-        <section className="py-16 bg-gradient-hero text-primary-foreground">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-4">Ai nevoie de consiliere?</h2>
-            <p className="text-lg text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
-              Specialiștii noștri sunt aici să te ajute cu recomandări personalizate pentru sănătatea ta.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/contact">
-                <Button size="lg" variant="secondary">
-                  Contactează-ne
-                </Button>
-              </Link>
-              <Link to="/categorie/medicamente-otc">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                  Vezi Produsele
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
       </main>
 
       <Footer />
