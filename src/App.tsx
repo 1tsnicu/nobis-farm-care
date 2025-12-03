@@ -14,6 +14,7 @@ import { Checkout } from "./pages/Checkout";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
 import Wishlist from "./pages/Wishlist";
 import NotFound from "./pages/NotFound";
@@ -46,7 +47,7 @@ const App = () => (
             <Route path="/despre" element={<About />} />
             <Route path="/servicii" element={<Services />} />
             <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:id" element={<Blog />} />
+            <Route path="/blog/:id" element={<BlogPost />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin/produse" element={<ProductsManagement />} />
         <Route path="/admin/import" element={<ImportProducts />} />
