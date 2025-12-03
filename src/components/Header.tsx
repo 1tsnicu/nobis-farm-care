@@ -159,23 +159,6 @@ const Header = () => {
                           ))}
                         </div>
                       </div>
-
-                      <div className="border-t pt-4">
-                        <Link 
-                          to="/despre" 
-                          className="block py-2 hover:text-primary"
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Despre Noi
-                        </Link>
-                        <Link 
-                          to="/contact" 
-                          className="block py-2 hover:text-primary"
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          Contact
-                        </Link>
-                      </div>
                     </div>
                   </SheetContent>
                 </Sheet>
