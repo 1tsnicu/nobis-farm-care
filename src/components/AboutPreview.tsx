@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Users, Heart, Award, ArrowRight } from "lucide-react";
+import pharmacyImage from "@/assets/poza-farmacia.jpeg";
 
 const AboutPreview = () => {
   return (
@@ -67,7 +68,7 @@ const AboutPreview = () => {
           <div className="relative">
             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-green-100 to-blue-100">
               <img
-                src="/poza cu farmacia.jpeg"
+                src={pharmacyImage}
                 alt="Farmacia Nobis Farm - Echipa de farmaciști profesioniști"
                 className="w-full h-full object-cover"
               />
