@@ -55,27 +55,33 @@ const HorizontalCategories = () => {
   };
 
   return (
-    <div className="hidden lg:block w-full bg-gradient-to-r from-green-50 to-emerald-50/50 border-b border-green-100/50">
+    <div className="hidden lg:block w-full bg-gradient-to-b from-white to-green-50/30 border-b border-gray-100">
       <div className="container mx-auto px-4">
         <ScrollArea className="w-full whitespace-nowrap">
-          <div className="flex items-center gap-1 py-2">
+          <div className="flex items-center gap-2 py-3">
             {categories.map((category) => (
               <Link
                 key={category.id}
                 to={`/categorie/${category.slug}`}
                 onClick={handleCategoryClick}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-full transition-all duration-200 text-sm font-medium whitespace-nowrap ${
+                className={`group flex items-center gap-2.5 py-2.5 px-4 rounded-xl transition-all duration-200 whitespace-nowrap ${
                   isActive(category.slug)
                     ? 'bg-primary text-primary-foreground shadow-md'
-                    : 'hover:bg-white hover:shadow-sm text-gray-700 hover:text-green-700'
+                    : 'hover:bg-green-50 hover:shadow-sm text-gray-700 hover:text-green-700'
                 }`}
               >
-                <span className="text-lg">{category.icon}</span>
-                <span>{getCategoryShortName(category.name)}</span>
+                <span className={`flex items-center justify-center w-8 h-8 rounded-lg transition-colors text-base ${
+                  isActive(category.slug)
+                    ? 'bg-white/20'
+                    : 'bg-green-100/50 group-hover:bg-green-100'
+                }`}>
+                  {category.icon}
+                </span>
+                <span className="font-medium text-sm">{getCategoryShortName(category.name)}</span>
               </Link>
             ))}
           </div>
-          <ScrollBar orientation="horizontal" className="h-2" />
+          <ScrollBar orientation="horizontal" className="h-1.5" />
         </ScrollArea>
       </div>
     </div>
