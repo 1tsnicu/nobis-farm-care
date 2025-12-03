@@ -1,64 +1,42 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { ShoppingCart, Heart, User, Menu, X } from "lucide-react";
+import { ShoppingCart, Heart, User, Menu, X, Pill, Apple, Leaf, Baby, Sparkles, Sun, Scissors, Bath, Eye, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { QuickSearch } from "@/components/QuickSearch";
 
-interface Category {
-  id: string;
+interface CategoryItem {
   name: string;
   slug: string;
-  icon: string;
-  display_order: number;
+  icon: React.ReactNode;
 }
 
 const Header = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { totalItems: cartItems } = useCart();
   const { totalItems: wishlistItems } = useWishlist();
   const location = useLocation();
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  const iconClass = "w-5 h-5";
 
-  const fetchCategories = async () => {
-    const { data } = await supabase
-      .from('categories')
-      .select('*')
-      .order('display_order');
-    
-    if (data) {
-      setCategories(data);
-    }
-  };
+  const categories: CategoryItem[] = [
+    { name: "Medicamente", slug: "medicamente-otc", icon: <Pill className={iconClass} /> },
+    { name: "Vitamine și Minerale", slug: "vitamine-minerale", icon: <Apple className={iconClass} /> },
+    { name: "Plante Medicinale", slug: "plante-medicinale", icon: <Leaf className={iconClass} /> },
+    { name: "Mamă și Copil", slug: "mama-copil", icon: <Baby className={iconClass} /> },
+    { name: "Îngrijire Corp/Față", slug: "ingrijire-corp-fata", icon: <Sparkles className={iconClass} /> },
+    { name: "Protecție Solară", slug: "protectie-solara", icon: <Sun className={iconClass} /> },
+    { name: "Îngrijire Păr", slug: "ingrijire-par", icon: <Scissors className={iconClass} /> },
+    { name: "Igienă Personală", slug: "igiena-personala", icon: <Bath className={iconClass} /> },
+    { name: "Optică", slug: "echipamente-medicale", icon: <Eye className={iconClass} /> },
+    { name: "Articole Ortopedice", slug: "sanate-articole-ortopedice", icon: <Stethoscope className={iconClass} /> },
+    { name: "Cuplu și Sex", slug: "parafarmaceutice", icon: <Heart className={iconClass} /> },
+  ];
 
   const isActiveCategory = (slug: string) => {
     return location.pathname === `/categorie/${slug}`;
-  };
-
-  const getCategoryShortName = (name: string) => {
-    // Scurtează numele pentru header
-    const shortNames: { [key: string]: string } = {
-      'Sănătate - Medicamente OTC': 'Medicamente OTC',
-      'Vitamine și Minerale': 'Vitamine',
-      'Sănătate - Parafarmaceutice': 'Cuplu și sex',
-      'Mamă și Copil': 'Mamă & Copil',
-      'Sănătate - Echipamente Medicale': 'Echipamente',
-      'Sănătate - Plante Medicinale': 'Plante',
-      'Frumusețe și Igienă - Îngrijire Corp/Față': 'Corp/Față',
-      'Frumusețe și Igienă - Igienă Personală': 'Igienă',
-      'Frumusețe și Igienă - Protecție Solară': 'Protecție Solară',
-      'Frumusețe și Igienă - Îngrijire Păr': 'Păr',
-      'Dermato-Cosmetică': 'Dermatocosmetică',
-      'Frumusețe și Igienă - Cosmetică Decorativă': 'Cosmetică'
-    };
-    return shortNames[name] || name;
   };
 
   return (
@@ -153,7 +131,7 @@ const Header = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                           {categories.map((cat) => (
                             <Link
-                              key={cat.id}
+                              key={cat.slug}
                               to={`/categorie/${cat.slug}`}
                               className={`flex items-center gap-3 p-3 sm:p-4 rounded-xl transition-all duration-200 ${
                                 isActiveCategory(cat.slug)
@@ -162,8 +140,8 @@ const Header = () => {
                               }`}
                               onClick={() => setMobileMenuOpen(false)}
                             >
-                              <span className="text-xl sm:text-2xl flex-shrink-0">{cat.icon}</span>
-                              <span className="text-sm sm:text-base font-medium leading-tight">{getCategoryShortName(cat.name)}</span>
+                              <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-green-100/50 flex-shrink-0">{cat.icon}</span>
+                              <span className="text-sm sm:text-base font-medium leading-tight">{cat.name}</span>
                             </Link>
                           ))}
                         </div>
