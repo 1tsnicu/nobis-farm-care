@@ -405,7 +405,7 @@ const ProductDetail = () => {
                   </div>
                   <div className="text-center">
                     <RefreshCw className="h-6 w-6 mx-auto mb-2 text-primary" />
-                    <p className="text-xs text-muted-foreground">Retur<br />30 zile</p>
+                    <p className="text-xs text-muted-foreground">Medicamentele<br />nu se returnează</p>
                   </div>
                 </div>
               </div>
