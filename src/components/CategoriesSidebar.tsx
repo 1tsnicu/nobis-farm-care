@@ -15,6 +15,7 @@ import {
   Heart,
   ChevronRight
 } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Category {
   id: string;
@@ -173,13 +174,15 @@ const CategoriesSidebar = () => {
   };
 
   return (
-    <aside className="hidden lg:block w-72 bg-gradient-to-b from-white to-green-50/30 border-r border-gray-100 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">
-      <div className="p-5">
-        {/* Categories List */}
-        <nav className="space-y-1">
-          {categoryStructure.map((item, index) => renderCategoryItem(item, index))}
-        </nav>
-      </div>
+    <aside className="hidden lg:block w-72 bg-gradient-to-b from-white to-green-50/30 border-r border-gray-100 sticky top-20 h-[calc(100vh-5rem)]">
+      <ScrollArea className="h-full">
+        <div className="p-5">
+          {/* Categories List */}
+          <nav className="space-y-1">
+            {categoryStructure.map((item, index) => renderCategoryItem(item, index))}
+          </nav>
+        </div>
+      </ScrollArea>
     </aside>
   );
 };
