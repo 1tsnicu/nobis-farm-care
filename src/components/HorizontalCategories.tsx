@@ -1,6 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { 
   Pill, 
@@ -16,66 +14,29 @@ import {
   Heart
 } from "lucide-react";
 
-interface Category {
-  id: string;
+interface CategoryItem {
   name: string;
   slug: string;
-  icon: string;
+  icon: React.ReactNode;
 }
 
 const HorizontalCategories = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
   const location = useLocation();
+  const iconClass = "w-4 h-4";
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    const { data: categoriesData } = await supabase
-      .from('categories')
-      .select('*')
-      .order('display_order');
-
-    if (categoriesData) {
-      setCategories(categoriesData);
-    }
-  };
-
-  const getCategoryShortName = (name: string) => {
-    const shortNames: { [key: string]: string } = {
-      'Sănătate - Medicamente OTC': 'Medicamente',
-      'Vitamine și Minerale': 'Vitamine',
-      'Sănătate - Parafarmaceutice': 'Cuplu și Sex',
-      'Mamă și Copil': 'Mamă & Copil',
-      'Sănătate - Echipamente Medicale': 'Echipamente',
-      'Sănătate - Plante Medicinale': 'Plante',
-      'Frumusețe și Igienă - Îngrijire Corp/Față': 'Corp/Față',
-      'Frumusețe și Igienă - Igienă Personală': 'Igienă',
-      'Frumusețe și Igienă - Protecție Solară': 'Protecție Solară',
-      'Frumusețe și Igienă - Îngrijire Păr': 'Păr',
-      'Sănătate - Articole Ortopedice': 'Ortopedice',
-    };
-    return shortNames[name] || name;
-  };
-
-  const getCategoryIcon = (name: string) => {
-    const iconClass = "w-4 h-4";
-    const iconMap: { [key: string]: React.ReactNode } = {
-      'Sănătate - Medicamente OTC': <Pill className={iconClass} />,
-      'Vitamine și Minerale': <Apple className={iconClass} />,
-      'Sănătate - Plante Medicinale': <Leaf className={iconClass} />,
-      'Mamă și Copil': <Baby className={iconClass} />,
-      'Frumusețe și Igienă - Îngrijire Corp/Față': <Sparkles className={iconClass} />,
-      'Frumusețe și Igienă - Protecție Solară': <Sun className={iconClass} />,
-      'Frumusețe și Igienă - Îngrijire Păr': <Scissors className={iconClass} />,
-      'Frumusețe și Igienă - Igienă Personală': <Bath className={iconClass} />,
-      'Sănătate - Echipamente Medicale': <Eye className={iconClass} />,
-      'Sănătate - Articole Ortopedice': <Stethoscope className={iconClass} />,
-      'Sănătate - Parafarmaceutice': <Heart className={iconClass} />,
-    };
-    return iconMap[name] || <Pill className={iconClass} />;
-  };
+  const categories: CategoryItem[] = [
+    { name: "Medicamente", slug: "medicamente-otc", icon: <Pill className={iconClass} /> },
+    { name: "Vitamine și Minerale", slug: "vitamine-minerale", icon: <Apple className={iconClass} /> },
+    { name: "Plante Medicinale", slug: "plante-medicinale", icon: <Leaf className={iconClass} /> },
+    { name: "Mamă și Copil", slug: "mama-copil", icon: <Baby className={iconClass} /> },
+    { name: "Îngrijire Corp/Față", slug: "ingrijire-corp-fata", icon: <Sparkles className={iconClass} /> },
+    { name: "Protecție Solară", slug: "protectie-solara", icon: <Sun className={iconClass} /> },
+    { name: "Îngrijire Păr", slug: "ingrijire-par", icon: <Scissors className={iconClass} /> },
+    { name: "Igienă Personală", slug: "igiena-personala", icon: <Bath className={iconClass} /> },
+    { name: "Optică", slug: "echipamente-medicale", icon: <Eye className={iconClass} /> },
+    { name: "Articole Ortopedice", slug: "sanate-articole-ortopedice", icon: <Stethoscope className={iconClass} /> },
+    { name: "Cuplu și Sex", slug: "parafarmaceutice", icon: <Heart className={iconClass} /> },
+  ];
 
   const isActive = (slug: string) => {
     return location.pathname === `/categorie/${slug}`;
@@ -92,7 +53,7 @@ const HorizontalCategories = () => {
           <div className="flex items-center gap-2 py-3">
             {categories.map((category) => (
               <Link
-                key={category.id}
+                key={category.slug}
                 to={`/categorie/${category.slug}`}
                 onClick={handleCategoryClick}
                 className={`group flex items-center gap-2.5 py-2.5 px-4 rounded-xl transition-all duration-200 whitespace-nowrap ${
@@ -106,9 +67,9 @@ const HorizontalCategories = () => {
                     ? 'bg-white/20'
                     : 'bg-green-100/50 group-hover:bg-green-100'
                 }`}>
-                  {getCategoryIcon(category.name)}
+                  {category.icon}
                 </span>
-                <span className="font-medium text-sm">{getCategoryShortName(category.name)}</span>
+                <span className="font-medium text-sm">{category.name}</span>
               </Link>
             ))}
           </div>
