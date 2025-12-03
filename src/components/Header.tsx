@@ -105,22 +105,12 @@ const Header = () => {
                   <SheetContent side="left" className="w-[85vw] sm:w-[400px] md:w-[450px] lg:w-[500px] max-w-[500px] overflow-y-auto p-0">
                     <div className="flex flex-col h-full">
                       {/* Header */}
-                      <div className="flex items-center justify-between p-4 sm:p-6 border-b bg-muted/30">
-                        <div className="flex items-center gap-3">
-                          <img src="/logo.jpeg" alt="Nobis Farm" className="h-10 w-10 sm:h-12 sm:w-12 rounded-full" />
-                          <div>
-                            <h2 className="text-lg sm:text-xl font-bold text-primary">NOBIS FARM</h2>
-                            <p className="text-xs sm:text-sm text-muted-foreground">Categorii Produse</p>
-                          </div>
+                      <div className="flex items-center gap-3 p-4 sm:p-6 border-b bg-muted/30">
+                        <img src="/logo.jpeg" alt="Nobis Farm" className="h-10 w-10 sm:h-12 sm:w-12 rounded-full" />
+                        <div>
+                          <h2 className="text-lg sm:text-xl font-bold text-primary">NOBIS FARM</h2>
+                          <p className="text-xs sm:text-sm text-muted-foreground">Categorii Produse</p>
                         </div>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="h-8 w-8 sm:h-10 sm:w-10"
-                        >
-                          <X className="h-5 w-5" />
-                        </Button>
                       </div>
 
                       {/* Categories */}
