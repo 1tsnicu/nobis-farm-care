@@ -124,37 +124,46 @@ const Header = () => {
                       <Menu className="h-6 w-6" />
                     </Button>
                   </SheetTrigger>
-                  <SheetContent side="left" className="w-80 overflow-y-auto">
-                    <div className="flex flex-col space-y-4 mt-8">
-                      <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-bold">Meniu</h2>
+                  <SheetContent side="left" className="w-[85vw] sm:w-[400px] md:w-[450px] lg:w-[500px] max-w-[500px] overflow-y-auto p-0">
+                    <div className="flex flex-col h-full">
+                      {/* Header */}
+                      <div className="flex items-center justify-between p-4 sm:p-6 border-b bg-muted/30">
+                        <div className="flex items-center gap-3">
+                          <img src="/logo.jpeg" alt="Nobis Farm" className="h-10 w-10 sm:h-12 sm:w-12 rounded-full" />
+                          <div>
+                            <h2 className="text-lg sm:text-xl font-bold text-primary">NOBIS FARM</h2>
+                            <p className="text-xs sm:text-sm text-muted-foreground">Categorii Produse</p>
+                          </div>
+                        </div>
                         <Button 
                           variant="ghost" 
                           size="icon" 
                           onClick={() => setMobileMenuOpen(false)}
+                          className="h-8 w-8 sm:h-10 sm:w-10"
                         >
                           <X className="h-5 w-5" />
                         </Button>
                       </div>
 
-                      <div className="border-t pt-4">
-                        <p className="text-sm font-semibold text-muted-foreground mb-3">
-                          📦 Categorii ({categories.length})
+                      {/* Categories */}
+                      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-4 uppercase tracking-wider">
+                          {categories.length} Categorii disponibile
                         </p>
-                        <div className="space-y-1">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                           {categories.map((cat) => (
                             <Link
                               key={cat.id}
                               to={`/categorie/${cat.slug}`}
-                              className={`block py-2.5 px-3 rounded-md transition-colors ${
+                              className={`flex items-center gap-3 p-3 sm:p-4 rounded-xl transition-all duration-200 ${
                                 isActiveCategory(cat.slug)
-                                  ? 'bg-primary text-primary-foreground font-semibold'
-                                  : 'hover:bg-muted'
+                                  ? 'bg-primary text-primary-foreground font-semibold shadow-md'
+                                  : 'bg-muted/50 hover:bg-muted hover:shadow-sm'
                               }`}
                               onClick={() => setMobileMenuOpen(false)}
                             >
-                              <span className="mr-2">{cat.icon}</span>
-                              {cat.name}
+                              <span className="text-xl sm:text-2xl flex-shrink-0">{cat.icon}</span>
+                              <span className="text-sm sm:text-base font-medium leading-tight">{getCategoryShortName(cat.name)}</span>
                             </Link>
                           ))}
                         </div>
