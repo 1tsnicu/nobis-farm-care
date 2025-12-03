@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { Calendar, User, ArrowRight, Search } from "lucide-react";
 import { useState } from "react";
+import blogKidsVitamins from "@/assets/blog-kids-vitamins.jpg";
 
 const blogPosts = [
   {
@@ -36,7 +37,7 @@ const blogPosts = [
     title: "Vitaminele esențiale pentru copii",
     excerpt: "Tot ce trebuie să știi despre suplimentarea corectă cu vitamine la copii.",
     content: "Dezvoltarea sănătoasă a copiilor depinde de o nutriție echilibrată...",
-    image: "https://images.unsplash.com/photo-1550572017-4a1f501c2bc6?w=800",
+    image: blogKidsVitamins,
     category: "Pediatrie",
     author: "Dr. Andrei Rusu",
     date: "8 Dec 2024",

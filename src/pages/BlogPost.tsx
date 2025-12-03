@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, User, Clock, ArrowLeft, ArrowRight, Share2, Facebook, Linkedin } from "lucide-react";
+import blogKidsVitamins from "@/assets/blog-kids-vitamins.jpg";
 
 const blogPosts = [
   {
@@ -116,7 +117,7 @@ const blogPosts = [
     id: 3,
     title: "Vitaminele esențiale pentru copii",
     excerpt: "Tot ce trebuie să știi despre suplimentarea corectă cu vitamine la copii.",
-    image: "https://images.unsplash.com/photo-1550572017-4a1f501c2bc6?w=800",
+    image: blogKidsVitamins,
     category: "Pediatrie",
     author: "Dr. Andrei Rusu",
     date: "8 Dec 2024",
