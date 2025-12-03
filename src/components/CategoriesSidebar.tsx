@@ -175,25 +175,10 @@ const CategoriesSidebar = () => {
   return (
     <aside className="hidden lg:block w-72 bg-gradient-to-b from-white to-green-50/30 border-r border-gray-100 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">
       <div className="p-5">
-        {/* Header */}
-        <div className="mb-6">
-          <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-            <span className="w-1 h-6 bg-primary rounded-full"></span>
-            Categorii
-          </h2>
-          <p className="text-xs text-gray-500 mt-1 ml-3">Explorează produsele noastre</p>
-        </div>
-
         {/* Categories List */}
         <nav className="space-y-1">
           {categoryStructure.map((item, index) => renderCategoryItem(item, index))}
         </nav>
-
-        {/* Footer decoration */}
-        <div className="mt-8 p-4 bg-gradient-to-br from-green-100 to-green-50 rounded-xl">
-          <p className="text-xs text-green-700 font-medium">💊 Nevoie de ajutor?</p>
-          <p className="text-xs text-green-600 mt-1">Contactează-ne pentru consiliere personalizată</p>
-        </div>
       </div>
     </aside>
   );
