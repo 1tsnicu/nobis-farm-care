@@ -1,7 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { 
+  Pill, 
+  Apple, 
+  Leaf, 
+  Baby, 
+  Sparkles, 
+  Sun, 
+  Scissors, 
+  Bath, 
+  Eye, 
+  Stethoscope, 
+  Heart
+} from "lucide-react";
 
 interface Category {
   id: string;
@@ -46,6 +59,24 @@ const HorizontalCategories = () => {
     return shortNames[name] || name;
   };
 
+  const getCategoryIcon = (name: string) => {
+    const iconClass = "w-4 h-4";
+    const iconMap: { [key: string]: React.ReactNode } = {
+      'Sănătate - Medicamente OTC': <Pill className={iconClass} />,
+      'Vitamine și Minerale': <Apple className={iconClass} />,
+      'Sănătate - Plante Medicinale': <Leaf className={iconClass} />,
+      'Mamă și Copil': <Baby className={iconClass} />,
+      'Frumusețe și Igienă - Îngrijire Corp/Față': <Sparkles className={iconClass} />,
+      'Frumusețe și Igienă - Protecție Solară': <Sun className={iconClass} />,
+      'Frumusețe și Igienă - Îngrijire Păr': <Scissors className={iconClass} />,
+      'Frumusețe și Igienă - Igienă Personală': <Bath className={iconClass} />,
+      'Sănătate - Echipamente Medicale': <Eye className={iconClass} />,
+      'Sănătate - Articole Ortopedice': <Stethoscope className={iconClass} />,
+      'Sănătate - Parafarmaceutice': <Heart className={iconClass} />,
+    };
+    return iconMap[name] || <Pill className={iconClass} />;
+  };
+
   const isActive = (slug: string) => {
     return location.pathname === `/categorie/${slug}`;
   };
@@ -70,12 +101,12 @@ const HorizontalCategories = () => {
                     : 'hover:bg-green-50 hover:shadow-sm text-gray-700 hover:text-green-700'
                 }`}
               >
-                <span className={`flex items-center justify-center w-8 h-8 rounded-lg transition-colors text-base ${
+                <span className={`flex items-center justify-center w-8 h-8 rounded-lg transition-colors ${
                   isActive(category.slug)
                     ? 'bg-white/20'
                     : 'bg-green-100/50 group-hover:bg-green-100'
                 }`}>
-                  {category.icon}
+                  {getCategoryIcon(category.name)}
                 </span>
                 <span className="font-medium text-sm">{getCategoryShortName(category.name)}</span>
               </Link>
