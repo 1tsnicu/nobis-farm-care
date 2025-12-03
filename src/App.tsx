@@ -22,6 +22,7 @@ import ProductsManagement from "./pages/ProductsManagement";
 import ImportProducts from "./pages/ImportProducts";
 import CategoryPage from "./pages/CategoryPage";
 import AdminProducts from "./pages/AdminProducts";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import { Navigate } from "react-router-dom";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<BlogPost />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/confidentialitate" element={<PrivacyPolicy />} />
         <Route path="/admin/produse" element={<ProductsManagement />} />
         <Route path="/admin/import" element={<ImportProducts />} />
         <Route path="/admin/products" element={<AdminProducts />} />

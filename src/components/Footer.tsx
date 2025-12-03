@@ -88,7 +88,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/categorie/cosmetice-ingrijire-piele" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors">
+                <Link to="/categorie/dermatocosmetica" className="text-nobis-gray-300 hover:text-nobis-green-400 transition-colors">
                   Dermato-Cosmetice
                 </Link>
               </li>
