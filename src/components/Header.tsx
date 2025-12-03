@@ -175,28 +175,6 @@ const Header = () => {
             </div>
           </div>
         </div>
-
-        {/* Desktop Categories Menu */}
-        <div className="hidden lg:block border-b bg-muted/30">
-          <div className="container mx-auto px-4">
-            <nav className="flex items-center justify-center gap-1 py-2 overflow-x-auto">
-              {categories.map((cat) => (
-                <Link
-                  key={cat.id}
-                  to={`/categorie/${cat.slug}`}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-200 ${
-                    isActiveCategory(cat.slug)
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                  }`}
-                >
-                  <span className="text-base">{cat.icon}</span>
-                  <span>{getCategoryShortName(cat.name)}</span>
-                </Link>
-              ))}
-            </nav>
-          </div>
-        </div>
       </header>
     </>
   );
