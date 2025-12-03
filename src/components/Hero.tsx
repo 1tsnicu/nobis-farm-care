@@ -38,7 +38,7 @@ const Hero = () => {
 
             {/* Main Heading */}
             <div className="space-y-4">
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl 2xl:text-8xl font-bold leading-tight">
                 <span className="text-green-700">Nobis Farm:</span>
                 <br />
                 <span className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
@@ -47,7 +47,7 @@ const Hero = () => {
                 <br />
                 <span className="text-gray-800">la Îndemâna Ta</span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto lg:mx-0">
+              <p className="text-lg sm:text-xl md:text-2xl 2xl:text-3xl text-gray-600 max-w-2xl 2xl:max-w-3xl mx-auto lg:mx-0">
                 Farmacia ta de încredere cu <span className="text-green-700 font-bold">peste 8 ani</span> de experiență în îngrijirea sănătății familiei tale
               </p>
             </div>

@@ -22,7 +22,7 @@ interface CategoryItem {
 
 const HorizontalCategories = () => {
   const location = useLocation();
-  const iconClass = "w-4 h-4";
+  const iconClass = "w-4 h-4 2xl:w-5 2xl:h-5";
 
   const categories: CategoryItem[] = [
     { name: "Medicamente", slug: "medicamente-otc", icon: <Pill className={iconClass} /> },
@@ -50,26 +50,26 @@ const HorizontalCategories = () => {
     <div className="hidden lg:block w-full bg-gradient-to-b from-white to-green-50/30 border-b border-gray-100">
       <div className="container mx-auto px-4">
         <ScrollArea className="w-full whitespace-nowrap">
-          <div className="flex items-center gap-2 py-3">
+          <div className="flex items-center justify-center gap-2 2xl:gap-3 py-3 2xl:py-4">
             {categories.map((category) => (
               <Link
                 key={category.slug}
                 to={`/categorie/${category.slug}`}
                 onClick={handleCategoryClick}
-                className={`group flex items-center gap-2.5 py-2.5 px-4 rounded-xl transition-all duration-200 whitespace-nowrap ${
+                className={`group flex items-center gap-2.5 py-2.5 2xl:py-3 px-4 2xl:px-5 rounded-xl transition-all duration-200 whitespace-nowrap ${
                   isActive(category.slug)
                     ? 'bg-primary text-primary-foreground shadow-md'
                     : 'hover:bg-green-50 hover:shadow-sm text-gray-700 hover:text-green-700'
                 }`}
               >
-                <span className={`flex items-center justify-center w-8 h-8 rounded-lg transition-colors ${
+                <span className={`flex items-center justify-center w-8 h-8 2xl:w-9 2xl:h-9 rounded-lg transition-colors ${
                   isActive(category.slug)
                     ? 'bg-white/20'
                     : 'bg-green-100/50 group-hover:bg-green-100'
                 }`}>
                   {category.icon}
                 </span>
-                <span className="font-medium text-sm">{category.name}</span>
+                <span className="font-medium text-sm 2xl:text-base">{category.name}</span>
               </Link>
             ))}
           </div>

@@ -101,7 +101,7 @@ const HotOffers = () => {
               Cele mai fierbinți oferte
             </h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="bg-muted rounded-xl aspect-square animate-pulse" />
             ))}
@@ -134,7 +134,7 @@ const HotOffers = () => {
         </div>
 
         {products.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
             {products.map((product) => (
               <div
                 key={product.id}

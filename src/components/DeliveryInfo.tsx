@@ -72,7 +72,7 @@ const PickupInfo = () => {
         </div>
 
         {/* Map Section */}
-        <div className="max-w-4xl mx-auto mb-12">
+        <div className="max-w-4xl 2xl:max-w-5xl mx-auto mb-12">
           <Card className="border-gray-200 overflow-hidden">
             <CardContent className="p-0">
               <div className="aspect-video w-full">
@@ -92,7 +92,7 @@ const PickupInfo = () => {
         </div>
 
         {/* Additional Info */}
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl 2xl:max-w-6xl mx-auto">
           <Card className="border-gray-200 bg-white/80 backdrop-blur-sm">
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">

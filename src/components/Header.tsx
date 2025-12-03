@@ -67,7 +67,7 @@ const Header = () => {
         <div className="border-b">
           <div className="container mx-auto px-4">
             {/* Main Header */}
-            <div className="flex h-20 items-center justify-between gap-4">
+            <div className="flex h-20 2xl:h-24 items-center justify-between gap-4 2xl:gap-6">
               {/* Logo */}
               <Link to="/" className="flex items-center space-x-3 flex-shrink-0">
                 <img src="/logo.jpeg" alt="Nobis Farm" className="h-20 w-20 rounded-full" />
@@ -78,7 +78,7 @@ const Header = () => {
               </Link>
 
               {/* Search Bar */}
-              <div className="hidden md:flex flex-1 max-w-2xl">
+              <div className="hidden md:flex flex-1 max-w-2xl 2xl:max-w-3xl">
                 <QuickSearch className="w-full" showResults={true} />
               </div>
 

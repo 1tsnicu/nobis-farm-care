@@ -53,7 +53,7 @@ const WhyChooseUs = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {features.map((feature, index) => (
             <div key={index} className="group p-6 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-100 hover:border-green-200 hover:shadow-lg transition-all duration-300">
               <div className={`inline-flex items-center justify-center w-16 h-16 ${feature.color} rounded-xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
