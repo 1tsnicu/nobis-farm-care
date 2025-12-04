@@ -47,7 +47,7 @@ const HorizontalCategories = () => {
 
   return (
     <div className="hidden lg:block w-full bg-gradient-to-b from-white to-green-50/30 border-b border-gray-100">
-      <div className="container mx-auto px-2">
+      <div className="w-full px-4">
         <div className="flex items-center justify-between py-1.5">
           {categories.map((category) => (
             <Link
