@@ -6,6 +6,7 @@ import { Calendar, ArrowRight } from "lucide-react";
 import healthBlog from "@/assets/health-blog-1.jpg";
 import skincareBlog from "@/assets/skincare-blog.jpg";
 import promoVitamins from "@/assets/promo-vitamins.jpg";
+import winterHealth from "@/assets/blog-winter-health.jpg";
 
 
 const newsItems = [
@@ -34,6 +35,15 @@ const newsItems = [
     image: skincareBlog,
     category: "Îngrijire",
     date: "5 Dec 2024",
+    isPromo: false
+  },
+  {
+    id: 4,
+    title: "Remedii naturale pentru răceală și gripă",
+    excerpt: "Descoperă tratamentele tradiționale cu ghimbir, miere și lămâie care ajută la ameliorarea simptomelor.",
+    image: winterHealth,
+    category: "Naturist",
+    date: "1 Dec 2024",
     isPromo: false
   }
 ];
