@@ -39,14 +39,14 @@ const BestSellers = () => {
         .from('products')
         .select('*')
         .eq('is_available', true)
-        .limit(5);
+        .limit(6);
 
       if (error) {
         console.error('Best sellers error:', error);
       } else {
         // Amestecă produsele pentru varietate
         const shuffled = productsData?.sort(() => 0.5 - Math.random()) || [];
-        setProducts(shuffled.slice(0, 5));
+        setProducts(shuffled.slice(0, 6));
       }
     } catch (error) {
       console.error('Error fetching best sellers:', error);
