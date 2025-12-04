@@ -54,7 +54,7 @@ const HorizontalCategories = () => {
               key={category.slug}
               to={`/categorie/${category.slug}`}
               onClick={handleCategoryClick}
-              className={`group flex items-center gap-1 py-1 px-1.5 rounded transition-all duration-200 whitespace-nowrap ${
+              className={`group flex items-center gap-1.5 py-1.5 px-2 rounded transition-all duration-200 whitespace-nowrap ${
                 isActive(category.slug)
                   ? 'bg-primary text-primary-foreground'
                   : 'hover:bg-green-50 text-gray-700 hover:text-green-700'
@@ -63,7 +63,7 @@ const HorizontalCategories = () => {
               <span className={`${isActive(category.slug) ? 'text-primary-foreground' : 'text-primary'}`}>
                 {category.icon}
               </span>
-              <span className="font-medium text-[11px]">{category.name}</span>
+              <span className="font-medium text-xs">{category.name}</span>
             </Link>
           ))}
         </div>
