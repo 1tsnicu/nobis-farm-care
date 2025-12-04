@@ -33,20 +33,19 @@ const BestSellers = () => {
     setLoading(true);
     
     try {
-      // Încarcă produsele disponibile, ordonează aleatoriu pentru a simula "cele mai vândute"
-      // În viitor, aici se poate adăuga o coloană "sales_count" în baza de date
+      // Încarcă produsele cu offset pentru a fi diferite de HotOffers
+      // Ordonează după preț descrescător pentru a simula "cele mai vândute" (produse populare)
       const { data: productsData, error } = await supabase
         .from('products')
         .select('*')
         .eq('is_available', true)
-        .limit(6);
+        .order('price', { ascending: true })
+        .range(6, 11); // Skip first 6 products (shown in HotOffers)
 
       if (error) {
         console.error('Best sellers error:', error);
       } else {
-        // Amestecă produsele pentru varietate
-        const shuffled = productsData?.sort(() => 0.5 - Math.random()) || [];
-        setProducts(shuffled.slice(0, 6));
+        setProducts(productsData || []);
       }
     } catch (error) {
       console.error('Error fetching best sellers:', error);

@@ -31,10 +31,12 @@ const HotOffers = () => {
     const fetchHotOffers = async () => {
       try {
         setLoading(true);
-        // Fetch any 6 products from database
+        // Fetch newest 6 products (most recently added)
         const { data, error } = await supabase
           .from("products")
           .select("*")
+          .eq('is_available', true)
+          .order('created_at', { ascending: false })
           .limit(6);
 
         if (error) throw error;
