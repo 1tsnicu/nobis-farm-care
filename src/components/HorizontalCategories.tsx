@@ -63,7 +63,7 @@ const HorizontalCategories = () => {
               <span className={`${isActive(category.slug) ? 'text-primary-foreground' : 'text-primary'}`}>
                 {category.icon}
               </span>
-              <span className="font-medium text-[13px]">{category.name}</span>
+              <span className="font-medium text-[15px]">{category.name}</span>
             </Link>
           ))}
         </div>
