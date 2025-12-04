@@ -14,7 +14,7 @@ interface OrderData {
   firstName: string;
   lastName: string;
   phone: string;
-  email: string;
+  email: string | null; // Email este opțional
   notes?: string;
   products: OrderProduct[];
   total: number;
@@ -87,7 +87,7 @@ Deno.serve(async (req) => {
               parameters: [
                 { type: 'text', text: `${orderData.firstName} ${orderData.lastName}` },
                 { type: 'text', text: orderData.phone },
-                { type: 'text', text: orderData.email },
+                { type: 'text', text: orderData.email || '-' }, // Afișăm "-" dacă email-ul nu este completat
                 { type: 'text', text: deliveryMethodText },
                 { type: 'text', text: productsListShort },
                 { type: 'text', text: orderData.total.toFixed(2) },
