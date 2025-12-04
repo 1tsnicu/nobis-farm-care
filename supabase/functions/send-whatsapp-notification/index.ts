@@ -24,6 +24,8 @@ interface OrderData {
 }
 
 Deno.serve(async (req) => {
+  console.log('Request received - Method:', req.method, 'URL:', req.url);
+  
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { 
@@ -32,13 +34,12 @@ Deno.serve(async (req) => {
     });
   }
 
-  // Only allow POST requests
-  if (req.method !== 'POST') {
-    console.log('Invalid method:', req.method);
+  // Handle GET requests (browser/health check)
+  if (req.method === 'GET') {
     return new Response(
-      JSON.stringify({ error: 'Method not allowed' }),
+      JSON.stringify({ status: 'ok', message: 'WhatsApp notification service is running. Use POST to send notifications.' }),
       {
-        status: 405,
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );
