@@ -14,7 +14,7 @@ interface OrderData {
   firstName: string;
   lastName: string;
   phone: string;
-  email: string | null; // Email este opțional
+  email: string | null;
   notes?: string;
   products: OrderProduct[];
   total: number;
@@ -32,18 +32,74 @@ Deno.serve(async (req) => {
     });
   }
 
+  // Only allow POST requests
+  if (req.method !== 'POST') {
+    console.log('Invalid method:', req.method);
+    return new Response(
+      JSON.stringify({ error: 'Method not allowed' }),
+      {
+        status: 405,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
+  }
+
   try {
-    const orderData: OrderData = await req.json();
+    // Check if request has a body
+    const contentLength = req.headers.get('content-length');
+    const contentType = req.headers.get('content-type');
+    
+    console.log('Request received - Content-Length:', contentLength, 'Content-Type:', contentType);
+    
+    // Read the raw body first to check if it's empty
+    const rawBody = await req.text();
+    
+    if (!rawBody || rawBody.trim() === '') {
+      console.error('Empty request body received');
+      return new Response(
+        JSON.stringify({ error: 'Request body is empty' }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+    
+    console.log('Raw body received:', rawBody.substring(0, 200) + '...');
+    
+    // Parse the JSON
+    let orderData: OrderData;
+    try {
+      orderData = JSON.parse(rawBody);
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      return new Response(
+        JSON.stringify({ error: 'Invalid JSON in request body' }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+    
+    console.log('Order data parsed:', JSON.stringify({
+      firstName: orderData.firstName,
+      lastName: orderData.lastName,
+      phone: orderData.phone,
+      productsCount: orderData.products?.length,
+      total: orderData.total
+    }));
     
     const whatsappToken = Deno.env.get('WHATSAPP_TOKEN');
     const phoneNumberId = Deno.env.get('WHATSAPP_PHONE_NUMBER_ID');
     const whatsappNumber = Deno.env.get('YOUR_WHATSAPP_NUMBER');
 
     if (!whatsappToken || !phoneNumberId || !whatsappNumber) {
+      console.error('Missing WhatsApp credentials');
       throw new Error('WhatsApp credentials not configured');
     }
 
-    console.log('Sending WhatsApp notification...');
+    console.log('Sending WhatsApp notification to:', whatsappNumber);
     
     // WhatsApp Business Cloud API endpoint
     const whatsappUrl = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
@@ -65,6 +121,34 @@ Deno.serve(async (req) => {
       timeStyle: 'short'
     });
 
+    const templatePayload = {
+      messaging_product: 'whatsapp',
+      to: whatsappNumber,
+      type: 'template',
+      template: {
+        name: 'nobis_colect_lead',
+        language: {
+          code: 'ro'
+        },
+        components: [
+          {
+            type: 'body',
+            parameters: [
+              { type: 'text', text: `${orderData.firstName} ${orderData.lastName}` },
+              { type: 'text', text: orderData.phone },
+              { type: 'text', text: orderData.email || '-' },
+              { type: 'text', text: deliveryMethodText },
+              { type: 'text', text: productsListShort },
+              { type: 'text', text: orderData.total.toFixed(2) },
+              { type: 'text', text: timestamp }
+            ]
+          }
+        ]
+      }
+    };
+
+    console.log('Sending template payload:', JSON.stringify(templatePayload));
+
     // Send using the approved template
     const templateResponse = await fetch(whatsappUrl, {
       method: 'POST',
@@ -72,41 +156,17 @@ Deno.serve(async (req) => {
         'Authorization': `Bearer ${whatsappToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        messaging_product: 'whatsapp',
-        to: whatsappNumber,
-        type: 'template',
-        template: {
-          name: 'nobis_colect_lead',
-          language: {
-            code: 'ro'
-          },
-          components: [
-            {
-              type: 'body',
-              parameters: [
-                { type: 'text', text: `${orderData.firstName} ${orderData.lastName}` },
-                { type: 'text', text: orderData.phone },
-                { type: 'text', text: orderData.email || '-' }, // Afișăm "-" dacă email-ul nu este completat
-                { type: 'text', text: deliveryMethodText },
-                { type: 'text', text: productsListShort },
-                { type: 'text', text: orderData.total.toFixed(2) },
-                { type: 'text', text: timestamp }
-              ]
-            }
-          ]
-        }
-      }),
+      body: JSON.stringify(templatePayload),
     });
 
     const templateData = await templateResponse.json();
     
     if (!templateResponse.ok) {
-      console.error('WhatsApp template API error:', templateData);
+      console.error('WhatsApp template API error:', JSON.stringify(templateData));
       throw new Error(`WhatsApp template API error: ${JSON.stringify(templateData)}`);
     }
 
-    console.log('WhatsApp notification sent successfully:', templateData);
+    console.log('WhatsApp notification sent successfully:', JSON.stringify(templateData));
 
     return new Response(
       JSON.stringify({ success: true, message: 'Notification sent', data: templateData }),
@@ -116,7 +176,7 @@ Deno.serve(async (req) => {
       }
     );
   } catch (error: any) {
-    console.error('Error sending WhatsApp notification:', error);
+    console.error('Error sending WhatsApp notification:', error.message || error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
