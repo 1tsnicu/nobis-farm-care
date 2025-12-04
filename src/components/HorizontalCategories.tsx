@@ -1,5 +1,4 @@
 import { Link, useLocation } from "react-router-dom";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { 
   Pill, 
   Apple, 
@@ -48,33 +47,26 @@ const HorizontalCategories = () => {
 
   return (
     <div className="hidden lg:block w-full bg-gradient-to-b from-white to-green-50/30 border-b border-gray-100">
-      <div className="container mx-auto px-4">
-        <ScrollArea className="w-full whitespace-nowrap">
-          <div className="flex items-center justify-center gap-1 py-2">
-            {categories.map((category) => (
-              <Link
-                key={category.slug}
-                to={`/categorie/${category.slug}`}
-                onClick={handleCategoryClick}
-                className={`group flex items-center gap-1.5 py-1.5 px-2.5 rounded-lg transition-all duration-200 whitespace-nowrap ${
-                  isActive(category.slug)
-                    ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'hover:bg-green-50 text-gray-700 hover:text-green-700'
-                }`}
-              >
-                <span className={`flex items-center justify-center w-6 h-6 rounded-md transition-colors ${
-                  isActive(category.slug)
-                    ? 'bg-white/20'
-                    : 'bg-green-100/50 group-hover:bg-green-100'
-                }`}>
-                  {category.icon}
-                </span>
-                <span className="font-medium text-xs">{category.name}</span>
-              </Link>
-            ))}
-          </div>
-          <ScrollBar orientation="horizontal" className="h-1.5" />
-        </ScrollArea>
+      <div className="container mx-auto px-2">
+        <div className="flex items-center justify-between py-1.5">
+          {categories.map((category) => (
+            <Link
+              key={category.slug}
+              to={`/categorie/${category.slug}`}
+              onClick={handleCategoryClick}
+              className={`group flex items-center gap-1 py-1 px-1.5 rounded transition-all duration-200 whitespace-nowrap ${
+                isActive(category.slug)
+                  ? 'bg-primary text-primary-foreground'
+                  : 'hover:bg-green-50 text-gray-700 hover:text-green-700'
+              }`}
+            >
+              <span className={`${isActive(category.slug) ? 'text-primary-foreground' : 'text-primary'}`}>
+                {category.icon}
+              </span>
+              <span className="font-medium text-[11px]">{category.name}</span>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );
