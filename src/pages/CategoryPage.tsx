@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import ProductGrid from "@/components/ProductGrid";
 import CategoriesSidebar from "@/components/CategoriesSidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronRight, Truck, ShieldCheck, Clock, CreditCard } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 interface Category {
   id: string;
@@ -75,12 +75,6 @@ const CategoryPage = () => {
     setLoading(false);
   };
 
-  const benefits = [
-    { icon: <Truck className="w-5 h-5" />, title: "Livrare rapidă", desc: "În toată Moldova" },
-    { icon: <ShieldCheck className="w-5 h-5" />, title: "Produse autentice", desc: "100% originale" },
-    { icon: <Clock className="w-5 h-5" />, title: "Comandă rapidă", desc: "Rezervare online" },
-    { icon: <CreditCard className="w-5 h-5" />, title: "Plată la ridicare", desc: "Fără costuri suplimentare" },
-  ];
 
   if (loading) {
     return (
@@ -144,18 +138,6 @@ const CategoryPage = () => {
               </div>
             </div>
             
-            {/* Benefits Bar */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-green-200/50">
-              {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <div className="text-primary">{benefit.icon}</div>
-                  <div>
-                    <div className="font-semibold text-sm text-foreground">{benefit.title}</div>
-                    <div className="text-xs text-muted-foreground">{benefit.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Product Grid Component */}
