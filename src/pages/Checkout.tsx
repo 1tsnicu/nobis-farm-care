@@ -49,7 +49,7 @@ export const Checkout = () => {
 
   const validateDeliveryInfo = () => {
     const { deliveryInfo } = orderData;
-    const required = ['firstName', 'lastName', 'phone', 'email'];
+    const required = ['firstName', 'lastName', 'phone']; // Email nu mai este obligatoriu
     
     for (const field of required) {
       if (!deliveryInfo[field as keyof typeof deliveryInfo].trim()) {
@@ -62,15 +62,17 @@ export const Checkout = () => {
       }
     }
 
-    // Validare email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(deliveryInfo.email)) {
-      toast({
-        title: "Email invalid",
-        description: "Vă rugăm să introduceți o adresă de email validă",
-        variant: "destructive"
-      });
-      return false;
+    // Validare email doar dacă este completat
+    if (deliveryInfo.email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(deliveryInfo.email)) {
+        toast({
+          title: "Email invalid",
+          description: "Vă rugăm să introduceți o adresă de email validă",
+          variant: "destructive"
+        });
+        return false;
+      }
     }
 
     // Validare telefon (Moldova format)
@@ -178,7 +180,7 @@ export const Checkout = () => {
               <span class="info-label">Telefon:</span> ${orderResult.deliveryInfo.phone}
             </div>
             <div class="info-item">
-              <span class="info-label">Email:</span> ${orderResult.deliveryInfo.email}
+              <span class="info-label">Email:</span> ${orderResult.deliveryInfo.email || '-'}
             </div>
           </div>
         </div>
@@ -303,7 +305,7 @@ export const Checkout = () => {
           <div class="info-grid">
             <div class="info-item"><strong>Nume:</strong> ${orderResult.deliveryInfo.firstName} ${orderResult.deliveryInfo.lastName}</div>
             <div class="info-item"><strong>Telefon:</strong> ${orderResult.deliveryInfo.phone}</div>
-            <div class="info-item"><strong>Email:</strong> ${orderResult.deliveryInfo.email}</div>
+            <div class="info-item"><strong>Email:</strong> ${orderResult.deliveryInfo.email || '-'}</div>
           </div>
         </div>
 
@@ -397,7 +399,7 @@ export const Checkout = () => {
             firstName: orderData.deliveryInfo.firstName,
             lastName: orderData.deliveryInfo.lastName,
             phone: orderData.deliveryInfo.phone,
-            email: orderData.deliveryInfo.email,
+            email: orderData.deliveryInfo.email.trim() || null, // null dacă email-ul nu este completat
             notes: orderData.notes,
             products: items.map(item => ({
               name: item.name,
@@ -599,7 +601,7 @@ export const Checkout = () => {
                 <div className="bg-gray-50 p-4 rounded-lg text-sm space-y-1">
                   <div>{orderResult.deliveryInfo.firstName} {orderResult.deliveryInfo.lastName}</div>
                   <div>{orderResult.deliveryInfo.phone}</div>
-                  <div>{orderResult.deliveryInfo.email}</div>
+                  {orderResult.deliveryInfo.email && <div>{orderResult.deliveryInfo.email}</div>}
                 </div>
               </div>
 
@@ -801,7 +803,7 @@ export const Checkout = () => {
                         <div className="space-y-1">
                           <Label htmlFor="email" className="text-xs font-medium text-gray-700 flex items-center gap-1">
                             <Mail className="h-3 w-3" />
-                            Email *
+                            Email <span className="text-gray-400 font-normal">(opțional)</span>
                           </Label>
                           <Input
                             id="email"
