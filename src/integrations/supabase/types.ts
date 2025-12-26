@@ -212,6 +212,39 @@ export type Database = {
         }
         Relationships: []
       }
+      page_sections: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_visible: boolean | null
+          page_name: string
+          section_data: Json
+          section_key: string
+          section_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_visible?: boolean | null
+          page_name: string
+          section_data: Json
+          section_key: string
+          section_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_visible?: boolean | null
+          page_name?: string
+          section_data?: Json
+          section_key?: string
+          section_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category_id: string
